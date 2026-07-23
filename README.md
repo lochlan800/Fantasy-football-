@@ -2,9 +2,10 @@
 
 Two tools to help you win your FPL mini-league this season.
 
-## 1. `fpl-strategy-tool.html` — strategy & planners
+## 1. `index.html` — strategy & planners
 A single, self-contained web page. **Just double-click it** to open in any browser
-(no internet needed). It has:
+(no internet needed), or view it live via GitHub Pages at
+<https://lochlan800.github.io/Fantasy-football-/>. It has:
 - The core winning tactics (budget structure, template vs differentials, fixtures, transfers)
 - An interactive **squad builder** with live £100.0m budget tracking
 - A **chip planner** (Wildcard / Bench Boost / Triple Captain / Free Hit timing)
