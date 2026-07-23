@@ -1,0 +1,157 @@
+{
+  "budget_spent": 100.0,
+  "captain_id": 199,
+  "vice_id": 411,
+  "players": [
+    {
+      "id": 199,
+      "name": "Benitez",
+      "team": "CRY",
+      "pos": "GK",
+      "price": 4.5,
+      "starting": true,
+      "captain": true,
+      "vice": false
+    },
+    {
+      "id": 59,
+      "name": "Dennis",
+      "team": "BOU",
+      "pos": "GK",
+      "price": 4.0,
+      "starting": false,
+      "captain": false,
+      "vice": false
+    },
+    {
+      "id": 4,
+      "name": "Gabriel",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 8.0,
+      "starting": true,
+      "captain": false,
+      "vice": false
+    },
+    {
+      "id": 388,
+      "name": "Gu\u00e9hi",
+      "team": "MCI",
+      "pos": "DEF",
+      "price": 6.0,
+      "starting": true,
+      "captain": false,
+      "vice": false
+    },
+    {
+      "id": 508,
+      "name": "Davies",
+      "team": "TOT",
+      "pos": "DEF",
+      "price": 4.0,
+      "starting": true,
+      "captain": false,
+      "vice": false
+    },
+    {
+      "id": 259,
+      "name": "Diop",
+      "team": "IPS",
+      "pos": "DEF",
+      "price": 4.0,
+      "starting": true,
+      "captain": false,
+      "vice": false
+    },
+    {
+      "id": 174,
+      "name": "Kitching",
+      "team": "COV",
+      "pos": "DEF",
+      "price": 4.0,
+      "starting": false,
+      "captain": false,
+      "vice": false
+    },
+    {
+      "id": 426,
+      "name": "B.Fernandes",
+      "team": "MUN",
+      "pos": "MID",
+      "price": 12.0,
+      "starting": true,
+      "captain": false,
+      "vice": false
+    },
+    {
+      "id": 397,
+      "name": "Semenyo",
+      "team": "MCI",
+      "pos": "MID",
+      "price": 8.5,
+      "starting": true,
+      "captain": false,
+      "vice": false
+    },
+    {
+      "id": 452,
+      "name": "Bruno G.",
+      "team": "NEW",
+      "pos": "MID",
+      "price": 7.0,
+      "starting": true,
+      "captain": false,
+      "vice": false
+    },
+    {
+      "id": 335,
+      "name": "Stach",
+      "team": "LEE",
+      "pos": "MID",
+      "price": 6.0,
+      "starting": true,
+      "captain": false,
+      "vice": false
+    },
+    {
+      "id": 132,
+      "name": "Howell",
+      "team": "BHA",
+      "pos": "MID",
+      "price": 4.5,
+      "starting": false,
+      "captain": false,
+      "vice": false
+    },
+    {
+      "id": 411,
+      "name": "Haaland",
+      "team": "MCI",
+      "pos": "FWD",
+      "price": 15.5,
+      "starting": true,
+      "captain": false,
+      "vice": true
+    },
+    {
+      "id": 165,
+      "name": "Jo\u00e3o Pedro",
+      "team": "CHE",
+      "pos": "FWD",
+      "price": 7.5,
+      "starting": true,
+      "captain": false,
+      "vice": false
+    },
+    {
+      "id": 169,
+      "name": "Mheuka",
+      "team": "CHE",
+      "pos": "FWD",
+      "price": 4.5,
+      "starting": false,
+      "captain": false,
+      "vice": false
+    }
+  ]
+}
