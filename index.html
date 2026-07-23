@@ -180,6 +180,7 @@
 <div class="wrap">
   <nav class="tabs" id="tabs">
     <button data-tab="strategy" class="active">📋 Core Strategy</button>
+    <button data-tab="fixtures">📅 Fixture Ranking</button>
     <button data-tab="squad">🧮 Squad Builder</button>
     <button data-tab="chips">🎴 Chip Planner</button>
     <button data-tab="captain">©️ Captaincy & Transfers</button>
@@ -248,6 +249,32 @@
 
     <div class="callout gold">
       <b>🏆 The one-line philosophy:</b> Own the essential template players, add 2–3 well-chosen differentials, captain the safe high-ceiling pick, plan transfers around fixtures, and save your chips for double/blank gameweeks. Do that consistently and you finish top of the mini-league.
+    </div>
+  </section>
+
+  <!-- ============ FIXTURE RANKING ============ -->
+  <section class="tab" id="fixtures">
+    <h2><span class="em">📅</span>Fixture Difficulty Ranking</h2>
+    <p class="lede">All 20 teams ranked by how easy their next few games are — the same fixture difficulty ratings (1 = easiest, 5 = hardest) you see in the FPL app. Target attackers from the teams at the top of this list.</p>
+
+    <div id="fixLive"></div>
+
+    <div class="card" id="fixHelp">
+      <h3>📡 How to load the live rankings <span class="tag">One command</span></h3>
+      <p style="margin-top:0">This page shows real, current fixture ratings once the data file is present. To generate it with today's fixtures, run the included script on your computer:</p>
+      <div class="callout blue" style="font-family:ui-monospace,Menlo,monospace;font-size:13.5px">
+        python3 fpl_data.py --html
+      </div>
+      <p>That creates two things next to this page:</p>
+      <ul class="clean">
+        <li><b>fixtures.html</b> — a standalone colour-coded ranking you can open straight away (no other steps).</li>
+        <li><b>fixtures-data.json</b> — the data this tab reads. When it's in the same folder (or pushed to your GitHub Pages site), the live table appears right here automatically.</li>
+      </ul>
+      <p class="save-note">The ratings come straight from the official free FPL API, so they match the app. Re-run the command before each deadline to refresh them.</p>
+    </div>
+
+    <div class="callout gold">
+      <b>How to use it:</b> a team near the top with several green games is a great place to buy attackers <em>before</em> the run starts — you catch the points and the price rises. A team near the bottom (red games) is one to sell or captain against.
     </div>
   </section>
 
@@ -580,6 +607,50 @@
     });
   }
   function resetChecklist(){ checked = {}; store.set('fpl_checks', checked); renderChecklist(); }
+
+  // ---------- Fixture Ranking (reads fixtures-data.json if present) ----------
+  const DIFF_BG = {1:'#0e8a3e',2:'#37d67a',3:'#5a6472',4:'#ff8a5c',5:'#ff5c73'};
+  const DIFF_FG = {1:'#fff',2:'#06210f',3:'#fff',4:'#3a1400',5:'#3a0009'};
+  function renderFixtures(data){
+    const help = document.getElementById('fixHelp');
+    const live = document.getElementById('fixLive');
+    if(!data || !data.ranked || !data.ranked.length){ return; } // keep the help card
+    help.style.display = 'none';
+    const maxGames = Math.max(...data.ranked.map(r=>r.games.length));
+    let head = '<th>#</th><th>Team</th><th>Avg</th>';
+    for(let i=0;i<maxGames;i++) head += `<th>GW${data.gw+i}</th>`;
+    let body = '';
+    data.ranked.forEach((r,idx)=>{
+      let cells = `<td style="text-align:center;color:var(--muted)">${idx+1}</td>`+
+                  `<td style="font-weight:700">${r.short}<br><span style="font-weight:400;color:var(--muted);font-size:12px">${r.name}</span></td>`+
+                  `<td style="text-align:center;font-weight:700">${r.avg.toFixed(1)}</td>`;
+      for(let i=0;i<maxGames;i++){
+        const g = r.games[i];
+        if(!g){ cells += '<td></td>'; continue; }
+        cells += `<td style="text-align:center;font-weight:700;color:${DIFF_FG[g.diff]||'#fff'};background:${DIFF_BG[g.diff]||'#5a6472'};border-radius:6px">${g.opp}<br><small style="font-weight:400">(${g.venue}) ${g.diff}</small></td>`;
+      }
+      body += `<tr>${cells}</tr>`;
+    });
+    live.innerHTML = `
+      <div class="card">
+        <h3>Easiest run → hardest <span class="tag">GW${data.gw}, next ${data.horizon}</span></h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;font-size:12.5px;align-items:center">
+          <span style="color:var(--muted)">Difficulty:</span>
+          <span class="pill" style="background:#0e8a3e;color:#fff">1 easy</span>
+          <span class="pill" style="background:#37d67a;color:#06210f">2</span>
+          <span class="pill" style="background:#5a6472;color:#fff">3</span>
+          <span class="pill" style="background:#ff8a5c;color:#3a1400">4</span>
+          <span class="pill" style="background:#ff5c73;color:#3a0009">5 hard</span>
+        </div>
+        <div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:5px">
+          <thead><tr>${head}</tr></thead><tbody>${body}</tbody>
+        </table></div>
+      </div>`;
+  }
+  fetch('fixtures-data.json', {cache:'no-store'})
+    .then(r => r.ok ? r.json() : null)
+    .then(renderFixtures)
+    .catch(()=>{ /* no data file yet — the help card stays visible */ });
 
   // ---------- Init ----------
   renderSquad(); renderChips(); loadCaptain(); renderChecklist();
