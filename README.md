@@ -106,6 +106,23 @@ it against the latest team news before your deadline.
 - **Attacking** — leans into xG/xA and attacking returns for a high ceiling.
 - **Value** — maximises points per £m, banking funds to build team value.
 
+## More in the app
+The web tool now also includes:
+- **📊 Player Insights tab** — live shortlists from the data (`insights-data.json`,
+  auto-generated with `--build`): players *due a haul* (high xG, few goals) vs
+  *riding their luck*; penalty & set-piece takers; most-nailed starters by minutes;
+  best defensive-contribution value; the ownership *template* vs the best
+  *differentials*; and weekly price *risers & fallers*.
+- **🥊 Rival Tracker** (Winning Edge tab) — enter your mini-league rival's captain,
+  key players and the points gap; it gives tailored "cover them" or "go different"
+  advice depending on whether you're ahead or behind.
+- **🗺 Multi-gameweek transfer planner** (Captaincy tab) — map out moves 3–4
+  gameweeks ahead so single free transfers keep your squad healthy without hits.
+- **🪑 Bench-order & deadline guidance** in the Squad Builder.
+
+All of these save in your browser, and the data-driven ones refresh automatically
+via the twice-daily GitHub Action.
+
 **Winning move:** cross-reference the `--value` list with the `--fixtures` list —
 cheap players from teams with an easy run are where seasons are won.
 

@@ -101,10 +101,16 @@ def build_players(boot):
             "assists": e.get("assists", 0),
             # --- underlying / predictive stats ---
             "xgi90": _f(e.get("expected_goal_involvements_per_90")),  # xG + xA per 90
+            "xgi_total": _f(e.get("expected_goal_involvements")),      # season xG + xA
+            "gi_actual": (e.get("goals_scored", 0) + e.get("assists", 0)),  # actual G+A
             "dc90": _f(dc90),                                         # defensive actions per 90
             "pens": (e.get("penalties_order") == 1),                  # first-choice pen taker
             "setpiece": bool(e.get("corners_and_indirect_freekicks_order")
                              or e.get("direct_freekicks_order")),      # takes corners/free kicks
+            # --- price / momentum ---
+            "t_in": e.get("transfers_in_event", 0) or 0,              # transfers in this GW
+            "t_out": e.get("transfers_out_event", 0) or 0,            # transfers out this GW
+            "cost_change": (e.get("cost_change_event", 0) or 0) / 10.0,   # £m change this GW
             "status": e["status"],   # a=available, i=injured, d=doubt, s=suspended, u=unavailable
         })
     return players, teams
@@ -520,6 +526,65 @@ def report_build(players, ranking):
     print("\n  Saved squad-data.json (3 strategies) — open the tool and use the toggle buttons.")
 
 
+def _slim(p, extra=None):
+    """Compact player dict for the insights JSON."""
+    d = {"name": p["name"], "team": p["team"], "pos": p["pos"],
+         "price": p["price"], "owned": p["owned"], "form": p["form"]}
+    if extra:
+        d.update(extra)
+    return d
+
+
+def write_insights(players, top=14):
+    """Produce insights-data.json powering the Player Insights tab."""
+    avail = [p for p in players if p["status"] == "a"]
+    played = [p for p in avail if p["minutes"] >= 200]     # enough data to be meaningful
+
+    # xG over/under performers (needs real minutes + some xGI data)
+    xg_pool = [p for p in played if p["xgi_total"] > 0.5 or p["gi_actual"] > 0]
+    over = sorted(xg_pool, key=lambda p: (p["gi_actual"] - p["xgi_total"]), reverse=True)
+    under = sorted(xg_pool, key=lambda p: (p["xgi_total"] - p["gi_actual"]), reverse=True)
+
+    pens = sorted([p for p in avail if p["pens"]],
+                  key=lambda p: (p["ppg"], p["xgi90"]), reverse=True)
+    setpieces = sorted([p for p in avail if p["setpiece"] and not p["pens"]],
+                       key=lambda p: (p["ppg"], p["xgi90"]), reverse=True)
+
+    nailed = sorted(avail, key=lambda p: p["minutes"], reverse=True)
+
+    defcon_def = sorted([p for p in played if p["pos"] == "DEF"],
+                        key=lambda p: p["dc90"], reverse=True)
+    defcon_mid = sorted([p for p in played if p["pos"] in ("MID", "FWD")],
+                        key=lambda p: p["dc90"], reverse=True)
+
+    template = sorted(avail, key=lambda p: p["owned"], reverse=True)
+    diffs = sorted([p for p in played if p["owned"] < 10 and (p["form"] > 0 or p["xgi90"] > 0)],
+                   key=lambda p: (p["form"], p["xgi90"]), reverse=True)
+
+    net = lambda p: p["t_in"] - p["t_out"]
+    risers = sorted(avail, key=net, reverse=True)
+    fallers = sorted(avail, key=net)
+
+    out = {
+        "xg_under": [_slim(p, {"xgi": round(p["xgi_total"], 1), "actual": p["gi_actual"],
+                     "gap": round(p["xgi_total"] - p["gi_actual"], 1)}) for p in under[:top]],
+        "xg_over": [_slim(p, {"xgi": round(p["xgi_total"], 1), "actual": p["gi_actual"],
+                    "gap": round(p["gi_actual"] - p["xgi_total"], 1)}) for p in over[:top]],
+        "penalties": [_slim(p, {"xgi90": round(p["xgi90"], 2)}) for p in pens[:top]],
+        "setpieces": [_slim(p, {"xgi90": round(p["xgi90"], 2)}) for p in setpieces[:top]],
+        "nailed": [_slim(p, {"minutes": p["minutes"]}) for p in nailed[:top]],
+        "defcon_def": [_slim(p, {"dc90": round(p["dc90"], 1)}) for p in defcon_def[:top]],
+        "defcon_mid": [_slim(p, {"dc90": round(p["dc90"], 1)}) for p in defcon_mid[:top]],
+        "template": [_slim(p) for p in template[:top]],
+        "differentials": [_slim(p, {"xgi90": round(p["xgi90"], 2)}) for p in diffs[:top]],
+        "risers": [_slim(p, {"net": net(p), "cost_change": p["cost_change"]}) for p in risers[:top]],
+        "fallers": [_slim(p, {"net": net(p), "cost_change": p["cost_change"]}) for p in fallers[:top]],
+    }
+    with open("insights-data.json", "w") as fh:
+        json.dump(out, fh, indent=2)
+    print("  Saved insights-data.json — populates the Player Insights tab.", file=sys.stderr)
+
+
 def dump_csv(players, path):
     keys = ["name", "team", "pos", "price", "points", "form", "ppm", "owned",
             "minutes", "goals", "assists", "status"]
@@ -576,6 +641,7 @@ def main():
     if show_all or args.build:
         _, _, ranking = compute_fixture_ranking(boot, fixtures)
         report_build(players, ranking)
+        write_insights(players)
 
     if args.html:
         write_fixtures_outputs(boot, fixtures)
