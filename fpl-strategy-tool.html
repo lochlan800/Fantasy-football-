@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FPL Strategy Command Centre</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel-2: #1c2330;
+    --border: #2d3644;
+    --text: #e6edf3;
+    --muted: #9198a1;
+    --accent: #37d67a;
+    --accent-2: #00c2ff;
+    --purple: #b28dff;
+    --gold: #ffd23f;
+    --red: #ff5c73;
+    --shadow: 0 8px 30px rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: radial-gradient(1200px 600px at 80% -10%, #16233a 0%, var(--bg) 55%);
+    color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    padding: 34px 20px 26px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(55,214,122,.08), transparent);
+  }
+  header h1 {
+    margin: 0 0 6px;
+    font-size: clamp(26px, 4vw, 40px);
+    letter-spacing: -.5px;
+  }
+  header .pitch { color: var(--accent); }
+  header p { margin: 0; color: var(--muted); font-size: 15px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px 80px; }
+  nav.tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding: 12px 0;
+    background: rgba(13,17,23,.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 26px;
+  }
+  nav.tabs button {
+    background: var(--panel);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 9px 15px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 600;
+    transition: all .15s ease;
+  }
+  nav.tabs button:hover { color: var(--text); border-color: #3d4b5f; }
+  nav.tabs button.active {
+    background: var(--accent);
+    color: #06210f;
+    border-color: var(--accent);
+  }
+  section.tab { display: none; animation: fade .25s ease; }
+  section.tab.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px);} to {opacity:1; transform: none;} }
+  h2 { font-size: 22px; margin: 8px 0 4px; }
+  h2 .em { font-size: 22px; margin-right: 8px; }
+  .lede { color: var(--muted); margin: 0 0 20px; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+  }
+  .card h3 { margin: 0 0 10px; font-size: 17px; display: flex; align-items: center; gap: 8px; }
+  .card h3 .tag {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+    padding: 3px 8px; border-radius: 6px; background: var(--panel-2); color: var(--accent-2);
+  }
+  .grid { display: grid; gap: 14px; }
+  .grid.two { grid-template-columns: 1fr 1fr; }
+  .grid.three { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 720px){ .grid.two, .grid.three { grid-template-columns: 1fr; } }
+  ul.clean { margin: 8px 0; padding-left: 20px; }
+  ul.clean li { margin: 6px 0; }
+  .pill { display:inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight:700; }
+  .pill.green { background: rgba(55,214,122,.15); color: var(--accent); }
+  .pill.blue { background: rgba(0,194,255,.15); color: var(--accent-2); }
+  .pill.gold { background: rgba(255,210,63,.15); color: var(--gold); }
+  .pill.red { background: rgba(255,92,115,.15); color: var(--red); }
+  .pill.purple{ background: rgba(178,141,255,.15); color: var(--purple); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing:.4px;}
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--panel-2);
+    padding: 12px 16px;
+    border-radius: 0 10px 10px 0;
+    margin: 12px 0;
+    font-size: 14.5px;
+  }
+  .callout.gold { border-color: var(--gold); }
+  .callout.red { border-color: var(--red); }
+  .callout.blue { border-color: var(--accent-2); }
+  /* Squad builder */
+  .budget-bar {
+    display:flex; align-items:center; gap: 14px; flex-wrap: wrap;
+    background: var(--panel-2); border:1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin-bottom: 16px;
+  }
+  .budget-bar .stat { display:flex; flex-direction:column; }
+  .budget-bar .stat b { font-size: 22px; }
+  .budget-bar .stat span { font-size: 11px; color: var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  .money-left.neg { color: var(--red); }
+  .money-left.ok { color: var(--accent); }
+  .pos-block { margin-bottom: 14px; }
+  .pos-block h4 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing:.6px; color: var(--muted); }
+  .player-row {
+    display:grid; grid-template-columns: 1fr 130px 90px 34px; gap: 8px; align-items:center;
+    background: var(--panel-2); border:1px solid var(--border); border-radius: 9px; padding: 7px 10px; margin-bottom: 7px;
+  }
+  @media (max-width:560px){ .player-row{ grid-template-columns: 1fr 90px 70px 30px; } }
+  .player-row input, .player-row select {
+    background: var(--bg); border:1px solid var(--border); color: var(--text);
+    border-radius: 7px; padding: 7px 9px; font-size: 13.5px; width: 100%;
+  }
+  .player-row input[type=number]{ text-align:right; }
+  .cap-btn {
+    border:1px solid var(--border); background: var(--bg); color: var(--muted);
+    border-radius: 7px; cursor:pointer; height: 34px; font-weight:700; font-size:12px;
+  }
+  .cap-btn.cap { background: var(--gold); color:#3a2c00; border-color: var(--gold);}
+  .cap-btn.vc { background: var(--accent-2); color:#00212e; border-color: var(--accent-2);}
+  .btn {
+    background: var(--accent); color:#06210f; border:none; border-radius: 9px;
+    padding: 10px 16px; font-weight:700; cursor:pointer; font-size: 14px;
+  }
+  .btn.ghost { background: transparent; color: var(--muted); border:1px solid var(--border); }
+  .btn.ghost:hover { color: var(--text); }
+  .row-actions { display:flex; gap: 10px; flex-wrap:wrap; margin-top: 8px; }
+  /* Chip timeline */
+  .timeline { position: relative; margin: 10px 0; }
+  .tl-item { display:flex; gap: 14px; padding: 12px 0; border-bottom: 1px dashed var(--border); }
+  .tl-when { flex: 0 0 120px; font-weight:700; color: var(--accent-2); font-size: 13.5px; }
+  .tl-body { flex: 1; }
+  .tl-body b { display:block; margin-bottom: 2px; }
+  .tl-body span { color: var(--muted); font-size: 14px; }
+  /* Captaincy tool */
+  input.textline, select.textline, textarea.textline {
+    background: var(--bg); border:1px solid var(--border); color: var(--text);
+    border-radius: 8px; padding: 9px 11px; font-size: 14px; width:100%; font-family: inherit;
+  }
+  .save-note { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+  footer { text-align:center; color: var(--muted); font-size: 12.5px; padding: 30px 16px; border-top:1px solid var(--border); }
+  a { color: var(--accent-2); }
+  .kbd { font-family: ui-monospace, Menlo, monospace; background: var(--panel-2); border:1px solid var(--border); border-radius:5px; padding: 1px 6px; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>⚽ FPL Strategy <span class="pitch">Command Centre</span></h1>
+  <p>The proven tactics — plus interactive planners that save to your browser. Built for winning the mini-leagues.</p>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" id="tabs">
+    <button data-tab="strategy" class="active">📋 Core Strategy</button>
+    <button data-tab="squad">🧮 Squad Builder</button>
+    <button data-tab="chips">🎴 Chip Planner</button>
+    <button data-tab="captain">©️ Captaincy & Transfers</button>
+    <button data-tab="checklist">✅ Weekly Routine</button>
+  </nav>
+
+  <!-- ============ STRATEGY ============ -->
+  <section class="tab active" id="strategy">
+    <h2><span class="em">📋</span>Core Strategy — the principles that actually win</h2>
+    <p class="lede">FPL is won over 38 gameweeks by compounding small edges, not by one lucky captain pick. These are the fundamentals the top-10k managers live by.</p>
+
+    <div class="grid two">
+      <div class="card">
+        <h3>💰 Budget structure <span class="tag">Foundation</span></h3>
+        <ul class="clean">
+          <li><b>Spend big where points are cheap to predict.</b> Premium forwards & attacking mids score the most consistently — own 2–3 of them.</li>
+          <li><b>Don't waste money on a premium keeper.</b> A <span class="pill blue">rotating cheap GK pair</span> (~£4.0–4.5m each) frees ~£1.0m for outfield.</li>
+          <li><b>Target one or two enablers</b> — cheap (£4.0–4.5m) starting defenders/mids who let you afford the premiums.</li>
+          <li>Aim to field <b>11 nailed starters</b> every week. A playing £4.5m beats a benched £6.5m.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🎯 The template + differentials <span class="tag">Balance</span></h3>
+        <ul class="clean">
+          <li>The <b>"template"</b> = the ~10 players most top managers own. Owning them protects your rank.</li>
+          <li>To <b>climb</b>, you need differentials — but pick 2–3 max. Too many and one bad week tanks you.</li>
+          <li>A good differential is <span class="pill green">low ownership + good fixtures + on set pieces</span>.</li>
+          <li>Never be differential on the <b>captain</b> unless you're chasing and have nothing to lose.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📅 Fixtures beat form (most of the time) <span class="tag">Planning</span></h3>
+      <p style="margin-top:0">Rank teams by their next 3–5 fixtures, not last week's result. Buy players entering an easy run <b>before</b> the run starts — you get the price rises and the points.</p>
+      <table>
+        <thead><tr><th>Signal</th><th>What to do</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Team with 4+ green fixtures</td><td>Target 1–2 of their attackers</td><td>Ride the run, then rotate out</td></tr>
+          <tr><td>Double Gameweek (2 games)</td><td>Load up + captain a DGW player</td><td>Double the points ceiling</td></tr>
+          <tr><td>Blank Gameweek (no game)</td><td>Transfer out / use a chip</td><td>Avoid fielding non-players</td></tr>
+          <tr><td>Fixture swing incoming</td><td>Sell 1–2 GWs early</td><td>Beat the crowd on price + points</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <h3>📈 Price changes & team value <span class="tag">Edge</span></h3>
+        <ul class="clean">
+          <li>Players rise/fall ~£0.1m based on net transfers. Getting early "bandwagon" players builds team value → more spending power later.</li>
+          <li><b>Never take a hit just to chase a price rise.</b> The 4-point hit rarely pays back.</li>
+          <li>Sell falling players before they drop if you were moving them anyway — don't panic-sell a keeper.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🔁 Transfer discipline <span class="tag">Discipline</span></h3>
+        <ul class="clean">
+          <li>Bank a transfer when there's no clear move — flexibility &gt; activity.</li>
+          <li><span class="pill red">Only take a −4 hit</span> if the incoming player projects 4+ more points over the next 2–3 GWs than who leaves.</li>
+          <li>Plan 2–3 GWs ahead so single transfers keep the squad healthy without hits.</li>
+          <li>Avoid knee-jerk moves after one blank — process over panic.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout gold">
+      <b>🏆 The one-line philosophy:</b> Own the essential template players, add 2–3 well-chosen differentials, captain the safe high-ceiling pick, plan transfers around fixtures, and save your chips for double/blank gameweeks. Do that consistently and you finish top of the mini-league.
+    </div>
+  </section>
+
+  <!-- ============ SQUAD BUILDER ============ -->
+  <section class="tab" id="squad">
+    <h2><span class="em">🧮</span>Squad Builder & Budget Calculator</h2>
+    <p class="lede">Build your 15 within the £100.0m budget. Enter each player's price and it tracks your spend live. Everything saves automatically in this browser.</p>
+
+    <div class="budget-bar">
+      <div class="stat"><b>£100.0m</b><span>Total budget</span></div>
+      <div class="stat"><b id="spent">£0.0m</b><span>Spent</span></div>
+      <div class="stat"><b id="left" class="money-left ok">£100.0m</b><span>Remaining</span></div>
+      <div class="stat"><b id="count">0/15</b><span>Players in</span></div>
+    </div>
+
+    <div class="card">
+      <div id="posContainer"></div>
+      <div class="row-actions">
+        <button class="btn" onclick="saveSquad()">💾 Save squad</button>
+        <button class="btn ghost" onclick="clearSquad()">🗑 Clear all</button>
+      </div>
+      <p class="save-note">Formation rule: 2 GK · 5 DEF · 5 MID · 3 FWD. On the pitch play 1 GK, 3–5 DEF, 2–5 MID, 1–3 FWD. Tap <span class="kbd">C</span> for captain, <span class="kbd">V</span> for vice.</p>
+    </div>
+
+    <div class="callout blue">
+      <b>💡 Suggested split for a balanced £100m squad:</b> ~£24–28m on 2–3 premium attackers, ~£8–9m on a rotating GK pair, ~£20–24m on defence (mix one premium + budget enablers), and the rest on a strong mid-price midfield. Keep ~£0.0–0.5m in the bank for flexibility.
+    </div>
+  </section>
+
+  <!-- ============ CHIPS ============ -->
+  <section class="tab" id="chips">
+    <h2><span class="em">🎴</span>Chip Planner</h2>
+    <p class="lede">You get each chip twice per season (one in each half). Chips are worth 15–35+ points when timed well — and almost nothing when wasted. Here's the playbook, plus a tracker for your own plan.</p>
+
+    <div class="grid two">
+      <div class="card">
+        <h3>🃏 The four chips <span class="tag">What & when</span></h3>
+        <ul class="clean">
+          <li><b>Wildcard</b> — free unlimited transfers. Use to fix a broken squad or pivot to a fixture swing. First one: often GW7–9 once the season settles. Second: set up for the DGW run-in.</li>
+          <li><b>Bench Boost</b> — bench points count. Play it on a <span class="pill purple">Double Gameweek</span> when all 15 have two games. Wildcard the week before to load it.</li>
+          <li><b>Triple Captain</b> — captain scores 3× instead of 2×. Save for a premium player with a <b>home Double Gameweek</b> against weak sides.</li>
+          <li><b>Free Hit</b> — one-week unlimited squad, reverts after. Perfect for a <span class="pill red">Blank Gameweek</span> or to attack a big DGW without wrecking your team.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>⏱ Golden rules <span class="tag">Timing</span></h3>
+        <ul class="clean">
+          <li><b>Don't panic-play chips early.</b> The biggest returns come in the back third of the season (DGW/BGW cluster).</li>
+          <li>Bench Boost + Triple Captain want <b>Double Gameweeks</b> — wait for the fixture list to reveal them.</li>
+          <li>Free Hit is your <b>Blank Gameweek</b> saviour — don't burn it on a whim.</li>
+          <li>An early Wildcard is fine if your squad is genuinely broken by injuries/fixtures — a healthy squad doesn't need one.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🗓 Your chip plan <span class="tag">Editable</span></h3>
+      <p style="margin-top:0; color:var(--muted)">Jot the gameweek you're targeting for each chip. Saves automatically.</p>
+      <div class="timeline" id="chipPlan"></div>
+    </div>
+
+    <div class="callout">
+      <b>Typical elite template:</b> Wildcard 1 around GW7–9 · Free Hit on the first big Blank GW · Wildcard 2 to build into the Double Gameweeks · Bench Boost + Triple Captain on the best DGWs of the run-in. Keep the second set of chips for the final ~10 GWs.
+    </div>
+  </section>
+
+  <!-- ============ CAPTAINCY & TRANSFERS ============ -->
+  <section class="tab" id="captain">
+    <h2><span class="em">©️</span>Captaincy & Transfer Tracker</h2>
+    <p class="lede">The captain is double your best player's points — it's the single biggest weekly decision. Track your armband and transfer plans here.</p>
+
+    <div class="grid two">
+      <div class="card">
+        <h3>©️ How to pick the captain <span class="tag">Weekly</span></h3>
+        <ul class="clean">
+          <li><b>Best fixture × best player.</b> Premium attacker at home to a weak defence is the default.</li>
+          <li>Favour <span class="pill green">nailed penalty takers</span> — an extra route to points.</li>
+          <li>Check the <b>ownership</b>: captaining a highly-owned player protects rank; a differential captain is high-risk, high-reward.</li>
+          <li>Double Gameweek player &gt; single-game player almost every time.</li>
+          <li>Set a sensible <b>vice-captain</b> who also plays — if your captain is benched/injured, the VC steps in.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🔁 Transfer decision test <span class="tag">Before you click</span></h3>
+        <ul class="clean">
+          <li>Is the player <b>injured, suspended, or fixture-dead</b>? → move.</li>
+          <li>Will the incoming player out-score the outgoing by <b>4+ over 3 GWs</b>? → a hit may be worth it.</li>
+          <li>No clear upgrade? → <b>bank the transfer.</b></li>
+          <li>Chasing a price rise only? → <b>don't.</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📝 This week's plan <span class="tag">Saves automatically</span></h3>
+      <div class="grid two" style="margin-bottom:12px">
+        <div>
+          <label style="font-size:13px;color:var(--muted)">Captain this GW</label>
+          <input class="textline" id="capIn" placeholder="e.g. your premium striker (home vs bottom side)">
+        </div>
+        <div>
+          <label style="font-size:13px;color:var(--muted)">Vice-captain</label>
+          <input class="textline" id="vcIn" placeholder="e.g. nailed attacking mid, also playing">
+        </div>
+      </div>
+      <label style="font-size:13px;color:var(--muted)">Transfers I'm considering (and why)</label>
+      <textarea class="textline" id="transfersIn" rows="4" placeholder="OUT: injured defender → IN: enabler on a good run. Bank if no clear move."></textarea>
+      <div class="row-actions">
+        <button class="btn" onclick="saveCaptain()">💾 Save plan</button>
+        <span class="save-note" id="capSaved"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHECKLIST ============ -->
+  <section class="tab" id="checklist">
+    <h2><span class="em">✅</span>Weekly Winning Routine</h2>
+    <p class="lede">Do these before every deadline. It takes 10 minutes and it's the difference between a mid-table finish and winning the league.</p>
+
+    <div class="card">
+      <h3>Pre-deadline checklist <span class="tag">Every GW</span></h3>
+      <div id="weeklyChecklist"></div>
+      <div class="row-actions">
+        <button class="btn ghost" onclick="resetChecklist()">↺ Reset for next gameweek</button>
+      </div>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <h3>⚠️ Deadline discipline <span class="tag">Avoid</span></h3>
+        <ul class="clean">
+          <li>Never miss the deadline — <b>set a phone reminder</b> for an hour before kickoff Friday/Saturday.</li>
+          <li>Check the <b>press conferences</b> (Thu/Fri) for injury & rotation news before finalising.</li>
+          <li>Don't confirm transfers early in the week — <b>news changes</b>. Decide late.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🧠 Season-long mindset <span class="tag">Marathon</span></h3>
+        <ul class="clean">
+          <li>Green arrows compound. A steady, patient season beats boom-and-bust.</li>
+          <li>Don't rage-transfer after one bad week — trust your fixture plan.</li>
+          <li>Watch the <b>top managers</b> for template shifts, but back your own reads on differentials.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Built as a personal planning tool. Player prices, fixtures and injury news change constantly —
+    always confirm against the official Fantasy Premier League site before your transfers.
+    All your data stays in this browser (nothing is uploaded).
+  </footer>
+</div>
+
+<script>
+  // ---------- Tabs ----------
+  const tabs = document.getElementById('tabs');
+  tabs.addEventListener('click', e => {
+    const btn = e.target.closest('button'); if(!btn) return;
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('section.tab').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // ---------- Squad Builder ----------
+  const BUDGET = 100.0;
+  const POSITIONS = [
+    {key:'GK',  label:'Goalkeepers', n:2},
+    {key:'DEF', label:'Defenders',   n:5},
+    {key:'MID', label:'Midfielders', n:5},
+    {key:'FWD', label:'Forwards',    n:3},
+  ];
+  const store = {
+    get(k, d){ try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch(e){ return d; } },
+    set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
+  };
+
+  let squad = store.get('fpl_squad', null);
+  if(!squad){
+    squad = {}; POSITIONS.forEach(p => squad[p.key] = Array.from({length:p.n}, ()=>({name:'', price:''})));
+    squad.captain = null; squad.vice = null;
+  }
+
+  function renderSquad(){
+    const c = document.getElementById('posContainer');
+    c.innerHTML = '';
+    POSITIONS.forEach(pos => {
+      const block = document.createElement('div');
+      block.className = 'pos-block';
+      block.innerHTML = `<h4>${pos.label} · ${pos.n}</h4>`;
+      squad[pos.key].forEach((pl, i) => {
+        const id = pos.key + '-' + i;
+        const row = document.createElement('div');
+        row.className = 'player-row';
+        const isCap = squad.captain === id;
+        const isVc = squad.vice === id;
+        row.innerHTML = `
+          <input type="text" placeholder="Player name" value="${escapeHtml(pl.name)}" data-p="${pos.key}" data-i="${i}" data-f="name">
+          <input type="text" placeholder="Team (opt)" value="${escapeHtml(pl.team||'')}" data-p="${pos.key}" data-i="${i}" data-f="team">
+          <input type="number" step="0.1" min="0" placeholder="£m" value="${pl.price}" data-p="${pos.key}" data-i="${i}" data-f="price">
+          <button class="cap-btn ${isCap?'cap':isVc?'vc':''}" title="Click: C then V" data-cap="${id}">${isCap?'C':isVc?'V':'–'}</button>
+        `;
+        block.appendChild(row);
+      });
+      c.appendChild(block);
+    });
+    // wire inputs
+    c.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('input', () => {
+        const {p,i,f} = inp.dataset;
+        squad[p][i][f] = f==='price' ? inp.value : inp.value;
+        updateBudget(); store.set('fpl_squad', squad);
+      });
+    });
+    c.querySelectorAll('[data-cap]').forEach(b => {
+      b.addEventListener('click', () => {
+        const id = b.dataset.cap;
+        if(squad.captain === id){ squad.captain = null; }
+        else if(squad.vice === id){ squad.vice = null; }
+        else if(!squad.captain){ squad.captain = id; }
+        else if(!squad.vice){ squad.vice = id; }
+        else { squad.captain = id; } // reset cap
+        store.set('fpl_squad', squad); renderSquad(); updateBudget();
+      });
+    });
+    updateBudget();
+  }
+
+  function updateBudget(){
+    let spent = 0, count = 0;
+    POSITIONS.forEach(pos => squad[pos.key].forEach(pl => {
+      const v = parseFloat(pl.price);
+      if(!isNaN(v) && v>0){ spent += v; }
+      if(pl.name && pl.name.trim()){ count++; }
+    }));
+    const left = BUDGET - spent;
+    document.getElementById('spent').textContent = '£'+spent.toFixed(1)+'m';
+    const leftEl = document.getElementById('left');
+    leftEl.textContent = '£'+left.toFixed(1)+'m';
+    leftEl.className = 'money-left ' + (left < 0 ? 'neg' : 'ok');
+    document.getElementById('count').textContent = count + '/15';
+  }
+
+  function saveSquad(){ store.set('fpl_squad', squad); flash('Squad saved ✓'); }
+  function clearSquad(){
+    if(!confirm('Clear your whole squad?')) return;
+    squad = {}; POSITIONS.forEach(p => squad[p.key] = Array.from({length:p.n}, ()=>({name:'', price:'', team:''})));
+    squad.captain = null; squad.vice = null;
+    store.set('fpl_squad', squad); renderSquad();
+  }
+  function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function flash(msg){
+    const n = document.createElement('div');
+    n.textContent = msg;
+    n.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#37d67a;color:#06210f;padding:10px 18px;border-radius:10px;font-weight:700;z-index:99;box-shadow:0 8px 24px rgba(0,0,0,.4)';
+    document.body.appendChild(n); setTimeout(()=>n.remove(), 1600);
+  }
+
+  // ---------- Chip Planner ----------
+  const CHIPS = [
+    {key:'wc1', name:'Wildcard 1', hint:'Fix squad / fixture pivot (often GW7–9)'},
+    {key:'fh1', name:'Free Hit 1', hint:'First big Blank Gameweek'},
+    {key:'bb1', name:'Bench Boost 1', hint:'A Double Gameweek with all 15 playing'},
+    {key:'tc1', name:'Triple Captain 1', hint:'Premium in a home Double Gameweek'},
+    {key:'wc2', name:'Wildcard 2', hint:'Build into the DGW run-in'},
+    {key:'fh2', name:'Free Hit 2', hint:'Second Blank GW / big DGW attack'},
+    {key:'bb2', name:'Bench Boost 2', hint:'Best DGW of the run-in'},
+    {key:'tc2', name:'Triple Captain 2', hint:'Best captain fixture of the season'},
+  ];
+  let chipPlan = store.get('fpl_chips', {});
+  function renderChips(){
+    const c = document.getElementById('chipPlan'); c.innerHTML='';
+    CHIPS.forEach(ch => {
+      const item = document.createElement('div');
+      item.className = 'tl-item';
+      item.innerHTML = `
+        <div class="tl-when">
+          <input class="textline" style="padding:6px 8px" placeholder="GW?" value="${escapeHtml(chipPlan[ch.key]||'')}" data-chip="${ch.key}">
+        </div>
+        <div class="tl-body"><b>${ch.name}</b><span>${ch.hint}</span></div>`;
+      c.appendChild(item);
+    });
+    c.querySelectorAll('[data-chip]').forEach(inp=>{
+      inp.addEventListener('input', ()=>{ chipPlan[inp.dataset.chip]=inp.value; store.set('fpl_chips', chipPlan); });
+    });
+  }
+
+  // ---------- Captaincy ----------
+  function loadCaptain(){
+    const d = store.get('fpl_captain', {});
+    document.getElementById('capIn').value = d.cap||'';
+    document.getElementById('vcIn').value = d.vc||'';
+    document.getElementById('transfersIn').value = d.tr||'';
+  }
+  function saveCaptain(){
+    store.set('fpl_captain', {
+      cap: document.getElementById('capIn').value,
+      vc: document.getElementById('vcIn').value,
+      tr: document.getElementById('transfersIn').value
+    });
+    const s = document.getElementById('capSaved'); s.textContent = 'Saved ✓';
+    setTimeout(()=>s.textContent='', 1600);
+  }
+
+  // ---------- Weekly Checklist ----------
+  const CHECKS = [
+    'Check the latest injury & suspension news (press conferences Thu/Fri)',
+    'Confirm all 11 starters are actually nailed to play',
+    'Rank your players\' fixtures — any easy/hard runs to react to?',
+    'Decide the captain (best player × best fixture) and set the vice',
+    'Is it a Double or Blank Gameweek? Plan chips accordingly',
+    'Only take a −4 hit if it gains 4+ points over the next 3 GWs',
+    'Bank the transfer if there\'s no clear upgrade',
+    'Set a reminder for 1 hour before the deadline'
+  ];
+  let checked = store.get('fpl_checks', {});
+  function renderChecklist(){
+    const c = document.getElementById('weeklyChecklist'); c.innerHTML='';
+    CHECKS.forEach((txt,i)=>{
+      const wrap = document.createElement('label');
+      wrap.style.cssText='display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14.5px';
+      wrap.innerHTML = `<input type="checkbox" ${checked[i]?'checked':''} data-c="${i}" style="margin-top:4px;width:17px;height:17px;accent-color:#37d67a">
+        <span style="${checked[i]?'opacity:.5;text-decoration:line-through':''}">${txt}</span>`;
+      c.appendChild(wrap);
+    });
+    c.querySelectorAll('[data-c]').forEach(cb=>{
+      cb.addEventListener('change', ()=>{ checked[cb.dataset.c]=cb.checked; store.set('fpl_checks', checked); renderChecklist(); });
+    });
+  }
+  function resetChecklist(){ checked = {}; store.set('fpl_checks', checked); renderChecklist(); }
+
+  // ---------- Init ----------
+  renderSquad(); renderChips(); loadCaptain(); renderChecklist();
+</script>
+</body>
+</html>
