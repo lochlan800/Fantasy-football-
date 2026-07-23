@@ -290,6 +290,16 @@
       <div class="stat"><b id="count">0/15</b><span>Players in</span></div>
     </div>
 
+    <div class="card" style="border-color:var(--accent)">
+      <h3>⚡ Let the tactics build it for you <span class="tag">Auto-pick</span></h3>
+      <p style="margin-top:0;color:var(--muted)">Runs the optimiser on live data: maximises points for your £100.0m within all the rules (2/5/5/3, max 3 per club) and favours nailed players with good fixtures — then fills the squad below and sets your captain.</p>
+      <div class="row-actions">
+        <button class="btn" onclick="autoBuild()">⚡ Auto-build best team</button>
+        <span class="save-note" id="buildMsg"></span>
+      </div>
+      <p class="save-note">Needs <span class="kbd">squad-data.json</span> next to this page — create it with <span class="kbd">python3 fpl_data.py --build</span>. Without it, build your team manually below.</p>
+    </div>
+
     <div class="card">
       <div id="posContainer"></div>
       <div class="row-actions">
@@ -518,6 +528,37 @@
     leftEl.textContent = '£'+left.toFixed(1)+'m';
     leftEl.className = 'money-left ' + (left < 0 ? 'neg' : 'ok');
     document.getElementById('count').textContent = count + '/15';
+  }
+
+  // Auto-build: load the optimiser's squad-data.json into the builder.
+  function autoBuild(){
+    const msg = document.getElementById('buildMsg');
+    msg.textContent = 'Loading…'; msg.style.color = 'var(--muted)';
+    fetch('squad-data.json', {cache:'no-store'})
+      .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
+      .then(data => {
+        // reset squad, then fill each position in the order players appear
+        const fresh = {}; POSITIONS.forEach(p => fresh[p.key] = Array.from({length:p.n}, ()=>({name:'',price:'',team:''})));
+        fresh.captain = null; fresh.vice = null;
+        const idx = {GK:0, DEF:0, MID:0, FWD:0};
+        (data.players||[]).forEach(pl => {
+          const pos = pl.pos; if(idx[pos] === undefined) return;
+          const slot = idx[pos];
+          if(slot >= fresh[pos].length) return;
+          fresh[pos][slot] = { name: pl.name||'', price: (pl.price!=null?String(pl.price):''), team: pl.team||'' };
+          const id = pos + '-' + slot;
+          if(pl.captain) fresh.captain = id;
+          if(pl.vice) fresh.vice = id;
+          idx[pos]++;
+        });
+        squad = fresh; store.set('fpl_squad', squad); renderSquad();
+        const spent = data.budget_spent!=null ? ('£'+Number(data.budget_spent).toFixed(1)+'m spent') : '';
+        msg.textContent = '✓ Built! ' + spent; msg.style.color = 'var(--accent)';
+      })
+      .catch(() => {
+        msg.style.color = 'var(--red)';
+        msg.textContent = 'No squad-data.json found — run: python3 fpl_data.py --build (then reload from the same folder / your Pages site).';
+      });
   }
 
   function saveSquad(){ store.set('fpl_squad', squad); flash('Squad saved ✓'); }

@@ -45,6 +45,7 @@ python3 fpl_data.py --form          # hottest form (buy the run)
 python3 fpl_data.py --diff          # differentials owned by <10%
 python3 fpl_data.py --fixtures      # rank all 20 teams by easiest fixtures (next 5 GWs)
 python3 fpl_data.py --html          # build a colour-coded fixtures.html ranking page
+python3 fpl_data.py --build         # AUTO-BUILD the best legal 15-man squad
 python3 fpl_data.py --pos MID       # filter to a position (GK/DEF/MID/FWD)
 python3 fpl_data.py --max-price 8.0 # cap the price
 python3 fpl_data.py --top 30        # show more rows
@@ -61,6 +62,22 @@ easy their next 5 games are. It writes:
   ranked table appears inside the tool automatically.
 
 Re-run it before each deadline — fixtures and ratings change through the season.
+
+### Auto-build the best team (the tactics, applied automatically)
+`python3 fpl_data.py --build` picks the **best legal 15-man squad for £100.0m**
+and prints it, then saves `squad-data.json`. It applies the tactics for you:
+- Enforces the real rules: 2 GK · 5 DEF · 5 MID · 3 FWD, max 3 players per club,
+  total ≤ £100.0m.
+- Scores every available player on **season quality (points per game) + recent
+  form**, adjusted by a **fixture multiplier** (easier upcoming games score higher).
+- Skips injured/suspended players and maximises your **starting XI** score, then
+  picks a captain and vice.
+
+Then open the tool, go to **Squad Builder**, and click **⚡ Auto-build best team** —
+it reads `squad-data.json` and fills in all 15 players plus your captain. (The
+file must sit next to `index.html`, e.g. in the same folder or pushed to your
+GitHub Pages site.) It's a strong data-driven starting point — always sense-check
+it against the latest team news before your deadline.
 
 **Winning move:** cross-reference the `--value` list with the `--fixtures` list —
 cheap players from teams with an easy run are where seasons are won.

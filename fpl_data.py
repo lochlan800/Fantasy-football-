@@ -76,6 +76,7 @@ def build_players(boot):
             "pos": POS_MAP.get(e["element_type"], "?"),
             "price": price,
             "points": pts,
+            "ppg": float(e["points_per_game"] or 0),                # season points per game
             "form": float(e["form"] or 0),
             "ppm": round(pts / price, 2) if price else 0,          # points per million
             "owned": float(e["selected_by_percent"] or 0),          # ownership %
@@ -283,6 +284,170 @@ Fixtures and difficulty change through the season — regenerate before each dea
     print("Wrote fixtures.html (open it in your browser) and fixtures-data.json", file=sys.stderr)
 
 
+# ----------------------------------------------------------------------------
+#  AUTO-BUILD: pick the best 15 within the rules, using the tactics.
+#  Rules enforced (same as the real game):
+#    - 2 GK, 5 DEF, 5 MID, 3 FWD
+#    - max 3 players from any one Premier League club
+#    - total price <= £100.0m
+#  Tactics encoded in each player's `score`:
+#    - season quality (points per game) + recent form
+#    - a fixture multiplier (easier upcoming games score higher)
+#    - only "nailed", available players are considered for the starting XI
+#  We seed the cheapest legal squad (guarantees we can afford 15) then keep
+#  making the single best-value upgrade swap until no swap improves the total
+#  starting-XI score within budget — i.e. maximise points for your £100m.
+# ----------------------------------------------------------------------------
+SQUAD_QUOTA = {"GK": 2, "DEF": 5, "MID": 5, "FWD": 3}
+BUDGET_CAP = 100.0
+MAX_PER_CLUB = 3
+# valid starting formations: (DEF, MID, FWD) — always 1 GK, 11 total
+FORMATIONS = [(3, 4, 3), (3, 5, 2), (4, 4, 2), (4, 3, 3), (4, 5, 1),
+              (5, 4, 1), (5, 3, 2), (5, 2, 3), (3, 3, 4)]
+
+
+def score_players(players, ranking):
+    """Attach a tactic-based `score` to each player and return the candidate pool."""
+    team_diff = {r["short"]: r["avg"] for r in ranking}
+    pool = []
+    for p in players:
+        if p["status"] != "a":          # skip injured/suspended/doubtful
+            continue
+        diff = team_diff.get(p["team"], 3.0)
+        fixture_mult = 1 + (3.0 - diff) * 0.06   # easy run => boost, hard run => penalty
+        base = 0.6 * p["ppg"] + 0.4 * p["form"]  # season quality + recent form
+        p = dict(p)
+        p["score"] = round(base * fixture_mult, 3)
+        pool.append(p)
+    return pool
+
+
+def _club_counts(squad):
+    counts = {}
+    for p in squad:
+        counts[p["team_id"]] = counts.get(p["team_id"], 0) + 1
+    return counts
+
+
+def optimise_squad(pool):
+    """Return a legal 15-man squad maximising starting-XI score within budget."""
+    by_pos = {pos: sorted([p for p in pool if p["pos"] == pos], key=lambda p: p["price"])
+              for pos in SQUAD_QUOTA}
+
+    # 1) Seed with the cheapest legal squad so the budget is always satisfiable.
+    squad, counts = [], {}
+    for pos, need in SQUAD_QUOTA.items():
+        taken = 0
+        for p in by_pos[pos]:
+            if taken >= need:
+                break
+            if counts.get(p["team_id"], 0) < MAX_PER_CLUB:
+                squad.append(p)
+                counts[p["team_id"]] = counts.get(p["team_id"], 0) + 1
+                taken += 1
+        if taken < need:
+            raise SystemExit("Not enough available players to fill the squad — try again later.")
+
+    def total_price(sq):
+        return sum(p["price"] for p in sq)
+
+    # 2) Hill-climb: repeatedly apply the single best budget-legal upgrade swap.
+    improved = True
+    while improved:
+        improved = False
+        best_gain, best_swap = 1e-6, None
+        cur_ids = {p["id"] for p in squad}
+        cur_price = total_price(squad)
+        cur_xi = pick_starting_xi(squad)[0]
+        for i, out_p in enumerate(squad):
+            for in_p in by_pos[out_p["pos"]]:
+                if in_p["id"] in cur_ids:
+                    continue
+                # budget check
+                if cur_price - out_p["price"] + in_p["price"] > BUDGET_CAP:
+                    continue
+                # club-limit check
+                cnt = _club_counts(squad)
+                cnt[out_p["team_id"]] -= 1
+                if cnt.get(in_p["team_id"], 0) >= MAX_PER_CLUB:
+                    continue
+                trial = squad[:i] + [in_p] + squad[i + 1:]
+                gain = pick_starting_xi(trial)[0] - cur_xi
+                if gain > best_gain:
+                    best_gain, best_swap = gain, (i, in_p)
+        if best_swap:
+            i, in_p = best_swap
+            squad[i] = in_p
+            improved = True
+    return squad
+
+
+def pick_starting_xi(squad):
+    """Best legal XI + (captain, vice). Returns (xi_score, xi, bench, captain, vice)."""
+    gk = sorted([p for p in squad if p["pos"] == "GK"], key=lambda p: p["score"], reverse=True)
+    d = sorted([p for p in squad if p["pos"] == "DEF"], key=lambda p: p["score"], reverse=True)
+    m = sorted([p for p in squad if p["pos"] == "MID"], key=lambda p: p["score"], reverse=True)
+    f = sorted([p for p in squad if p["pos"] == "FWD"], key=lambda p: p["score"], reverse=True)
+    best = None
+    for nd, nm, nf in FORMATIONS:
+        if len(d) < nd or len(m) < nm or len(f) < nf or not gk:
+            continue
+        xi = [gk[0]] + d[:nd] + m[:nm] + f[:nf]
+        s = sum(p["score"] for p in xi)
+        if best is None or s > best[0]:
+            best = (s, xi)
+    if best is None:                       # fallback (shouldn't happen with a legal squad)
+        xi = squad[:11]
+        best = (sum(p["score"] for p in xi), xi)
+    xi = best[1]
+    bench = [p for p in squad if p not in xi]
+    ranked_xi = sorted(xi, key=lambda p: p["score"], reverse=True)
+    captain = ranked_xi[0] if ranked_xi else None
+    vice = ranked_xi[1] if len(ranked_xi) > 1 else None
+    return best[0], xi, bench, captain, vice
+
+
+def report_build(players, ranking):
+    pool = score_players(players, ranking)
+    squad = optimise_squad(pool)
+    _, xi, bench, captain, vice = pick_starting_xi(squad)
+    xi_ids = {p["id"] for p in xi}
+    order = {"GK": 0, "DEF": 1, "MID": 2, "FWD": 3}
+    squad_sorted = sorted(squad, key=lambda p: (order[p["pos"]], -p["score"]))
+    total = sum(p["price"] for p in squad)
+
+    print(f"\n{'=' * 74}\n  ⚡ AUTO-BUILT SQUAD  —  best 15 for your £100.0m (tactics applied)\n{'=' * 74}")
+    print(f"  Spent £{total:.1f}m  |  In the bank £{BUDGET_CAP - total:.1f}m")
+    print(f"  Captain: {captain['name']}   Vice: {vice['name']}\n")
+    print(f"  {'Pos':<4}{'Player':<16}{'Team':<6}{'£m':<6}{'Form':<6}{'PPG':<6}{'Start?':<7}")
+    print("  " + "-" * 66)
+    for p in squad_sorted:
+        role = ""
+        if captain and p["id"] == captain["id"]:
+            role = "(C)"
+        elif vice and p["id"] == vice["id"]:
+            role = "(V)"
+        start = "XI" if p["id"] in xi_ids else "bench"
+        print(f"  {p['pos']:<4}{(p['name'] + ' ' + role)[:15]:<16}{p['team']:<6}"
+              f"{p['price']:<6.1f}{p['form']:<6.1f}{p['ppg']:<6.1f}{start:<7}")
+
+    # Write the squad for the webpage's "Auto-build best team" button.
+    out = {
+        "budget_spent": round(total, 1),
+        "captain_id": captain["id"] if captain else None,
+        "vice_id": vice["id"] if vice else None,
+        "players": [{
+            "id": p["id"], "name": p["name"], "team": p["team"], "pos": p["pos"],
+            "price": p["price"], "starting": p["id"] in xi_ids,
+            "captain": bool(captain and p["id"] == captain["id"]),
+            "vice": bool(vice and p["id"] == vice["id"]),
+        } for p in squad_sorted],
+    }
+    with open("squad-data.json", "w") as fh:
+        json.dump(out, fh, indent=2)
+    print("\n  Saved squad-data.json — open the tool and click 'Auto-build best team'.")
+
+
 def dump_csv(players, path):
     keys = ["name", "team", "pos", "price", "points", "form", "ppm", "owned",
             "minutes", "goals", "assists", "status"]
@@ -307,12 +472,15 @@ def main():
     ap.add_argument("--json", action="store_true", help="save raw API data to fpl_raw.json")
     ap.add_argument("--html", action="store_true",
                     help="generate a colour-coded fixtures.html ranking page")
+    ap.add_argument("--build", action="store_true",
+                    help="auto-build the best legal 15-man squad and save squad-data.json")
     args = ap.parse_args()
 
     boot, fixtures = load_data(save_json=args.json)
     players, _ = build_players(boot)
 
-    show_all = not (args.value or args.form or args.diff or args.fixtures)
+    show_all = not (args.value or args.form or args.diff or args.fixtures
+                    or args.build or args.html or args.csv)
 
     gw = current_gw(boot)
     print(f"\n⚽ FPL LIVE DATA  |  Gameweek {gw}  |  {len(players)} players loaded")
@@ -332,6 +500,10 @@ def main():
         report_diff(players, args.pos, args.max_price, args.top)
     if show_all or args.fixtures:
         report_fixtures(boot, fixtures, args.top)
+
+    if show_all or args.build:
+        _, _, ranking = compute_fixture_ranking(boot, fixtures)
+        report_build(players, ranking)
 
     if args.html:
         write_fixtures_outputs(boot, fixtures)
