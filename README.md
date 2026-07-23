@@ -87,11 +87,24 @@ and prints it, then saves `squad-data.json`. It applies the tactics for you:
 - Skips injured/suspended players and maximises your **starting XI** score, then
   picks a captain and vice.
 
-Then open the tool, go to **Squad Builder**, and click **⚡ Auto-build best team** —
-it reads `squad-data.json` and fills in all 15 players plus your captain. (The
-file must sit next to `index.html`, e.g. in the same folder or pushed to your
+Then open the tool, go to **Squad Builder**, and use the **⚡ Auto-build** strategy
+toggles — it reads `squad-data.json` and fills in all 15 players plus your captain.
+(The file must sit next to `index.html`, e.g. in the same folder or pushed to your
 GitHub Pages site.) It's a strong data-driven starting point — always sense-check
 it against the latest team news before your deadline.
+
+**What the optimiser now considers** (not just past points):
+- **Expected goals & assists (xG/xA per 90)** — players genuinely due to score.
+- **Minutes played** — rewards nailed-on starters over rotation risks.
+- **Penalty & set-piece takers** — a bonus points route each week.
+- **Defensive-contribution points (2025/26 rule)** — tackles/interceptions/recoveries,
+  which make hard-working defenders & midfielders great value.
+- **Fixture difficulty** — easier upcoming games score higher.
+
+**Three strategy toggles** (all three are generated each run):
+- **Balanced** — best all-round team (the default).
+- **Attacking** — leans into xG/xA and attacking returns for a high ceiling.
+- **Value** — maximises points per £m, banking funds to build team value.
 
 **Winning move:** cross-reference the `--value` list with the `--fixtures` list —
 cheap players from teams with an easy run are where seasons are won.

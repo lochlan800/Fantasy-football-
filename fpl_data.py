@@ -62,12 +62,28 @@ def load_data(save_json=False):
     return boot, fixtures
 
 
+def _f(val, default=0.0):
+    """Safely turn an API value (which may be None, '', or a number) into a float."""
+    try:
+        return float(val)
+    except (TypeError, ValueError):
+        return default
+
+
 def build_players(boot):
     teams = {t["id"]: t["short_name"] for t in boot["teams"]}
     players = []
     for e in boot["elements"]:
         price = e["now_cost"] / 10.0
         pts = e["total_points"]
+        mins = e.get("minutes", 0) or 0
+        # Defensive-contribution potential (2025/26 rule). Field names vary, so
+        # try the direct per-90 value first, then fall back to summed raw actions.
+        dc90 = e.get("defensive_contribution_per_90")
+        if dc90 is None:
+            raw = (_f(e.get("clearances_blocks_interceptions")) + _f(e.get("tackles"))
+                   + _f(e.get("recoveries")))
+            dc90 = (raw / mins * 90.0) if mins else 0.0
         players.append({
             "id": e["id"],
             "name": e["web_name"],
@@ -76,13 +92,19 @@ def build_players(boot):
             "pos": POS_MAP.get(e["element_type"], "?"),
             "price": price,
             "points": pts,
-            "ppg": float(e["points_per_game"] or 0),                # season points per game
-            "form": float(e["form"] or 0),
-            "ppm": round(pts / price, 2) if price else 0,          # points per million
-            "owned": float(e["selected_by_percent"] or 0),          # ownership %
-            "minutes": e["minutes"],
-            "goals": e["goals_scored"],
-            "assists": e["assists"],
+            "ppg": _f(e.get("points_per_game")),                     # season points per game
+            "form": _f(e.get("form")),
+            "ppm": round(pts / price, 2) if price else 0,           # points per million
+            "owned": _f(e.get("selected_by_percent")),              # ownership %
+            "minutes": mins,
+            "goals": e.get("goals_scored", 0),
+            "assists": e.get("assists", 0),
+            # --- underlying / predictive stats ---
+            "xgi90": _f(e.get("expected_goal_involvements_per_90")),  # xG + xA per 90
+            "dc90": _f(dc90),                                         # defensive actions per 90
+            "pens": (e.get("penalties_order") == 1),                  # first-choice pen taker
+            "setpiece": bool(e.get("corners_and_indirect_freekicks_order")
+                             or e.get("direct_freekicks_order")),      # takes corners/free kicks
             "status": e["status"],   # a=available, i=injured, d=doubt, s=suspended, u=unavailable
         })
     return players, teams
@@ -306,18 +328,44 @@ FORMATIONS = [(3, 4, 3), (3, 5, 2), (4, 4, 2), (4, 3, 3), (4, 5, 1),
               (5, 4, 1), (5, 3, 2), (5, 2, 3), (3, 3, 4)]
 
 
-def score_players(players, ranking):
-    """Attach a tactic-based `score` to each player and return the candidate pool."""
+# Strategy presets — the "toggles". Each is a set of weights for the scoring
+# model. They all share the same signals; the weights just tilt the emphasis.
+#   quality  = season points per game        form   = recent points
+#   xgi      = expected goals+assists /90     defcon = defensive actions /90
+#   pen/set-piece = flat bonus for takers     value  = reward points-per-million
+STRATEGIES = {
+    "balanced":  {"quality": 0.45, "form": 0.25, "xgi": 1.4, "defcon": 0.25,
+                  "pen": 0.6, "setpiece": 0.25, "value": 0.0, "label": "Balanced"},
+    "attacking": {"quality": 0.35, "form": 0.30, "xgi": 2.2, "defcon": 0.05,
+                  "pen": 1.0, "setpiece": 0.45, "value": 0.0, "label": "Attacking"},
+    "value":     {"quality": 0.45, "form": 0.25, "xgi": 1.2, "defcon": 0.30,
+                  "pen": 0.5, "setpiece": 0.25, "value": 0.9, "label": "Value"},
+}
+
+
+def score_players(players, ranking, weights):
+    """Attach a tactic-based `score` to each player using the given weights."""
     team_diff = {r["short"]: r["avg"] for r in ranking}
     pool = []
     for p in players:
         if p["status"] != "a":          # skip injured/suspended/doubtful
             continue
         diff = team_diff.get(p["team"], 3.0)
-        fixture_mult = 1 + (3.0 - diff) * 0.06   # easy run => boost, hard run => penalty
-        base = 0.6 * p["ppg"] + 0.4 * p["form"]  # season quality + recent form
+        fixture_mult = 1 + (3.0 - diff) * 0.06        # easy run boosts, hard run penalises
+        # "nailed" factor: heavily reward players who actually rack up minutes
+        mins_factor = 0.55 + 0.45 * min(p["minutes"], 1200) / 1200.0
+        rating = (weights["quality"] * p["ppg"]
+                  + weights["form"] * p["form"]
+                  + weights["xgi"] * p["xgi90"]
+                  + weights["defcon"] * p["dc90"])
+        if p["pens"]:
+            rating += weights["pen"]                  # penalty takers: extra points route
+        if p["setpiece"]:
+            rating += weights["setpiece"]             # corners/free-kick takers
+        if weights.get("value"):
+            rating += weights["value"] * (p["ppm"] / 5.0)   # tilt toward cheap points
         p = dict(p)
-        p["score"] = round(base * fixture_mult, 3)
+        p["score"] = round(rating * fixture_mult * mins_factor, 3)
         pool.append(p)
     return pool
 
@@ -407,32 +455,16 @@ def pick_starting_xi(squad):
     return best[0], xi, bench, captain, vice
 
 
-def report_build(players, ranking):
-    pool = score_players(players, ranking)
+def _build_one(players, ranking, weights):
+    """Build one squad for a given strategy and return its serialisable form."""
+    pool = score_players(players, ranking, weights)
     squad = optimise_squad(pool)
-    _, xi, bench, captain, vice = pick_starting_xi(squad)
+    _, xi, _, captain, vice = pick_starting_xi(squad)
     xi_ids = {p["id"] for p in xi}
     order = {"GK": 0, "DEF": 1, "MID": 2, "FWD": 3}
     squad_sorted = sorted(squad, key=lambda p: (order[p["pos"]], -p["score"]))
     total = sum(p["price"] for p in squad)
-
-    print(f"\n{'=' * 74}\n  ⚡ AUTO-BUILT SQUAD  —  best 15 for your £100.0m (tactics applied)\n{'=' * 74}")
-    print(f"  Spent £{total:.1f}m  |  In the bank £{BUDGET_CAP - total:.1f}m")
-    print(f"  Captain: {captain['name']}   Vice: {vice['name']}\n")
-    print(f"  {'Pos':<4}{'Player':<16}{'Team':<6}{'£m':<6}{'Form':<6}{'PPG':<6}{'Start?':<7}")
-    print("  " + "-" * 66)
-    for p in squad_sorted:
-        role = ""
-        if captain and p["id"] == captain["id"]:
-            role = "(C)"
-        elif vice and p["id"] == vice["id"]:
-            role = "(V)"
-        start = "XI" if p["id"] in xi_ids else "bench"
-        print(f"  {p['pos']:<4}{(p['name'] + ' ' + role)[:15]:<16}{p['team']:<6}"
-              f"{p['price']:<6.1f}{p['form']:<6.1f}{p['ppg']:<6.1f}{start:<7}")
-
-    # Write the squad for the webpage's "Auto-build best team" button.
-    out = {
+    return {
         "budget_spent": round(total, 1),
         "captain_id": captain["id"] if captain else None,
         "vice_id": vice["id"] if vice else None,
@@ -441,11 +473,47 @@ def report_build(players, ranking):
             "price": p["price"], "starting": p["id"] in xi_ids,
             "captain": bool(captain and p["id"] == captain["id"]),
             "vice": bool(vice and p["id"] == vice["id"]),
+            "pens": p["pens"], "setpiece": p["setpiece"],
         } for p in squad_sorted],
+    }, squad_sorted, xi_ids, captain, vice, total
+
+
+def report_build(players, ranking):
+    variants = {}
+    first = True
+    for key, w in STRATEGIES.items():
+        data, squad_sorted, xi_ids, captain, vice, total = _build_one(players, ranking, w)
+        variants[key] = data
+        # Print the balanced squad in full; summarise the others.
+        if first:
+            print(f"\n{'=' * 78}\n  ⚡ AUTO-BUILT SQUAD — best 15 for your £100.0m ({w['label']} strategy)\n{'=' * 78}")
+            print(f"  Spent £{total:.1f}m  |  In the bank £{BUDGET_CAP - total:.1f}m"
+                  f"  |  Captain: {captain['name']}  Vice: {vice['name']}\n")
+            print(f"  {'Pos':<4}{'Player':<15}{'Team':<6}{'£m':<6}{'Form':<6}{'xGI90':<7}{'Pen':<5}{'Start?':<6}")
+            print("  " + "-" * 70)
+            for p in squad_sorted:
+                role = "(C)" if p["id"] == captain["id"] else "(V)" if p["id"] == vice["id"] else ""
+                start = "XI" if p["id"] in xi_ids else "bench"
+                pen = "P" if p["pens"] else ("s" if p["setpiece"] else "")
+                print(f"  {p['pos']:<4}{(p['name'] + ' ' + role)[:14]:<15}{p['team']:<6}"
+                      f"{p['price']:<6.1f}{p['form']:<6.1f}{p['xgi90']:<7.2f}{pen:<5}{start:<6}")
+            first = False
+        else:
+            names = ", ".join(pp["name"] for pp in data["players"] if pp["starting"])[:120]
+            print(f"\n  {w['label']} XI (£{data['budget_spent']:.1f}m): {names}…")
+
+    out = {
+        "generated": None,
+        "default": "balanced",
+        "labels": {k: v["label"] for k, v in STRATEGIES.items()},
+        "variants": variants,
+        # Backwards-compatible: also expose the balanced squad at the top level
+        # so older versions of the page still work.
+        **variants["balanced"],
     }
     with open("squad-data.json", "w") as fh:
         json.dump(out, fh, indent=2)
-    print("\n  Saved squad-data.json — open the tool and click 'Auto-build best team'.")
+    print("\n  Saved squad-data.json (3 strategies) — open the tool and use the toggle buttons.")
 
 
 def dump_csv(players, path):

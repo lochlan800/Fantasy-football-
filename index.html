@@ -184,6 +184,7 @@
     <button data-tab="squad">🧮 Squad Builder</button>
     <button data-tab="chips">🎴 Chip Planner</button>
     <button data-tab="captain">©️ Captaincy & Transfers</button>
+    <button data-tab="edge">🧠 Winning Edge</button>
     <button data-tab="checklist">✅ Weekly Routine</button>
   </nav>
 
@@ -288,12 +289,15 @@
 
     <div class="card" style="border-color:var(--accent)">
       <h3>⚡ Let the tactics build it for you <span class="tag">Auto-pick</span></h3>
-      <p style="margin-top:0;color:var(--muted)">Runs the optimiser on live data: maximises points for your £100.0m within all the rules (2/5/5/3, max 3 per club) and favours nailed players with good fixtures — then fills the squad below and sets your captain.</p>
-      <div class="row-actions">
-        <button class="btn" onclick="autoBuild()">⚡ Auto-build best team</button>
-        <span class="save-note" id="buildMsg"></span>
+      <p style="margin-top:0;color:var(--muted)">Runs the optimiser on live data: maximises points for your £100.0m within all the rules (2/5/5/3, max 3 per club). It reads the underlying stats — expected goals &amp; assists (xG/xA), minutes played, penalty &amp; set-piece takers and the new defensive-contribution points — and favours nailed players with good fixtures.</p>
+      <p style="margin:10px 0 6px;font-size:13px;color:var(--muted)"><b>Choose a strategy:</b></p>
+      <div class="row-actions" id="stratToggle">
+        <button class="btn strat-btn active" data-strat="balanced" onclick="autoBuild('balanced')">⚖️ Balanced</button>
+        <button class="btn ghost strat-btn" data-strat="attacking" onclick="autoBuild('attacking')">⚔️ Attacking</button>
+        <button class="btn ghost strat-btn" data-strat="value" onclick="autoBuild('value')">💷 Value</button>
       </div>
-      <p class="save-note">The automated updater builds this for you twice a day. To refresh it now, run the <b>Update FPL data</b> workflow on GitHub's Actions tab. Until it's run once, build your team manually below.</p>
+      <p class="save-note" id="buildMsg" style="margin-top:8px"></p>
+      <p class="save-note"><b>Balanced</b>: best all-round team. <b>Attacking</b>: loads up on goals &amp; assists (high ceiling). <b>Value</b>: squeezes the most points per £m, banking funds for later. The automated updater refreshes all three twice a day.</p>
     </div>
 
     <div class="card">
@@ -392,6 +396,60 @@
         <button class="btn" onclick="saveCaptain()">💾 Save plan</button>
         <span class="save-note" id="capSaved"></span>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ WINNING EDGE ============ -->
+  <section class="tab" id="edge">
+    <h2><span class="em">🧠</span>Winning Edge — the advanced tactics</h2>
+    <p class="lede">These are the things that separate the top managers from the pack. Several are now baked into the Auto-build optimiser too.</p>
+
+    <div class="grid two">
+      <div class="card">
+        <h3>📊 Underlying stats beat past points <span class="tag">Predictive</span></h3>
+        <ul class="clean">
+          <li><b>Expected goals &amp; assists (xG / xA):</b> a player with high xG but few goals is <span class="pill green">due a haul</span> — buy before the crowd. High returns on low xG = riding luck, sell before the crash.</li>
+          <li><b>Minutes / "nailed":</b> a great player subbed at 60 mins is worth less than a solid one who plays 90 every week. Consistency wins leagues.</li>
+          <li>The Auto-build now reads xG/xA and minutes, so it favours players genuinely <b>due to score and nailed to start</b>.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🎯 Set-piece &amp; penalty takers <span class="tag">Free edge</span></h3>
+        <ul class="clean">
+          <li>A <span class="pill gold">first-choice penalty taker</span> has a bonus route to points every single week — hugely underrated.</li>
+          <li>Corner &amp; free-kick takers pick up extra assists and goal threat.</li>
+          <li>Always know who takes them for your players. The optimiser now gives these takers a boost automatically.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🛡 The new defensive-contribution points <span class="tag">2025/26 rule</span></h3>
+      <p style="margin-top:0">A big rule change many casual managers ignore: <b>players now earn bonus points for defensive work</b> — defenders for tackles, interceptions, blocks &amp; clearances; midfielders &amp; forwards for tackles &amp; ball recoveries. This makes hard-working full-backs and defensive midfielders quietly brilliant value — they score even when their team doesn't. The Auto-build factors this in when picking your cheaper enablers.</p>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <h3>📈 Ownership &amp; rank tactics <span class="tag">Positioning</span></h3>
+        <ul class="clean">
+          <li><b>Effective Ownership (EO)</b> = who owns a player <em>plus</em> who captains him. High-EO players are "the crowd" — not owning them is a bet against everyone.</li>
+          <li><b>Leading your league?</b> Own the popular players to <span class="pill blue">defend your lead</span>.</li>
+          <li><b>Chasing?</b> You need differentials the leaders don't have to catch up — take more risks.</li>
+          <li><b>Captain on EO too:</b> the popular armband protects rank; a differential captain is how you leapfrog people.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🥊 Beat your mates specifically <span class="tag">Mini-league</span></h3>
+        <ul class="clean">
+          <li><b>Cover your rival:</b> if the person you're battling owns a big captain pick, own him too — then they <span class="pill red">can't gain on you</span> with it. You block them.</li>
+          <li>Know your league type: <b>Classic</b> (total points) rewards steady consistency; <b>Head-to-Head</b> (weekly duels) rewards bolder weekly differentials.</li>
+          <li>Late in the season, watch what your closest rivals are doing and react — sometimes matching them is smarter than chasing points.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout gold">
+      <b>⚡ Tip:</b> the <b>Squad Builder → Auto-build</b> now has three strategy toggles. Use <b>Attacking</b> when you're chasing and need a high ceiling, <b>Value</b> early in the season to build team value, and <b>Balanced</b> as your reliable default.
     </div>
   </section>
 
@@ -527,30 +585,47 @@
   }
 
   // Auto-build: load the optimiser's squad-data.json into the builder.
-  function autoBuild(){
+  // Supports strategy variants (balanced / attacking / value) via toggle buttons.
+  let _squadData = null;   // cached fetch
+  function fillFromVariant(variant, msg){
+    if(!variant || !variant.players){ throw new Error('novariant'); }
+    const fresh = {}; POSITIONS.forEach(p => fresh[p.key] = Array.from({length:p.n}, ()=>({name:'',price:'',team:''})));
+    fresh.captain = null; fresh.vice = null;
+    const idx = {GK:0, DEF:0, MID:0, FWD:0};
+    variant.players.forEach(pl => {
+      const pos = pl.pos; if(idx[pos] === undefined) return;
+      const slot = idx[pos]; if(slot >= fresh[pos].length) return;
+      fresh[pos][slot] = { name: pl.name||'', price: (pl.price!=null?String(pl.price):''), team: pl.team||'' };
+      const id = pos + '-' + slot;
+      if(pl.captain) fresh.captain = id;
+      if(pl.vice) fresh.vice = id;
+      idx[pos]++;
+    });
+    squad = fresh; store.set('fpl_squad', squad); renderSquad();
+    const spent = variant.budget_spent!=null ? ('£'+Number(variant.budget_spent).toFixed(1)+'m spent') : '';
+    msg.textContent = '✓ Built! ' + spent; msg.style.color = 'var(--accent)';
+  }
+  function setActiveStrat(strat){
+    document.querySelectorAll('.strat-btn').forEach(b => {
+      const on = b.dataset.strat === strat;
+      b.classList.toggle('active', on);
+      b.classList.toggle('ghost', !on);
+    });
+  }
+  function autoBuild(strat){
+    strat = strat || 'balanced';
     const msg = document.getElementById('buildMsg');
+    setActiveStrat(strat);
+    const apply = data => {
+      // new format has variants{}; fall back to the flat (single-team) format
+      const variant = (data.variants && data.variants[strat]) || (data.variants && data.variants[data.default]) || data;
+      fillFromVariant(variant, msg);
+    };
+    if(_squadData){ try { apply(_squadData); return; } catch(e){} }
     msg.textContent = 'Loading…'; msg.style.color = 'var(--muted)';
     fetch('squad-data.json', {cache:'no-store'})
       .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
-      .then(data => {
-        // reset squad, then fill each position in the order players appear
-        const fresh = {}; POSITIONS.forEach(p => fresh[p.key] = Array.from({length:p.n}, ()=>({name:'',price:'',team:''})));
-        fresh.captain = null; fresh.vice = null;
-        const idx = {GK:0, DEF:0, MID:0, FWD:0};
-        (data.players||[]).forEach(pl => {
-          const pos = pl.pos; if(idx[pos] === undefined) return;
-          const slot = idx[pos];
-          if(slot >= fresh[pos].length) return;
-          fresh[pos][slot] = { name: pl.name||'', price: (pl.price!=null?String(pl.price):''), team: pl.team||'' };
-          const id = pos + '-' + slot;
-          if(pl.captain) fresh.captain = id;
-          if(pl.vice) fresh.vice = id;
-          idx[pos]++;
-        });
-        squad = fresh; store.set('fpl_squad', squad); renderSquad();
-        const spent = data.budget_spent!=null ? ('£'+Number(data.budget_spent).toFixed(1)+'m spent') : '';
-        msg.textContent = '✓ Built! ' + spent; msg.style.color = 'var(--accent)';
-      })
+      .then(data => { _squadData = data; apply(data); })
       .catch(() => {
         msg.style.color = 'var(--red)';
         msg.textContent = 'Not built yet — run the "Update FPL data" workflow on GitHub (Actions tab), then reload. Or build manually below.';
