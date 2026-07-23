@@ -2,6 +2,20 @@
 
 Two tools to help you win your FPL mini-league this season.
 
+## 🤖 Hands-off mode (no Python needed)
+A GitHub Action (`.github/workflows/update-fpl-data.yml`) runs the script **on
+GitHub's servers twice a day**, fetches the live data, and commits the fixture
+rankings and auto-built squad back to the repo. Your GitHub Pages site then shows
+them automatically — you never run a command.
+
+- **Turn it on:** on GitHub, open the **Actions** tab and enable workflows if
+  prompted. It then runs on a schedule by itself.
+- **Refresh right now:** Actions tab → **Update FPL data** → **Run workflow**.
+  Wait ~1 minute, then reload your page — the Fixture Ranking and Auto-build
+  best team will be populated.
+
+Everything below is the manual/local way to do the same thing if you prefer.
+
 ## 1. `index.html` — strategy & planners
 A single, self-contained web page. **Just double-click it** to open in any browser
 (no internet needed), or view it live via GitHub Pages at

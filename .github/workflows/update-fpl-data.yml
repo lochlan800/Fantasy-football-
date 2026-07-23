@@ -1,0 +1,45 @@
+name: Update FPL data
+
+# Runs the FPL script on GitHub's servers (which CAN reach the official
+# FPL API) and commits the generated data files back to the repo. Your
+# GitHub Pages site then shows live fixture rankings and the auto-built
+# team automatically — you never have to run Python yourself.
+
+on:
+  schedule:
+    - cron: "30 6,18 * * *"   # twice daily (06:30 & 18:30 UTC)
+  workflow_dispatch:            # adds a manual "Run workflow" button
+
+permissions:
+  contents: write               # allow the job to commit the data files
+
+concurrency:
+  group: update-fpl-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate live fixtures + auto-built squad
+        run: python3 fpl_data.py --html --build
+
+      - name: Commit updated data files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A fixtures-data.json squad-data.json fixtures.html
+          if git diff --cached --quiet; then
+            echo "No changes in the FPL data — nothing to commit."
+          else
+            git commit -m "Auto-update FPL data ($(date -u '+%Y-%m-%d %H:%M UTC'))"
+            git push
+          fi

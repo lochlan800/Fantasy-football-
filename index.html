@@ -260,17 +260,13 @@
     <div id="fixLive"></div>
 
     <div class="card" id="fixHelp">
-      <h3>📡 How to load the live rankings <span class="tag">One command</span></h3>
-      <p style="margin-top:0">This page shows real, current fixture ratings once the data file is present. To generate it with today's fixtures, run the included script on your computer:</p>
-      <div class="callout blue" style="font-family:ui-monospace,Menlo,monospace;font-size:13.5px">
-        python3 fpl_data.py --html
-      </div>
-      <p>That creates two things next to this page:</p>
+      <h3>⏳ Rankings not loaded yet <span class="tag">Auto-updates</span></h3>
+      <p style="margin-top:0">The real, colour-coded fixture table appears here automatically once the data has been fetched — you don't need to do anything or run any code.</p>
       <ul class="clean">
-        <li><b>fixtures.html</b> — a standalone colour-coded ranking you can open straight away (no other steps).</li>
-        <li><b>fixtures-data.json</b> — the data this tab reads. When it's in the same folder (or pushed to your GitHub Pages site), the live table appears right here automatically.</li>
+        <li>An automated updater runs on GitHub twice a day and drops the latest fixtures straight onto this page.</li>
+        <li>To fill it in <b>right now</b>: on GitHub open the <b>Actions</b> tab → <b>Update FPL data</b> → <b>Run workflow</b>. Give it a minute, then refresh this page.</li>
       </ul>
-      <p class="save-note">The ratings come straight from the official free FPL API, so they match the app. Re-run the command before each deadline to refresh them.</p>
+      <p class="save-note">The ratings come straight from the official free FPL data, so they match the app exactly.</p>
     </div>
 
     <div class="callout gold">
@@ -297,7 +293,7 @@
         <button class="btn" onclick="autoBuild()">⚡ Auto-build best team</button>
         <span class="save-note" id="buildMsg"></span>
       </div>
-      <p class="save-note">Needs <span class="kbd">squad-data.json</span> next to this page — create it with <span class="kbd">python3 fpl_data.py --build</span>. Without it, build your team manually below.</p>
+      <p class="save-note">The automated updater builds this for you twice a day. To refresh it now, run the <b>Update FPL data</b> workflow on GitHub's Actions tab. Until it's run once, build your team manually below.</p>
     </div>
 
     <div class="card">
@@ -557,7 +553,7 @@
       })
       .catch(() => {
         msg.style.color = 'var(--red)';
-        msg.textContent = 'No squad-data.json found — run: python3 fpl_data.py --build (then reload from the same folder / your Pages site).';
+        msg.textContent = 'Not built yet — run the "Update FPL data" workflow on GitHub (Actions tab), then reload. Or build manually below.';
       });
   }
 
