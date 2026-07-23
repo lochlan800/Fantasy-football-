@@ -449,9 +449,13 @@ def pick_starting_xi(squad):
         best = (sum(p["score"] for p in xi), xi)
     xi = best[1]
     bench = [p for p in squad if p not in xi]
-    ranked_xi = sorted(xi, key=lambda p: p["score"], reverse=True)
-    captain = ranked_xi[0] if ranked_xi else None
-    vice = ranked_xi[1] if len(ranked_xi) > 1 else None
+    # Captain/vice should be outfield players — you never captain a goalkeeper.
+    # Prefer attackers (MID/FWD), then defenders, ranked by score.
+    outfield = sorted([p for p in xi if p["pos"] != "GK"], key=lambda p: p["score"], reverse=True)
+    attackers = [p for p in outfield if p["pos"] in ("MID", "FWD")]
+    cap_pool = attackers if attackers else (outfield if outfield else xi)
+    captain = cap_pool[0] if cap_pool else None
+    vice = cap_pool[1] if len(cap_pool) > 1 else (outfield[1] if len(outfield) > 1 else None)
     return best[0], xi, bench, captain, vice
 
 
