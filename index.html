@@ -933,16 +933,16 @@
       cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'xG+xA',f:p=>p.xgi},{h:'Actual G+A',f:p=>p.actual},{h:'Over by',f:p=>'<span class="pill red">+'+p.gap+'</span>'},{h:'Own',f:own}]
     },
     penalties: {
-      title:'🎯 First-choice penalty takers',
-      note:'A bonus route to points every week. All else equal, a penalty taker beats one who isn\'t — this is the most underrated edge in the game.',
+      title:'🎯 Penalty takers — every club\'s 1st & 2nd choice',
+      note:'A bonus route to points every week. All else equal, a penalty taker beats one who isn\'t — the most underrated edge in the game. The 2nd-choice matters too: if the main taker is injured, they inherit the spot-kicks.',
       get:d=>d.penalties,
-      cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'xGI/90',f:p=>p.xgi90},{h:'Form',f:p=>p.form},{h:'Own',f:own}]
+      cols:[{h:'Player',f:nameCell},{h:'Penalties',f:p=>'<span class="pill '+(p.choice==='1st'?'gold':'blue')+'">'+p.choice+' choice</span>'},{h:'Also takes',f:p=>p.duties.replace(/Penalties,?\s?|Pens \(2nd\),?\s?/,'')||'—'},{h:'£m',f:money},{h:'Own',f:own}]
     },
     setpieces: {
-      title:'⚽ Corner & free-kick takers',
-      note:'Set-piece duty means extra assists and goal threat. Handy tie-breakers when choosing between similar players.',
+      title:'⚽ Set-piece takers — corners & free-kicks',
+      note:'Set-piece duty means extra assists and goal threat every week. This lists each club\'s first-choice corner and direct free-kick takers — a great tie-breaker when choosing between similar players.',
       get:d=>d.setpieces,
-      cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'xGI/90',f:p=>p.xgi90},{h:'Form',f:p=>p.form},{h:'Own',f:own}]
+      cols:[{h:'Player',f:nameCell},{h:'Takes',f:p=>'<span class="pill green">'+p.duties+'</span>'},{h:'£m',f:money},{h:'Own',f:own}]
     },
     value_season: {
       title:'📅 Value (season) — points per £m all season',

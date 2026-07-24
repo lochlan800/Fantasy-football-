@@ -111,6 +111,10 @@ def build_players(boot):
             "pens": (e.get("penalties_order") == 1),                  # first-choice pen taker
             "setpiece": bool(e.get("corners_and_indirect_freekicks_order")
                              or e.get("direct_freekicks_order")),      # takes corners/free kicks
+            # set-piece "order" ranks: 1 = first choice, 2 = second, etc. (None if not a taker)
+            "pen_order": e.get("penalties_order"),
+            "fk_order": e.get("direct_freekicks_order"),
+            "corner_order": e.get("corners_and_indirect_freekicks_order"),
             # --- price / momentum ---
             "t_in": e.get("transfers_in_event", 0) or 0,              # transfers in this GW
             "t_out": e.get("transfers_out_event", 0) or 0,            # transfers out this GW
@@ -549,10 +553,26 @@ def write_insights(players, top=14):
     over = sorted(xg_pool, key=lambda p: (p["gi_actual"] - p["xgi_total"]), reverse=True)
     under = sorted(xg_pool, key=lambda p: (p["xgi_total"] - p["gi_actual"]), reverse=True)
 
-    pens = sorted([p for p in avail if p["pens"]],
-                  key=lambda p: (p["ppg"], p["xgi90"]), reverse=True)
-    setpieces = sorted([p for p in avail if p["setpiece"] and not p["pens"]],
-                       key=lambda p: (p["ppg"], p["xgi90"]), reverse=True)
+    # Penalty takers: first AND second choice, grouped by club, order 1 before 2.
+    pens = sorted([p for p in avail if p["pen_order"] in (1, 2)],
+                  key=lambda p: (p["team"], p["pen_order"]))
+    # Set-piece takers: anyone on corners or direct free-kicks (first choice).
+    setpieces = sorted([p for p in avail
+                        if p["corner_order"] == 1 or p["fk_order"] == 1],
+                       key=lambda p: (p["team"], p["fk_order"] or 9, p["corner_order"] or 9))
+
+    def duties(p):
+        """Human-readable set-piece duties for a player."""
+        bits = []
+        if p["pen_order"] == 1:
+            bits.append("Penalties")
+        elif p["pen_order"] == 2:
+            bits.append("Pens (2nd)")
+        if p["fk_order"] == 1:
+            bits.append("Free-kicks")
+        if p["corner_order"] == 1:
+            bits.append("Corners")
+        return ", ".join(bits) or "—"
 
     nailed = sorted(avail, key=lambda p: p["minutes"], reverse=True)
 
@@ -580,8 +600,9 @@ def write_insights(players, top=14):
                      "gap": round(p["xgi_total"] - p["gi_actual"], 1)}) for p in under[:top]],
         "xg_over": [_slim(p, {"xgi": round(p["xgi_total"], 1), "actual": p["gi_actual"],
                     "gap": round(p["gi_actual"] - p["xgi_total"], 1)}) for p in over[:top]],
-        "penalties": [_slim(p, {"xgi90": round(p["xgi90"], 2)}) for p in pens[:top]],
-        "setpieces": [_slim(p, {"xgi90": round(p["xgi90"], 2)}) for p in setpieces[:top]],
+        "penalties": [_slim(p, {"choice": "1st" if p["pen_order"] == 1 else "2nd",
+                     "duties": duties(p)}) for p in pens[:24]],
+        "setpieces": [_slim(p, {"duties": duties(p)}) for p in setpieces[:30]],
         "nailed": [_slim(p, {"minutes": p["minutes"]}) for p in nailed[:top]],
         "defcon_def": [_slim(p, {"dc90": round(p["dc90"], 1)}) for p in defcon_def[:top]],
         "defcon_mid": [_slim(p, {"dc90": round(p["dc90"], 1)}) for p in defcon_mid[:top]],
