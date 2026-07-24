@@ -286,6 +286,8 @@
       <button class="btn ghost ins-btn" data-view="over" onclick="showInsight('over')">⚠️ Riding luck</button>
       <button class="btn ghost ins-btn" data-view="penalties" onclick="showInsight('penalties')">🎯 Penalty takers</button>
       <button class="btn ghost ins-btn" data-view="setpieces" onclick="showInsight('setpieces')">⚽ Set-pieces</button>
+      <button class="btn ghost ins-btn" data-view="value_season" onclick="showInsight('value_season')">📅 Value (season)</button>
+      <button class="btn ghost ins-btn" data-view="value_form" onclick="showInsight('value_form')">💷 Value (form)</button>
       <button class="btn ghost ins-btn" data-view="nailed" onclick="showInsight('nailed')">🔒 Nailed starters</button>
       <button class="btn ghost ins-btn" data-view="defcon" onclick="showInsight('defcon')">🛡 Defensive points</button>
       <button class="btn ghost ins-btn" data-view="template" onclick="showInsight('template')">👥 Template</button>
@@ -941,6 +943,18 @@
       note:'Set-piece duty means extra assists and goal threat. Handy tie-breakers when choosing between similar players.',
       get:d=>d.setpieces,
       cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'xGI/90',f:p=>p.xgi90},{h:'Form',f:p=>p.form},{h:'Own',f:own}]
+    },
+    value_season: {
+      title:'📅 Value (season) — points per £m all season',
+      note:'The official "Value (season)" ranking: total points divided by price. The best <b>bang for your buck</b> over the whole campaign — brilliant for finding cheap enablers who free up cash for premiums.',
+      get:d=>d.value_season,
+      cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'Points',f:p=>p.points},{h:'Value',f:p=>'<span class="pill green">'+p.val+'</span>'},{h:'Own',f:own}]
+    },
+    value_form: {
+      title:'💷 Value (form) — points per £m right now',
+      note:'The official "Value (form)" ranking: recent form divided by price. Shows who\'s delivering the most <b>per £m this moment</b> — great for spotting cheap players on a hot streak before their price rises.',
+      get:d=>d.value_form,
+      cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'Form',f:p=>p.form},{h:'Value',f:p=>'<span class="pill gold">'+p.val+'</span>'},{h:'Own',f:own}]
     },
     nailed: {
       title:'🔒 Most nailed-on starters (by minutes)',

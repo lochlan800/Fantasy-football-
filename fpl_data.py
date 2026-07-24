@@ -95,6 +95,10 @@ def build_players(boot):
             "ppg": _f(e.get("points_per_game")),                     # season points per game
             "form": _f(e.get("form")),
             "ppm": round(pts / price, 2) if price else 0,           # points per million
+            # Official FPL "Value" metrics (points per £m). Fall back to a
+            # direct calculation if the API doesn't provide the field.
+            "value_season": _f(e.get("value_season")) or (round(pts / price, 2) if price else 0),
+            "value_form": _f(e.get("value_form")) or (round(_f(e.get("form")) / price, 2) if price else 0),
             "owned": _f(e.get("selected_by_percent")),              # ownership %
             "minutes": mins,
             "goals": e.get("goals_scored", 0),
@@ -565,6 +569,12 @@ def write_insights(players, top=14):
     risers = sorted(avail, key=net, reverse=True)
     fallers = sorted(avail, key=net)
 
+    # Official FPL "Value" rankings (points per £m). Season uses all players;
+    # form needs a few played minutes to be meaningful.
+    value_season = sorted(avail, key=lambda p: p["value_season"], reverse=True)
+    value_form = sorted([p for p in avail if p["minutes"] >= 90],
+                        key=lambda p: p["value_form"], reverse=True)
+
     out = {
         "xg_under": [_slim(p, {"xgi": round(p["xgi_total"], 1), "actual": p["gi_actual"],
                      "gap": round(p["xgi_total"] - p["gi_actual"], 1)}) for p in under[:top]],
@@ -579,6 +589,8 @@ def write_insights(players, top=14):
         "differentials": [_slim(p, {"xgi90": round(p["xgi90"], 2)}) for p in diffs[:top]],
         "risers": [_slim(p, {"net": net(p), "cost_change": p["cost_change"]}) for p in risers[:top]],
         "fallers": [_slim(p, {"net": net(p), "cost_change": p["cost_change"]}) for p in fallers[:top]],
+        "value_season": [_slim(p, {"val": round(p["value_season"], 1), "points": p["points"]}) for p in value_season[:top]],
+        "value_form": [_slim(p, {"val": round(p["value_form"], 1)}) for p in value_form[:top]],
     }
     with open("insights-data.json", "w") as fh:
         json.dump(out, fh, indent=2)
