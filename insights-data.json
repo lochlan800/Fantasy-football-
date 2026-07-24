@@ -1,0 +1,1480 @@
+{
+  "xg_under": [
+    {
+      "name": "Yeremy",
+      "team": "CRY",
+      "pos": "MID",
+      "price": 5.5,
+      "owned": 0.2,
+      "form": 0.0,
+      "xgi": 10.7,
+      "actual": 4,
+      "gap": 6.7
+    },
+    {
+      "name": "Brooks",
+      "team": "BOU",
+      "pos": "MID",
+      "price": 5.0,
+      "owned": 0.2,
+      "form": 0.0,
+      "xgi": 9.2,
+      "actual": 4,
+      "gap": 5.2
+    },
+    {
+      "name": "Gudmundsson",
+      "team": "LEE",
+      "pos": "DEF",
+      "price": 4.5,
+      "owned": 0.7,
+      "form": 0.0,
+      "xgi": 4.0,
+      "actual": 0,
+      "gap": 4.0
+    },
+    {
+      "name": "Mateta",
+      "team": "CRY",
+      "pos": "FWD",
+      "price": 6.5,
+      "owned": 8.2,
+      "form": 0.0,
+      "xgi": 15.7,
+      "actual": 12,
+      "gap": 3.7
+    },
+    {
+      "name": "Enzo",
+      "team": "CHE",
+      "pos": "MID",
+      "price": 7.0,
+      "owned": 5.5,
+      "form": 0.0,
+      "xgi": 18.5,
+      "actual": 15,
+      "gap": 3.5
+    },
+    {
+      "name": "Jensen",
+      "team": "BRE",
+      "pos": "MID",
+      "price": 5.5,
+      "owned": 0.1,
+      "form": 0.0,
+      "xgi": 8.3,
+      "actual": 5,
+      "gap": 3.3
+    },
+    {
+      "name": "Amad",
+      "team": "MUN",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 1.4,
+      "form": 0.0,
+      "xgi": 10.2,
+      "actual": 7,
+      "gap": 3.2
+    },
+    {
+      "name": "Richards",
+      "team": "CRY",
+      "pos": "DEF",
+      "price": 5.0,
+      "owned": 0.9,
+      "form": 0.0,
+      "xgi": 4.0,
+      "actual": 1,
+      "gap": 3.0
+    },
+    {
+      "name": "Mbeumo",
+      "team": "MUN",
+      "pos": "MID",
+      "price": 8.0,
+      "owned": 13.7,
+      "form": 0.0,
+      "xgi": 17.0,
+      "actual": 14,
+      "gap": 3.0
+    },
+    {
+      "name": "Wirtz",
+      "team": "LIV",
+      "pos": "MID",
+      "price": 7.5,
+      "owned": 14.7,
+      "form": 0.0,
+      "xgi": 12.0,
+      "actual": 9,
+      "gap": 3.0
+    },
+    {
+      "name": "Kamada",
+      "team": "CRY",
+      "pos": "MID",
+      "price": 5.0,
+      "owned": 0.3,
+      "form": 0.0,
+      "xgi": 4.9,
+      "actual": 2,
+      "gap": 2.9
+    },
+    {
+      "name": "Struijk",
+      "team": "BHA",
+      "pos": "DEF",
+      "price": 5.0,
+      "owned": 0.6,
+      "form": 0.0,
+      "xgi": 3.8,
+      "actual": 1,
+      "gap": 2.8
+    },
+    {
+      "name": "Mitoma",
+      "team": "BHA",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 0.9,
+      "form": 0.0,
+      "xgi": 6.8,
+      "actual": 4,
+      "gap": 2.8
+    },
+    {
+      "name": "Spence",
+      "team": "TOT",
+      "pos": "DEF",
+      "price": 4.5,
+      "owned": 9.8,
+      "form": 0.0,
+      "xgi": 2.7,
+      "actual": 0,
+      "gap": 2.7
+    }
+  ],
+  "xg_over": [
+    {
+      "name": "B.Fernandes",
+      "team": "MUN",
+      "pos": "MID",
+      "price": 12.0,
+      "owned": 45.0,
+      "form": 0.0,
+      "xgi": 23.1,
+      "actual": 33,
+      "gap": 9.9
+    },
+    {
+      "name": "Semenyo",
+      "team": "MCI",
+      "pos": "MID",
+      "price": 8.5,
+      "owned": 20.1,
+      "form": 0.0,
+      "xgi": 14.2,
+      "actual": 23,
+      "gap": 8.8
+    },
+    {
+      "name": "Wilson",
+      "team": "LEE",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 10.7,
+      "form": 0.0,
+      "xgi": 10.7,
+      "actual": 19,
+      "gap": 8.3
+    },
+    {
+      "name": "Jo\u00e3o Pedro",
+      "team": "CHE",
+      "pos": "FWD",
+      "price": 7.5,
+      "owned": 45.9,
+      "form": 0.0,
+      "xgi": 16.9,
+      "actual": 24,
+      "gap": 7.1
+    },
+    {
+      "name": "Rogers",
+      "team": "CHE",
+      "pos": "MID",
+      "price": 7.5,
+      "owned": 37.4,
+      "form": 0.0,
+      "xgi": 11.2,
+      "actual": 18,
+      "gap": 6.8
+    },
+    {
+      "name": "Haaland",
+      "team": "MCI",
+      "pos": "FWD",
+      "price": 15.5,
+      "owned": 70.3,
+      "form": 0.0,
+      "xgi": 28.2,
+      "actual": 35,
+      "gap": 6.8
+    },
+    {
+      "name": "Matheus N.",
+      "team": "MCI",
+      "pos": "DEF",
+      "price": 6.0,
+      "owned": 7.4,
+      "form": 0.0,
+      "xgi": 2.6,
+      "actual": 9,
+      "gap": 6.4
+    },
+    {
+      "name": "Gravenberch",
+      "team": "LIV",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 1.5,
+      "form": 0.0,
+      "xgi": 4.2,
+      "actual": 10,
+      "gap": 5.8
+    },
+    {
+      "name": "Bruno G.",
+      "team": "NEW",
+      "pos": "MID",
+      "price": 7.0,
+      "owned": 9.5,
+      "form": 0.0,
+      "xgi": 10.6,
+      "actual": 16,
+      "gap": 5.4
+    },
+    {
+      "name": "Dewsbury-Hall",
+      "team": "EVE",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 5.2,
+      "form": 0.0,
+      "xgi": 9.7,
+      "actual": 15,
+      "gap": 5.3
+    },
+    {
+      "name": "Gibbs-White",
+      "team": "NFO",
+      "pos": "MID",
+      "price": 8.0,
+      "owned": 13.4,
+      "form": 0.0,
+      "xgi": 13.7,
+      "actual": 19,
+      "gap": 5.3
+    },
+    {
+      "name": "Richarlison",
+      "team": "TOT",
+      "pos": "FWD",
+      "price": 6.0,
+      "owned": 1.4,
+      "form": 0.0,
+      "xgi": 10.1,
+      "actual": 15,
+      "gap": 4.9
+    },
+    {
+      "name": "Okafor",
+      "team": "LEE",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 1.1,
+      "form": 0.0,
+      "xgi": 6.6,
+      "actual": 11,
+      "gap": 4.4
+    },
+    {
+      "name": "Doku",
+      "team": "MCI",
+      "pos": "MID",
+      "price": 7.5,
+      "owned": 7.7,
+      "form": 0.0,
+      "xgi": 8.7,
+      "actual": 13,
+      "gap": 4.3
+    }
+  ],
+  "penalties": [
+    {
+      "name": "Haaland",
+      "team": "MCI",
+      "pos": "FWD",
+      "price": 15.5,
+      "owned": 70.3,
+      "form": 0.0,
+      "xgi90": 0.86
+    },
+    {
+      "name": "B.Fernandes",
+      "team": "MUN",
+      "pos": "MID",
+      "price": 12.0,
+      "owned": 45.0,
+      "form": 0.0,
+      "xgi90": 0.68
+    },
+    {
+      "name": "Saka",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 9.5,
+      "owned": 11.4,
+      "form": 0.0,
+      "xgi90": 0.6
+    },
+    {
+      "name": "Thiago",
+      "team": "BRE",
+      "pos": "FWD",
+      "price": 8.0,
+      "owned": 20.1,
+      "form": 0.0,
+      "xgi90": 0.61
+    },
+    {
+      "name": "Palmer",
+      "team": "CHE",
+      "pos": "MID",
+      "price": 9.5,
+      "owned": 13.1,
+      "form": 0.0,
+      "xgi90": 0.6
+    },
+    {
+      "name": "Calvert-Lewin",
+      "team": "LEE",
+      "pos": "FWD",
+      "price": 6.0,
+      "owned": 16.4,
+      "form": 0.0,
+      "xgi90": 0.55
+    },
+    {
+      "name": "Ndiaye",
+      "team": "EVE",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 17.4,
+      "form": 0.0,
+      "xgi90": 0.36
+    },
+    {
+      "name": "Mateta",
+      "team": "CRY",
+      "pos": "FWD",
+      "price": 6.5,
+      "owned": 8.2,
+      "form": 0.0,
+      "xgi90": 0.64
+    },
+    {
+      "name": "Welbeck",
+      "team": "BHA",
+      "pos": "FWD",
+      "price": 6.0,
+      "owned": 3.1,
+      "form": 0.0,
+      "xgi90": 0.55
+    },
+    {
+      "name": "Kroupi.Jr",
+      "team": "BOU",
+      "pos": "MID",
+      "price": 7.5,
+      "owned": 19.2,
+      "form": 0.0,
+      "xgi90": 0.53
+    },
+    {
+      "name": "Woltemade",
+      "team": "NEW",
+      "pos": "FWD",
+      "price": 6.0,
+      "owned": 1.5,
+      "form": 0.0,
+      "xgi90": 0.38
+    },
+    {
+      "name": "Diarra",
+      "team": "SUN",
+      "pos": "MID",
+      "price": 5.5,
+      "owned": 0.1,
+      "form": 0.0,
+      "xgi90": 0.26
+    },
+    {
+      "name": "Robinson",
+      "team": "FUL",
+      "pos": "DEF",
+      "price": 4.5,
+      "owned": 3.4,
+      "form": 0.0,
+      "xgi90": 0.16
+    },
+    {
+      "name": "Isak",
+      "team": "LIV",
+      "pos": "FWD",
+      "price": 9.0,
+      "owned": 13.5,
+      "form": 0.0,
+      "xgi90": 0.35
+    }
+  ],
+  "setpieces": [
+    {
+      "name": "Bruno G.",
+      "team": "NEW",
+      "pos": "MID",
+      "price": 7.0,
+      "owned": 9.5,
+      "form": 0.0,
+      "xgi90": 0.38
+    },
+    {
+      "name": "Gibbs-White",
+      "team": "NFO",
+      "pos": "MID",
+      "price": 8.0,
+      "owned": 13.4,
+      "form": 0.0,
+      "xgi90": 0.39
+    },
+    {
+      "name": "Rice",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 7.5,
+      "owned": 23.9,
+      "form": 0.0,
+      "xgi90": 0.3
+    },
+    {
+      "name": "Dewsbury-Hall",
+      "team": "EVE",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 5.2,
+      "form": 0.0,
+      "xgi90": 0.33
+    },
+    {
+      "name": "Stach",
+      "team": "LEE",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 1.3,
+      "form": 0.0,
+      "xgi90": 0.28
+    },
+    {
+      "name": "Mbeumo",
+      "team": "MUN",
+      "pos": "MID",
+      "price": 8.0,
+      "owned": 13.7,
+      "form": 0.0,
+      "xgi90": 0.58
+    },
+    {
+      "name": "Enzo",
+      "team": "CHE",
+      "pos": "MID",
+      "price": 7.0,
+      "owned": 5.5,
+      "form": 0.0,
+      "xgi90": 0.54
+    },
+    {
+      "name": "Szoboszlai",
+      "team": "LIV",
+      "pos": "MID",
+      "price": 7.0,
+      "owned": 36.4,
+      "form": 0.0,
+      "xgi90": 0.32
+    },
+    {
+      "name": "O.Dango",
+      "team": "BRE",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 2.0,
+      "form": 0.0,
+      "xgi90": 0.47
+    },
+    {
+      "name": "Garner",
+      "team": "EVE",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 3.9,
+      "form": 0.0,
+      "xgi90": 0.22
+    },
+    {
+      "name": "Cherki",
+      "team": "MCI",
+      "pos": "MID",
+      "price": 7.5,
+      "owned": 11.1,
+      "form": 0.0,
+      "xgi90": 0.67
+    },
+    {
+      "name": "E.Le F\u00e9e",
+      "team": "SUN",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 3.3,
+      "form": 0.0,
+      "xgi90": 0.34
+    },
+    {
+      "name": "Gro\u00df",
+      "team": "BHA",
+      "pos": "MID",
+      "price": 5.5,
+      "owned": 1.8,
+      "form": 0.0,
+      "xgi90": 0.3
+    },
+    {
+      "name": "Foden",
+      "team": "MCI",
+      "pos": "MID",
+      "price": 7.0,
+      "owned": 5.3,
+      "form": 0.0,
+      "xgi90": 0.47
+    }
+  ],
+  "nailed": [
+    {
+      "name": "Petrovi\u0107",
+      "team": "BOU",
+      "pos": "GK",
+      "price": 4.5,
+      "owned": 4.1,
+      "form": 0.0,
+      "minutes": 3420
+    },
+    {
+      "name": "Verbruggen",
+      "team": "BHA",
+      "pos": "GK",
+      "price": 4.5,
+      "owned": 16.0,
+      "form": 0.0,
+      "minutes": 3420
+    },
+    {
+      "name": "Pickford",
+      "team": "EVE",
+      "pos": "GK",
+      "price": 5.5,
+      "owned": 10.1,
+      "form": 0.0,
+      "minutes": 3420
+    },
+    {
+      "name": "Leno",
+      "team": "FUL",
+      "pos": "GK",
+      "price": 4.5,
+      "owned": 3.3,
+      "form": 0.0,
+      "minutes": 3420
+    },
+    {
+      "name": "Virgil",
+      "team": "LIV",
+      "pos": "DEF",
+      "price": 6.5,
+      "owned": 15.3,
+      "form": 0.0,
+      "minutes": 3420
+    },
+    {
+      "name": "Garner",
+      "team": "EVE",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 3.9,
+      "form": 0.0,
+      "minutes": 3413
+    },
+    {
+      "name": "Truffert",
+      "team": "BOU",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 5.4,
+      "form": 0.0,
+      "minutes": 3378
+    },
+    {
+      "name": "Milenkovi\u0107",
+      "team": "NFO",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 2.7,
+      "form": 0.0,
+      "minutes": 3375
+    },
+    {
+      "name": "Anderson",
+      "team": "MCI",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 12.6,
+      "form": 0.0,
+      "minutes": 3332
+    },
+    {
+      "name": "Raya",
+      "team": "ARS",
+      "pos": "GK",
+      "price": 6.0,
+      "owned": 29.0,
+      "form": 0.0,
+      "minutes": 3330
+    },
+    {
+      "name": "Kelleher",
+      "team": "BRE",
+      "pos": "GK",
+      "price": 5.0,
+      "owned": 5.8,
+      "form": 0.0,
+      "minutes": 3330
+    },
+    {
+      "name": "Henderson",
+      "team": "CRY",
+      "pos": "GK",
+      "price": 5.0,
+      "owned": 3.1,
+      "form": 0.0,
+      "minutes": 3330
+    },
+    {
+      "name": "Tarkowski",
+      "team": "EVE",
+      "pos": "DEF",
+      "price": 6.0,
+      "owned": 12.9,
+      "form": 0.0,
+      "minutes": 3330
+    },
+    {
+      "name": "Senesi",
+      "team": "TOT",
+      "pos": "DEF",
+      "price": 6.0,
+      "owned": 15.6,
+      "form": 0.0,
+      "minutes": 3288
+    }
+  ],
+  "defcon_def": [
+    {
+      "name": "Gabriel",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 8.0,
+      "owned": 23.3,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Calafiori",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 11.7,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Hincapie",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 6.3,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Mosquera",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 13.8,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Digne",
+      "team": "AVL",
+      "pos": "DEF",
+      "price": 4.5,
+      "owned": 1.5,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Konsa",
+      "team": "AVL",
+      "pos": "DEF",
+      "price": 4.5,
+      "owned": 17.0,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Cash",
+      "team": "AVL",
+      "pos": "DEF",
+      "price": 4.5,
+      "owned": 9.1,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Mings",
+      "team": "AVL",
+      "pos": "DEF",
+      "price": 4.5,
+      "owned": 0.2,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Pau",
+      "team": "AVL",
+      "pos": "DEF",
+      "price": 4.5,
+      "owned": 0.2,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Maatsen",
+      "team": "AVL",
+      "pos": "DEF",
+      "price": 4.5,
+      "owned": 0.7,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Lindel\u00f6f",
+      "team": "AVL",
+      "pos": "DEF",
+      "price": 4.5,
+      "owned": 0.1,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Hill",
+      "team": "BOU",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 1.9,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Truffert",
+      "team": "BOU",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 5.4,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Diakit\u00e9",
+      "team": "BOU",
+      "pos": "DEF",
+      "price": 5.0,
+      "owned": 0.2,
+      "form": 0.0,
+      "dc90": 0.0
+    }
+  ],
+  "defcon_mid": [
+    {
+      "name": "Lewis-Skelly",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 5.5,
+      "owned": 0.3,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Saka",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 9.5,
+      "owned": 11.4,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Rice",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 7.5,
+      "owned": 23.9,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Eze",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 3.1,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "\u00d8degaard",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 2.7,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Madueke",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 0.3,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Merino",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 1.1,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Martinelli",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 0.3,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Zubimendi",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 5.5,
+      "owned": 1.2,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Gy\u00f6keres",
+      "team": "ARS",
+      "pos": "FWD",
+      "price": 7.5,
+      "owned": 16.6,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Havertz",
+      "team": "ARS",
+      "pos": "FWD",
+      "price": 7.5,
+      "owned": 5.7,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "G.Jesus",
+      "team": "ARS",
+      "pos": "FWD",
+      "price": 6.0,
+      "owned": 0.2,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Bogarde",
+      "team": "AVL",
+      "pos": "MID",
+      "price": 5.0,
+      "owned": 0.1,
+      "form": 0.0,
+      "dc90": 0.0
+    },
+    {
+      "name": "Buend\u00eda",
+      "team": "AVL",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 0.8,
+      "form": 0.0,
+      "dc90": 0.0
+    }
+  ],
+  "template": [
+    {
+      "name": "Haaland",
+      "team": "MCI",
+      "pos": "FWD",
+      "price": 15.5,
+      "owned": 70.3,
+      "form": 0.0
+    },
+    {
+      "name": "Jo\u00e3o Pedro",
+      "team": "CHE",
+      "pos": "FWD",
+      "price": 7.5,
+      "owned": 45.9,
+      "form": 0.0
+    },
+    {
+      "name": "B.Fernandes",
+      "team": "MUN",
+      "pos": "MID",
+      "price": 12.0,
+      "owned": 45.0,
+      "form": 0.0
+    },
+    {
+      "name": "Rogers",
+      "team": "CHE",
+      "pos": "MID",
+      "price": 7.5,
+      "owned": 37.4,
+      "form": 0.0
+    },
+    {
+      "name": "Szoboszlai",
+      "team": "LIV",
+      "pos": "MID",
+      "price": 7.0,
+      "owned": 36.4,
+      "form": 0.0
+    },
+    {
+      "name": "Raya",
+      "team": "ARS",
+      "pos": "GK",
+      "price": 6.0,
+      "owned": 29.0,
+      "form": 0.0
+    },
+    {
+      "name": "Gu\u00e9hi",
+      "team": "MCI",
+      "pos": "DEF",
+      "price": 6.0,
+      "owned": 26.2,
+      "form": 0.0
+    },
+    {
+      "name": "O'Reilly",
+      "team": "MCI",
+      "pos": "DEF",
+      "price": 6.5,
+      "owned": 25.2,
+      "form": 0.0
+    },
+    {
+      "name": "Rice",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 7.5,
+      "owned": 23.9,
+      "form": 0.0
+    },
+    {
+      "name": "Gabriel",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 8.0,
+      "owned": 23.3,
+      "form": 0.0
+    },
+    {
+      "name": "Pedro Porro",
+      "team": "TOT",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 23.3,
+      "form": 0.0
+    },
+    {
+      "name": "Dubravka",
+      "team": "TOT",
+      "pos": "GK",
+      "price": 4.0,
+      "owned": 23.2,
+      "form": 0.0
+    },
+    {
+      "name": "Diop",
+      "team": "IPS",
+      "pos": "DEF",
+      "price": 4.0,
+      "owned": 21.6,
+      "form": 0.0
+    },
+    {
+      "name": "Thiago",
+      "team": "BRE",
+      "pos": "FWD",
+      "price": 8.0,
+      "owned": 20.1,
+      "form": 0.0
+    }
+  ],
+  "differentials": [
+    {
+      "name": "Enes \u00dcnal",
+      "team": "BOU",
+      "pos": "FWD",
+      "price": 5.5,
+      "owned": 0.2,
+      "form": 0.0,
+      "xgi90": 0.87
+    },
+    {
+      "name": "Awoniyi",
+      "team": "NFO",
+      "pos": "FWD",
+      "price": 5.5,
+      "owned": 0.4,
+      "form": 0.0,
+      "xgi90": 0.83
+    },
+    {
+      "name": "Nmecha",
+      "team": "LEE",
+      "pos": "FWD",
+      "price": 5.5,
+      "owned": 0.7,
+      "form": 0.0,
+      "xgi90": 0.74
+    },
+    {
+      "name": "Brooks",
+      "team": "BOU",
+      "pos": "MID",
+      "price": 5.0,
+      "owned": 0.2,
+      "form": 0.0,
+      "xgi90": 0.7
+    },
+    {
+      "name": "Kostoulas",
+      "team": "BHA",
+      "pos": "FWD",
+      "price": 5.5,
+      "owned": 0.3,
+      "form": 0.0,
+      "xgi90": 0.68
+    },
+    {
+      "name": "G.Jesus",
+      "team": "ARS",
+      "pos": "FWD",
+      "price": 6.0,
+      "owned": 0.2,
+      "form": 0.0,
+      "xgi90": 0.64
+    },
+    {
+      "name": "Mateta",
+      "team": "CRY",
+      "pos": "FWD",
+      "price": 6.5,
+      "owned": 8.2,
+      "form": 0.0,
+      "xgi90": 0.64
+    },
+    {
+      "name": "Wissa",
+      "team": "NEW",
+      "pos": "FWD",
+      "price": 6.0,
+      "owned": 1.5,
+      "form": 0.0,
+      "xgi90": 0.63
+    },
+    {
+      "name": "Havertz",
+      "team": "ARS",
+      "pos": "FWD",
+      "price": 7.5,
+      "owned": 5.7,
+      "form": 0.0,
+      "xgi90": 0.62
+    },
+    {
+      "name": "O'Riley",
+      "team": "BHA",
+      "pos": "MID",
+      "price": 5.5,
+      "owned": 0.1,
+      "form": 0.0,
+      "xgi90": 0.62
+    },
+    {
+      "name": "Marc Guiu",
+      "team": "CHE",
+      "pos": "FWD",
+      "price": 5.0,
+      "owned": 0.5,
+      "form": 0.0,
+      "xgi90": 0.62
+    },
+    {
+      "name": "Chiesa",
+      "team": "LIV",
+      "pos": "MID",
+      "price": 5.5,
+      "owned": 0.1,
+      "form": 0.0,
+      "xgi90": 0.58
+    },
+    {
+      "name": "Welbeck",
+      "team": "BHA",
+      "pos": "FWD",
+      "price": 6.0,
+      "owned": 3.1,
+      "form": 0.0,
+      "xgi90": 0.55
+    },
+    {
+      "name": "Ngumoha",
+      "team": "LIV",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 1.8,
+      "form": 0.0,
+      "xgi90": 0.55
+    }
+  ],
+  "risers": [
+    {
+      "name": "Raya",
+      "team": "ARS",
+      "pos": "GK",
+      "price": 6.0,
+      "owned": 29.0,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Arrizabalaga",
+      "team": "ARS",
+      "pos": "GK",
+      "price": 5.0,
+      "owned": 0.3,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Meslier",
+      "team": "ARS",
+      "pos": "GK",
+      "price": 5.0,
+      "owned": 0.1,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Gabriel",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 8.0,
+      "owned": 23.3,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Lewis-Skelly",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 5.5,
+      "owned": 0.3,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Calafiori",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 11.7,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Hincapie",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 6.3,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Mosquera",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 13.8,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Saka",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 9.5,
+      "owned": 11.4,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Rice",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 7.5,
+      "owned": 23.9,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Eze",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 3.1,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "\u00d8degaard",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 2.7,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Madueke",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 0.3,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Merino",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 1.1,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    }
+  ],
+  "fallers": [
+    {
+      "name": "Raya",
+      "team": "ARS",
+      "pos": "GK",
+      "price": 6.0,
+      "owned": 29.0,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Arrizabalaga",
+      "team": "ARS",
+      "pos": "GK",
+      "price": 5.0,
+      "owned": 0.3,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Meslier",
+      "team": "ARS",
+      "pos": "GK",
+      "price": 5.0,
+      "owned": 0.1,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Gabriel",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 8.0,
+      "owned": 23.3,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Lewis-Skelly",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 5.5,
+      "owned": 0.3,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Calafiori",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 11.7,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Hincapie",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 6.3,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Mosquera",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 5.5,
+      "owned": 13.8,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Saka",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 9.5,
+      "owned": 11.4,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Rice",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 7.5,
+      "owned": 23.9,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Eze",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 3.1,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "\u00d8degaard",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 2.7,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Madueke",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.5,
+      "owned": 0.3,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Merino",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 6.0,
+      "owned": 1.1,
+      "form": 0.0,
+      "net": 0,
+      "cost_change": 0.0
+    }
+  ]
+}
