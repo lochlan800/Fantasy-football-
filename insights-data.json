@@ -249,7 +249,7 @@
       "team": "NEW",
       "pos": "MID",
       "price": 7.0,
-      "owned": 8.3,
+      "owned": 8.2,
       "form": 0.0,
       "xgi": 10.6,
       "actual": 16,
@@ -317,7 +317,7 @@
       "team": "ARS",
       "pos": "MID",
       "price": 9.5,
-      "owned": 11.0,
+      "owned": 10.9,
       "form": 0.0,
       "choice": "1st",
       "duties": "Penalties"
@@ -377,7 +377,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 7.5,
-      "owned": 14.1,
+      "owned": 14.0,
       "form": 0.0,
       "choice": "1st",
       "duties": "Penalties"
@@ -397,7 +397,7 @@
       "team": "BRE",
       "pos": "FWD",
       "price": 8.0,
-      "owned": 17.0,
+      "owned": 16.9,
       "form": 0.0,
       "choice": "1st",
       "duties": "Penalties"
@@ -467,7 +467,7 @@
       "team": "CRY",
       "pos": "MID",
       "price": 6.5,
-      "owned": 11.2,
+      "owned": 11.3,
       "form": 0.0,
       "choice": "2nd",
       "duties": "Pens (2nd)"
@@ -658,7 +658,7 @@
       "team": "LIV",
       "pos": "MID",
       "price": 7.0,
-      "owned": 44.3,
+      "owned": 44.5,
       "form": 0.0,
       "duties": "Pens (2nd), Free-kicks"
     },
@@ -840,7 +840,7 @@
       "team": "BRE",
       "pos": "FWD",
       "price": 8.0,
-      "owned": 17.0,
+      "owned": 16.9,
       "form": 0.0,
       "minutes": 3282
     }
@@ -860,7 +860,7 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 5.5,
-      "owned": 12.5,
+      "owned": 12.6,
       "form": 0.0,
       "dc90": 0.0
     },
@@ -905,7 +905,7 @@
       "team": "AVL",
       "pos": "DEF",
       "price": 4.5,
-      "owned": 8.3,
+      "owned": 8.2,
       "form": 0.0,
       "dc90": 0.0
     },
@@ -988,7 +988,7 @@
       "team": "ARS",
       "pos": "MID",
       "price": 9.5,
-      "owned": 11.0,
+      "owned": 10.9,
       "form": 0.0,
       "dc90": 0.0
     },
@@ -1131,7 +1131,7 @@
       "team": "LIV",
       "pos": "MID",
       "price": 7.0,
-      "owned": 44.3,
+      "owned": 44.5,
       "form": 0.0
     },
     {
@@ -1195,7 +1195,7 @@
       "team": "SUN",
       "pos": "FWD",
       "price": 6.0,
-      "owned": 22.2,
+      "owned": 22.3,
       "form": 0.0
     },
     {
@@ -1399,7 +1399,7 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 5.5,
-      "owned": 12.5,
+      "owned": 12.6,
       "form": 0.0,
       "net": 0,
       "cost_change": 0.0
@@ -1429,7 +1429,7 @@
       "team": "ARS",
       "pos": "MID",
       "price": 9.5,
-      "owned": 11.0,
+      "owned": 10.9,
       "form": 0.0,
       "net": 0,
       "cost_change": 0.0
@@ -1541,7 +1541,7 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 5.5,
-      "owned": 12.5,
+      "owned": 12.6,
       "form": 0.0,
       "net": 0,
       "cost_change": 0.0
@@ -1571,7 +1571,7 @@
       "team": "ARS",
       "pos": "MID",
       "price": 9.5,
-      "owned": 11.0,
+      "owned": 10.9,
       "form": 0.0,
       "net": 0,
       "cost_change": 0.0
@@ -1811,7 +1811,7 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 5.5,
-      "owned": 12.5,
+      "owned": 12.6,
       "form": 0.0,
       "val": 0.0
     },
@@ -1838,7 +1838,7 @@
       "team": "ARS",
       "pos": "MID",
       "price": 9.5,
-      "owned": 11.0,
+      "owned": 10.9,
       "form": 0.0,
       "val": 0.0
     },
