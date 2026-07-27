@@ -865,11 +865,10 @@
   // ---------- Fixture Ranking (reads fixtures-data.json if present) ----------
   const DIFF_BG = {1:'#0e8a3e',2:'#37d67a',3:'#5a6472',4:'#ff8a5c',5:'#ff5c73'};
   const DIFF_FG = {1:'#fff',2:'#06210f',3:'#fff',4:'#3a1400',5:'#3a0009'};
-  // Overall verdict for a team's run, based on its average difficulty.
+  // Overall verdict for a team's run: simply Good (get their players) or Bad (avoid).
   function fixtureVerdict(avg){
-    if(avg <= 2.6) return {label:'🟢 Good', bg:'#0e8a3e', fg:'#fff', tint:'rgba(14,138,62,.18)'};
-    if(avg < 3.4)  return {label:'🟡 Average', bg:'#b8860b', fg:'#fff', tint:'rgba(184,134,11,.15)'};
-    return {label:'🔴 Tough', bg:'#c9314b', fg:'#fff', tint:'rgba(201,49,75,.16)'};
+    if(avg < 3.0) return {label:'🟢 Good', bg:'#0e8a3e', fg:'#fff', tint:'rgba(14,138,62,.18)'};
+    return {label:'🔴 Bad', bg:'#c9314b', fg:'#fff', tint:'rgba(201,49,75,.16)'};
   }
   function renderFixtures(data){
     const help = document.getElementById('fixHelp');
@@ -898,9 +897,8 @@
         <h3>Easiest run → hardest <span class="tag">GW${data.gw}, next ${data.horizon}</span></h3>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:12.5px;align-items:center">
           <span style="color:var(--muted)">Overall run:</span>
-          <span class="pill" style="background:#0e8a3e;color:#fff">🟢 Good — target their attackers</span>
-          <span class="pill" style="background:#b8860b;color:#fff">🟡 Average</span>
-          <span class="pill" style="background:#c9314b;color:#fff">🔴 Tough — avoid / captain against</span>
+          <span class="pill" style="background:#0e8a3e;color:#fff">🟢 Good — get their players</span>
+          <span class="pill" style="background:#c9314b;color:#fff">🔴 Bad — avoid / captain against</span>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;font-size:12.5px;align-items:center">
           <span style="color:var(--muted)">Each game:</span>
