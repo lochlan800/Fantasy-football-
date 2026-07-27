@@ -110,7 +110,8 @@ it against the latest team news before your deadline.
 The web tool now also includes:
 - **📊 Player Insights tab** — live shortlists from the data (`insights-data.json`,
   auto-generated with `--build`): players *due a haul* (high xG, few goals) vs
-  *riding their luck*; penalty & set-piece takers; most-nailed starters by minutes;
+  *riding their luck*; penalty & set-piece takers; a searchable *nailed-on checker*
+  (does he start, play 90, and is he fit?);
   best defensive-contribution value; the ownership *template* vs the best
   *differentials*; and weekly price *risers & fallers*.
 - **🥊 Rival Tracker** (Winning Edge tab) — enter your mini-league rival's captain,

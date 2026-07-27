@@ -101,6 +101,10 @@ def build_players(boot):
             "value_form": _f(e.get("value_form")) or (round(_f(e.get("form")) / price, 2) if price else 0),
             "owned": _f(e.get("selected_by_percent")),              # ownership %
             "minutes": mins,
+            "starts": e.get("starts", 0) or 0,                      # number of matches started
+            # chance of playing next round: None = fully fit (treat as 100)
+            "chance": e.get("chance_of_playing_next_round"),
+            "news": (e.get("news") or "").strip(),                   # injury/availability note
             "goals": e.get("goals_scored", 0),
             "assists": e.get("assists", 0),
             # --- underlying / predictive stats ---
@@ -574,7 +578,28 @@ def write_insights(players, top=14):
             bits.append("Corners")
         return ", ".join(bits) or "—"
 
-    nailed = sorted(avail, key=lambda p: p["minutes"], reverse=True)
+    # "Nailed-on" rating: does he start, play the full 90, and is he fit?
+    def nailed_info(p):
+        chance = 100 if p["chance"] is None else p["chance"]
+        mps = round(p["minutes"] / p["starts"], 0) if p["starts"] else 0   # avg mins per start
+        if p["status"] != "a" or chance <= 25:
+            rating, verdict = "out", "🔴 Doubt / out"
+        elif chance < 100:
+            rating, verdict = "doubt", f"🟡 Slight doubt ({int(chance)}%)"
+        elif p["starts"] == 0:
+            rating, verdict = "unknown", "⚪ No starts yet"
+        elif mps >= 80:
+            rating, verdict = "nailed", "🟢 Nailed — plays 90"
+        elif mps >= 63:
+            rating, verdict = "sub_risk", "🟡 Often subbed off"
+        else:
+            rating, verdict = "rotation", "🟠 Rotation / sub"
+        return {"rating": rating, "verdict": verdict, "mps": mps, "starts": p["starts"],
+                "chance": int(chance), "news": p["news"][:60]}
+
+    # Bigger list here so the in-app search can find most relevant players.
+    nailed = sorted([p for p in avail if p["minutes"] > 0 or p["starts"] > 0],
+                    key=lambda p: (p["starts"], p["minutes"]), reverse=True)
 
     defcon_def = sorted([p for p in played if p["pos"] == "DEF"],
                         key=lambda p: p["dc90"], reverse=True)
@@ -603,7 +628,7 @@ def write_insights(players, top=14):
         "penalties": [_slim(p, {"choice": "1st" if p["pen_order"] == 1 else "2nd",
                      "duties": duties(p)}) for p in pens[:24]],
         "setpieces": [_slim(p, {"duties": duties(p)}) for p in setpieces[:30]],
-        "nailed": [_slim(p, {"minutes": p["minutes"]}) for p in nailed[:top]],
+        "nailed": [_slim(p, dict({"minutes": p["minutes"]}, **nailed_info(p))) for p in nailed[:120]],
         "defcon_def": [_slim(p, {"dc90": round(p["dc90"], 1)}) for p in defcon_def[:top]],
         "defcon_mid": [_slim(p, {"dc90": round(p["dc90"], 1)}) for p in defcon_mid[:top]],
         "template": [_slim(p) for p in template[:top]],

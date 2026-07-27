@@ -968,12 +968,6 @@
       get:d=>d.value_form,
       cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'Form',f:p=>p.form},{h:'Value',f:p=>'<span class="pill gold">'+p.val+'</span>'},{h:'Own',f:own}]
     },
-    nailed: {
-      title:'🔒 Most nailed-on starters (by minutes)',
-      note:'Players who actually play 90 minutes week in, week out. Reliability beats talent that gets rotated — build your team on these.',
-      get:d=>d.nailed,
-      cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'Minutes',f:p=>p.minutes},{h:'Form',f:p=>p.form},{h:'Own',f:own}]
-    },
     template: {
       title:'👥 The template — who the crowd owns',
       note:'The most-owned players. Owning them protects your rank; being without a big one is a gamble against the field. Know these before you differentiate.',
@@ -1007,6 +1001,34 @@
         ${tbl(d.fallers,[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'Net transfers',f:p=>'<span style="color:var(--red)">'+net(p)+'</span>'},{h:'Price',f:chg}])}</div>
     </div>`;
   }
+  // Nailed-on checker with a search box and traffic-light ratings.
+  const NAILED_COLOR = {nailed:['#0e8a3e','#fff'], sub_risk:['#b8860b','#fff'], doubt:['#b8860b','#fff'],
+                        rotation:['#ff8a5c','#3a1400'], out:['#c9314b','#fff'], unknown:['#5a6472','#fff']};
+  let _nailedRows = [];
+  function nailedRowHtml(p){
+    const c = NAILED_COLOR[p.rating] || NAILED_COLOR.unknown;
+    return `<tr><td>${nameCell(p)}</td>`+
+      `<td><span class="pill" style="background:${c[0]};color:${c[1]};white-space:nowrap">${p.verdict}</span>`+
+      (p.news? `<br><small style="color:var(--muted)">${escapeHtml(p.news)}</small>`:'')+`</td>`+
+      `<td style="text-align:center">${p.mps?Math.round(p.mps)+"'":'—'}</td>`+
+      `<td style="text-align:center">${p.starts}</td>`+
+      `<td style="text-align:center">${p.chance}%</td>`+
+      `<td>${money(p)}</td></tr>`;
+  }
+  function filterNailed(q){
+    q = (q||'').trim().toLowerCase();
+    const rows = q ? _nailedRows.filter(p => p.name.toLowerCase().includes(q) || p.team.toLowerCase().includes(q)) : _nailedRows;
+    const tb = document.getElementById('nailedRows');
+    if(tb) tb.innerHTML = rows.length ? rows.map(nailedRowHtml).join('') : '<tr><td colspan="6" style="color:var(--muted)">No player found — check the spelling.</td></tr>';
+  }
+  function renderNailed(d){
+    _nailedRows = d.nailed || [];
+    return `<div class="card"><h3>🔒 Nailed-on checker <span class="tag">Will he play?</span></h3>
+      <div class="callout blue" style="margin-top:0">Type a player's name to check if he's <b>nailed on</b> — meaning he starts, plays the full 90, and has no injury doubt. 🟢 Nailed = safe pick · 🟡 subbed/doubt · 🟠 rotation risk · 🔴 out. "Avg mins" is how long he lasts when he starts (90 = full game).</div>
+      <input class="textline" id="nailedSearch" placeholder="🔎 Search a player… e.g. Saka" style="margin-bottom:12px" oninput="filterNailed(this.value)">
+      <div style="overflow-x:auto"><table><thead><tr><th>Player</th><th>Nailed?</th><th>Avg mins</th><th>Starts</th><th>Fit</th><th>£m</th></tr></thead>
+      <tbody id="nailedRows"></tbody></table></div></div>`;
+  }
   function showInsight(view){
     _insightView = view;
     document.querySelectorAll('.ins-btn').forEach(b => {
@@ -1019,6 +1041,7 @@
       help.style.display = 'none';
       if(view === 'defcon'){ body.innerHTML = renderDefcon(d); return; }
       if(view === 'price'){ body.innerHTML = renderPrice(d); return; }
+      if(view === 'nailed'){ body.innerHTML = renderNailed(d); filterNailed(''); return; }
       const v = INSIGHT_VIEWS[view];
       body.innerHTML = `<div class="card"><h3>${v.title}</h3><div class="callout blue" style="margin-top:0">${v.note}</div>${tbl(v.get(d), v.cols)}</div>`;
     };
