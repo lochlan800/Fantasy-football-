@@ -74,6 +74,10 @@ easy their next 5 games are. It writes:
 - **fixtures-data.json** — the data file the main tool's *Fixture Ranking* tab reads.
   Drop it next to `index.html` (or push it to your GitHub Pages site) and the live
   ranked table appears inside the tool automatically.
+- **fixtures-season.json** — the full-season fixture matrix (every team, every
+  gameweek). Powers the *Season graph* heatmap and the ◀/▶ gameweek slider in the
+  Fixture Ranking tab, so you can see fixture swings across all 38 GWs and rank any
+  future gameweek window.
 
 Re-run it before each deadline — fixtures and ratings change through the season.
 

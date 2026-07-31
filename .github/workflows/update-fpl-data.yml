@@ -36,7 +36,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A fixtures-data.json squad-data.json fixtures.html insights-data.json
+          git add -A fixtures-data.json fixtures-season.json squad-data.json fixtures.html insights-data.json
           if git diff --cached --quiet; then
             echo "No changes in the FPL data — nothing to commit."
           else

@@ -259,6 +259,11 @@
     <h2><span class="em">📅</span>Fixture Difficulty Ranking</h2>
     <p class="lede">All 20 teams ranked by how easy their next few games are — the same fixture difficulty ratings (1 = easiest, 5 = hardest) you see in the FPL app. Target attackers from the teams at the top of this list.</p>
 
+    <div class="row-actions" id="fixModeToggle" style="margin-bottom:14px;display:none">
+      <button class="btn fixmode-btn active" data-mode="ranking" onclick="setFixMode('ranking')">📋 Ranking</button>
+      <button class="btn ghost fixmode-btn" data-mode="graph" onclick="setFixMode('graph')">📈 Season graph</button>
+    </div>
+
     <div id="fixLive"></div>
 
     <div class="card" id="fixHelp">
@@ -913,10 +918,114 @@
         </table></div>
       </div>`;
   }
-  fetch('fixtures-data.json', {cache:'no-store'})
+  // ---- Season-aware fixtures: ranking window + season graph ----
+  let _season = null, _fixStart = null, _fixMode = 'ranking';
+  function rankWindow(season, startGw, horizon){
+    const end = Math.min(startGw + horizon - 1, season.max_gw);
+    const rows = season.teams.map(t => {
+      const gws = [], diffs = [];
+      for(let gw = startGw; gw <= end; gw++){
+        const games = t.gws[gw] || [];
+        gws.push(games); games.forEach(g => diffs.push(g.diff));
+      }
+      const avg = diffs.length ? diffs.reduce((a,b)=>a+b,0)/diffs.length : 3;
+      return {short:t.short, name:t.name, avg, gws, count:diffs.length};
+    });
+    rows.sort((a,b)=> a.avg - b.avg || b.count - a.count);
+    return {rows, start:startGw, end};
+  }
+  function gwCell(games){
+    if(!games.length) return '<td style="text-align:center;color:var(--muted);background:#0d1117;border-radius:6px">—<br><small>blank</small></td>';
+    const inner = games.map(g=>`<div style="color:${DIFF_FG[g.diff]||'#fff'};background:${DIFF_BG[g.diff]||'#5a6472'};border-radius:5px;padding:3px 4px;margin:1px 0;font-weight:700;font-size:12px;white-space:nowrap">${g.opp} (${g.venue}) ${g.diff}</div>`).join('');
+    return `<td style="text-align:center">${inner}</td>`;
+  }
+  function renderRankingWindow(){
+    const horizon = 5;
+    const {rows, start, end} = rankWindow(_season, _fixStart, horizon);
+    const gwCols = []; for(let gw=start; gw<=end; gw++) gwCols.push(gw);
+    let head = '<th>#</th><th>Team</th><th>Verdict</th><th>Avg</th>' + gwCols.map(g=>`<th>GW${g}</th>`).join('');
+    let body = '';
+    rows.forEach((r,idx)=>{
+      const v = fixtureVerdict(r.avg);
+      let cells = `<td style="text-align:center;color:var(--muted)">${idx+1}</td>`+
+        `<td style="font-weight:700;background:${v.tint};border-left:4px solid ${v.bg};border-radius:6px">${r.short}<br><span style="font-weight:400;color:var(--muted);font-size:12px">${r.name}</span></td>`+
+        `<td style="text-align:center"><span class="pill" style="background:${v.bg};color:${v.fg};white-space:nowrap">${v.label}</span></td>`+
+        `<td style="text-align:center;font-weight:700;color:${v.bg}">${r.avg.toFixed(1)}</td>`;
+      r.gws.forEach(games => cells += gwCell(games));
+      body += `<tr>${cells}</tr>`;
+    });
+    const atStart = _fixStart <= 1, atEnd = end >= _season.max_gw;
+    const nowBtn = _fixStart !== _season.current_gw ? `<button class="btn ghost" onclick="_fixStart=_season.current_gw;renderFix()">↺ Now</button>` : '';
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <h3 style="margin:0">Easiest → hardest <span class="tag">GW${start}–${end}</span></h3>
+        <div class="row-actions" style="margin:0">
+          <button class="btn ghost" onclick="shiftFix(-1)" ${atStart?'disabled':''} style="${atStart?'opacity:.4':''}">◀ Earlier</button>
+          <button class="btn ghost" onclick="shiftFix(1)" ${atEnd?'disabled':''} style="${atEnd?'opacity:.4':''}">Later ▶</button>
+          ${nowBtn}
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;font-size:12.5px;align-items:center">
+        <span class="pill" style="background:#0e8a3e;color:#fff">🟢 Good</span>
+        <span class="pill" style="background:#c9314b;color:#fff">🔴 Bad</span>
+        <span style="color:var(--muted)">Use ◀ ▶ to slide to future gameweeks</span>
+      </div>
+      <div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:5px"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
+    </div>`;
+  }
+  function renderSeasonGraph(season){
+    const teams = season.teams.map(t=>{
+      const diffs=[]; for(let gw=1; gw<=season.max_gw; gw++)(t.gws[gw]||[]).forEach(g=>diffs.push(g.diff));
+      const avg = diffs.length ? diffs.reduce((a,b)=>a+b,0)/diffs.length : 3;
+      return Object.assign({}, t, {avg});
+    }).sort((a,b)=> a.avg - b.avg);
+    let head = '<th style="position:sticky;left:0;background:var(--panel);z-index:2">Team</th>';
+    for(let gw=1; gw<=season.max_gw; gw++) head += `<th style="min-width:24px">${gw}</th>`;
+    let body = '';
+    teams.forEach(t=>{
+      let cells = `<td style="position:sticky;left:0;background:var(--panel);font-weight:700;z-index:1">${t.short}</td>`;
+      for(let gw=1; gw<=season.max_gw; gw++){
+        const games = t.gws[gw] || [];
+        if(!games.length){ cells += `<td title="GW${gw}: blank" style="background:#0d1117;color:#3d4b5f;text-align:center;font-size:10px">–</td>`; continue; }
+        const d = Math.round(games.reduce((a,g)=>a+g.diff,0)/games.length);
+        const opp = games.map(g=>g.opp+'('+g.venue+')').join(' + ');
+        const dbl = games.length>1 ? '•' : '';
+        cells += `<td title="GW${gw}: ${opp} — difficulty ${d}" style="background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'};text-align:center;font-weight:700;font-size:11px">${d}${dbl}</td>`;
+      }
+      body += `<tr>${cells}</tr>`;
+    });
+    return `<div class="card"><h3>📈 Season fixture swings <span class="tag">All ${season.max_gw} GWs</span></h3>
+      <div class="callout blue" style="margin-top:0">Each row is a team (easiest overall run at the top), each column a gameweek. <b>Green = easy, red = hard.</b> Look for long <b>green stretches</b> — that's when to own that team's players — and red patches to avoid or sell before. <b>•</b> = double gameweek, <b>–</b> = blank. Scroll sideways to see the whole season.</div>
+      <div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:2px"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
+  }
+  function renderFix(){
+    if(!_season) return;
+    document.getElementById('fixHelp').style.display = 'none';
+    document.getElementById('fixLive').innerHTML =
+      _fixMode === 'graph' ? renderSeasonGraph(_season) : renderRankingWindow();
+  }
+  function setFixMode(m){
+    _fixMode = m;
+    document.querySelectorAll('.fixmode-btn').forEach(b=>{ const on=b.dataset.mode===m; b.classList.toggle('active',on); b.classList.toggle('ghost',!on); });
+    renderFix();
+  }
+  function shiftFix(delta){
+    _fixStart = Math.min(Math.max(1, _fixStart + delta), _season.max_gw);
+    renderFix();
+  }
+  // Prefer the full-season data; fall back to the old single-window file.
+  fetch('fixtures-season.json', {cache:'no-store'})
     .then(r => r.ok ? r.json() : null)
-    .then(renderFixtures)
-    .catch(()=>{ /* no data file yet — the help card stays visible */ });
+    .then(s => {
+      if(s && s.teams && s.teams.length){
+        _season = s; _fixStart = s.current_gw || 1;
+        document.getElementById('fixModeToggle').style.display = 'flex';
+        renderFix();
+      } else {
+        return fetch('fixtures-data.json', {cache:'no-store'}).then(r=>r.ok?r.json():null).then(renderFixtures);
+      }
+    })
+    .catch(()=>{ fetch('fixtures-data.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(renderFixtures).catch(()=>{}); });
 
   // ---------- Player Insights (reads insights-data.json) ----------
   let _insights = null;

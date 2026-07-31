@@ -260,12 +260,43 @@ def report_fixtures(boot, fixtures, top):
         print(f"{i:>3}.  {r['short']:<6} {r['avg']:>4.1f}  {seq}")
 
 
+def build_season_matrix(boot, fixtures):
+    """Full-season fixture matrix per team: every gameweek's opponent(s) & difficulty.
+
+    Handles blank gameweeks (no game) and double gameweeks (two games) — a GW maps
+    to a list of games (possibly empty). Powers the season heatmap and the
+    slideable gameweek window in the app.
+    """
+    short = {t["id"]: t["short_name"] for t in boot["teams"]}
+    full = {t["id"]: t["name"] for t in boot["teams"]}
+    max_gw = max([ev["id"] for ev in boot["events"]], default=38)
+    per_team = {tid: {} for tid in short}
+    for fx in fixtures:
+        ev = fx["event"]
+        if ev is None:
+            continue
+        h, a = fx["team_h"], fx["team_a"]
+        per_team.setdefault(h, {}).setdefault(ev, []).append(
+            {"opp": short.get(a, "?"), "venue": "H", "diff": fx["team_h_difficulty"]})
+        per_team.setdefault(a, {}).setdefault(ev, []).append(
+            {"opp": short.get(h, "?"), "venue": "A", "diff": fx["team_a_difficulty"]})
+    teams = []
+    for tid in short:
+        teams.append({"short": short[tid], "name": full[tid],
+                      "gws": {str(gw): per_team[tid].get(gw, []) for gw in range(1, max_gw + 1)}})
+    teams.sort(key=lambda t: t["short"])
+    return {"current_gw": current_gw(boot), "max_gw": max_gw, "teams": teams}
+
+
 def write_fixtures_outputs(boot, fixtures):
     """Write a self-contained colour-coded fixtures.html and a fixtures-data.json."""
     gw, horizon, ranked = compute_fixture_ranking(boot, fixtures)
     # JSON for the webpage tab
     with open("fixtures-data.json", "w") as f:
         json.dump({"gw": gw, "horizon": horizon, "ranked": ranked}, f, indent=2)
+    # Full-season matrix for the season graph + slideable gameweek window
+    with open("fixtures-season.json", "w") as f:
+        json.dump(build_season_matrix(boot, fixtures), f, indent=2)
 
     diff_bg = {1: "#0e8a3e", 2: "#37d67a", 3: "#5a6472", 4: "#ff8a5c", 5: "#ff5c73"}
     diff_fg = {1: "#fff", 2: "#06210f", 3: "#fff", 4: "#3a1400", 5: "#3a0009"}
