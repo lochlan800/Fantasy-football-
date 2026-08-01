@@ -290,6 +290,7 @@
     <div class="row-actions" id="insightNav" style="margin-bottom:16px">
       <button class="btn ins-btn active" data-view="under" onclick="showInsight('under')">💎 Due a haul (xG)</button>
       <button class="btn ghost ins-btn" data-view="over" onclick="showInsight('over')">⚠️ Riding luck</button>
+      <button class="btn ghost ins-btn" data-view="understat" onclick="showInsight('understat')">🧮 Understat xG</button>
       <button class="btn ghost ins-btn" data-view="penalties" onclick="showInsight('penalties')">🎯 Penalty takers</button>
       <button class="btn ghost ins-btn" data-view="setpieces" onclick="showInsight('setpieces')">⚽ Set-pieces</button>
       <button class="btn ghost ins-btn" data-view="value_season" onclick="showInsight('value_season')">📅 Value (season)</button>
@@ -1215,6 +1216,23 @@
       <div style="overflow-x:auto"><table><thead><tr><th>Player</th><th>Nailed?</th><th>Avg mins</th><th>Starts</th><th>Fit</th><th>£m</th></tr></thead>
       <tbody id="nailedRows"></tbody></table></div></div>`;
   }
+  // Understat xG — a separate data file (understat-data.json), a second xG opinion.
+  let _understat = null;
+  const uNameCell = p => `<b>${escapeHtml(p.name)}</b> <span style="color:var(--muted);font-size:12px">${escapeHtml(p.team)}</span>`;
+  function renderUnderstat(d){
+    const overCol = p => { const o=Number(p.over); return o>0?'<span class="pill red">+'+o+'</span>':'<span class="pill green">'+o+'</span>'; };
+    const dueCol = p => '<span class="pill green">+'+(Number(p.threat) - Number(p.goals+p.assists)).toFixed(1).replace('-','')+'</span>';
+    const base = [{h:'Player',f:uNameCell},{h:'Goals',f:p=>p.goals},{h:'xG',f:p=>p.xg},{h:'Assists',f:p=>p.assists},{h:'xA',f:p=>p.xa}];
+    return `<div class="card"><h3>🧮 Understat xG <span class="tag">${d.season} · ${d.source}</span></h3>
+      <div class="callout blue" style="margin-top:0">A <b>second, independent xG model</b> (Understat's own) to cross-check the FPL numbers. When two models agree a player is underperforming his chances, that's a strong buy signal.</div>
+      <h4 style="color:var(--muted);font-size:13px;text-transform:uppercase;margin:14px 0 6px">💎 Due a haul — most underperforming their xG+xA</h4>
+      ${tbl(d.xg_under, base.concat([{h:'Under by',f:p=>'<span class="pill green">'+Math.abs(p.over)+'</span>'}]))}
+      <h4 style="color:var(--muted);font-size:13px;text-transform:uppercase;margin:18px 0 6px">⚠️ Riding their luck — most overperforming</h4>
+      ${tbl(d.xg_over, base.concat([{h:'Over by',f:p=>'<span class="pill red">+'+p.over+'</span>'}]))}
+      <h4 style="color:var(--muted);font-size:13px;text-transform:uppercase;margin:18px 0 6px">🔥 Biggest goal threat (xG + xA)</h4>
+      ${tbl(d.top_threat, base.concat([{h:'Threat',f:p=>'<span class="pill gold">'+p.threat+'</span>'}]))}
+    </div>`;
+  }
   function showInsight(view){
     _insightView = view;
     document.querySelectorAll('.ins-btn').forEach(b => {
@@ -1223,6 +1241,18 @@
     });
     const body = document.getElementById('insightBody');
     const help = document.getElementById('insightHelp');
+    // Understat uses its own data file — handle it separately.
+    if(view === 'understat'){
+      help.style.display = 'none';
+      const draw = d => { body.innerHTML = renderUnderstat(d); };
+      if(_understat){ draw(_understat); return; }
+      body.innerHTML = '<p style="color:var(--muted)">Loading…</p>';
+      fetch('understat-data.json', {cache:'no-store'})
+        .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
+        .then(d => { _understat = d; draw(d); })
+        .catch(() => { body.innerHTML = '<div class="card" style="color:var(--muted)">Understat data not loaded yet — the automated updater adds it on its next run, or run the <b>Update FPL data</b> workflow on GitHub. (Also empty in preseason until games are played.)</div>'; });
+      return;
+    }
     const render = d => {
       help.style.display = 'none';
       if(view === 'defcon'){ body.innerHTML = renderDefcon(d); return; }

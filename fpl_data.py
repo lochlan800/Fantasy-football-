@@ -27,12 +27,15 @@ USAGE
 
 import argparse
 import csv
+import datetime
 import json
+import re
 import sys
 import urllib.request
 import urllib.error
 
 API = "https://fantasy.premierleague.com/api"
+UNDERSTAT = "https://understat.com/league/EPL"
 POS_MAP = {1: "GK", 2: "DEF", 3: "MID", 4: "FWD"}
 DIFF_COLORS = {1: "●●", 2: "● ", 3: "  ", 4: " ▲", 5: "▲▲"}  # visual difficulty hint
 
@@ -674,6 +677,99 @@ def write_insights(players, top=14):
     print("  Saved insights-data.json — populates the Player Insights tab.", file=sys.stderr)
 
 
+# ----------------------------------------------------------------------------
+#  UNDERSTAT — a second, independent expected-goals (xG) source.
+#  Understat runs its own shot-quality model, so it's a useful cross-check on
+#  FPL's own xG. We read the league page's embedded playersData JSON.
+# ----------------------------------------------------------------------------
+def _understat_season_year():
+    """EPL season is labelled by its starting year on Understat (Aug-May)."""
+    today = datetime.date.today()
+    return today.year if today.month >= 7 else today.year - 1
+
+
+def _fetch_understat_year(year):
+    """Fetch and parse Understat's EPL playersData for one season. [] on any error."""
+    url = f"{UNDERSTAT}/{year}"
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            html = r.read().decode("utf-8")
+    except Exception as e:                       # network / HTTP issues — degrade gracefully
+        print(f"  Understat fetch failed ({year}): {e}", file=sys.stderr)
+        return []
+    m = re.search(r"var\s+playersData\s*=\s*JSON.parse\('(.*?)'\)", html)
+    if not m:
+        return []
+    s = m.group(1).encode("utf-8").decode("unicode_escape")
+    try:                                          # recover accented names (utf-8 via latin-1)
+        s = s.encode("latin-1").decode("utf-8")
+    except Exception:
+        pass
+    try:
+        return json.loads(s)
+    except Exception:
+        return []
+
+
+def fetch_understat():
+    """Return (season_year, players). Falls back to last season if this one is empty."""
+    year = _understat_season_year()
+    for yr in (year, year - 1):
+        data = _fetch_understat_year(yr)
+        if data:
+            return yr, data
+    return year, []
+
+
+def write_understat():
+    """Write understat-data.json: xG over/under performers and top threats."""
+    try:
+        year, rows = fetch_understat()
+    except Exception as e:
+        print(f"  Understat unavailable: {e}", file=sys.stderr)
+        year, rows = _understat_season_year(), []
+
+    def num(v):
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return 0.0
+
+    players = []
+    for p in rows:
+        mins = num(p.get("time"))
+        if mins < 180:                            # need enough minutes to be meaningful
+            continue
+        goals, xg = num(p.get("goals")), num(p.get("xG"))
+        assists, xa = num(p.get("assists")), num(p.get("xA"))
+        players.append({
+            "name": p.get("player_name", "?"),
+            "team": p.get("team_title", "?"),
+            "pos": p.get("position", ""),
+            "games": int(num(p.get("games"))),
+            "goals": int(goals), "xg": round(xg, 1),
+            "assists": int(assists), "xa": round(xa, 1),
+            "threat": round(xg + xa, 1),          # total goal involvement threat (xG+xA)
+            "over": round((goals + assists) - (xg + xa), 1),   # + = overperforming (lucky)
+        })
+
+    def slim(p):
+        return {k: p[k] for k in ("name", "team", "pos", "games", "goals", "xg",
+                                  "assists", "xa", "threat", "over")}
+
+    out = {
+        "season": year,
+        "source": "Understat",
+        "top_threat": [slim(p) for p in sorted(players, key=lambda p: p["threat"], reverse=True)[:16]],
+        "xg_under": [slim(p) for p in sorted(players, key=lambda p: p["over"])[:16]],       # most due
+        "xg_over": [slim(p) for p in sorted(players, key=lambda p: p["over"], reverse=True)[:16]],  # riding luck
+    }
+    with open("understat-data.json", "w") as fh:
+        json.dump(out, fh, indent=2)
+    print(f"  Saved understat-data.json ({len(players)} players, {year} season).", file=sys.stderr)
+
+
 def dump_csv(players, path):
     keys = ["name", "team", "pos", "price", "points", "form", "ppm", "owned",
             "minutes", "goals", "assists", "status"]
@@ -700,13 +796,15 @@ def main():
                     help="generate a colour-coded fixtures.html ranking page")
     ap.add_argument("--build", action="store_true",
                     help="auto-build the best legal 15-man squad and save squad-data.json")
+    ap.add_argument("--understat", action="store_true",
+                    help="fetch Understat xG and save understat-data.json")
     args = ap.parse_args()
 
     boot, fixtures = load_data(save_json=args.json)
     players, _ = build_players(boot)
 
     show_all = not (args.value or args.form or args.diff or args.fixtures
-                    or args.build or args.html or args.csv)
+                    or args.build or args.html or args.csv or args.understat)
 
     gw = current_gw(boot)
     print(f"\n⚽ FPL LIVE DATA  |  Gameweek {gw}  |  {len(players)} players loaded")
@@ -731,6 +829,9 @@ def main():
         _, _, ranking = compute_fixture_ranking(boot, fixtures)
         report_build(players, ranking)
         write_insights(players)
+
+    if show_all or args.build or args.understat:
+        write_understat()
 
     if args.html:
         write_fixtures_outputs(boot, fixtures)

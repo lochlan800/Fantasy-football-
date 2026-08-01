@@ -16,6 +16,14 @@ them automatically — you never run a command.
 
 Everything below is the manual/local way to do the same thing if you prefer.
 
+## Data sources
+- **Official FPL API** (free, no key) — prices, ownership, form, xG/xA, fixtures,
+  difficulty ratings, penalty/set-piece takers. The main source.
+- **Understat** (free, no key) — a second, independent expected-goals model, used
+  as a cross-check. `python3 fpl_data.py --understat` writes `understat-data.json`,
+  which powers the *Understat xG* view in the Player Insights tab (xG over/under
+  performers and biggest goal threats). Also refreshed by the twice-daily Action.
+
 ## 1. `index.html` — strategy & planners
 A single, self-contained web page. **Just double-click it** to open in any browser
 (no internet needed), or view it live via GitHub Pages at
