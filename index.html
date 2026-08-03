@@ -169,6 +169,46 @@
   footer { text-align:center; color: var(--muted); font-size: 12.5px; padding: 30px 16px; border-top:1px solid var(--border); }
   a { color: var(--accent-2); }
   .kbd { font-family: ui-monospace, Menlo, monospace; background: var(--panel-2); border:1px solid var(--border); border-radius:5px; padding: 1px 6px; font-size: 12.5px; }
+  /* ---- Pitch view ---- */
+  .pitch {
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 46px, rgba(255,255,255,0) 46px 92px),
+      linear-gradient(180deg, #0f7a3a 0%, #0c6b33 100%);
+    border:1px solid #0a5a2b; border-radius:14px; padding:16px 8px 8px;
+    position:relative; overflow:hidden;
+  }
+  .pitch::before{ /* centre circle + halfway line */
+    content:""; position:absolute; left:50%; top:50%; width:120px; height:120px;
+    transform:translate(-50%,-50%); border:2px solid rgba(255,255,255,.15); border-radius:50%;
+  }
+  .pitch-row{ display:flex; justify-content:center; gap:6px; flex-wrap:wrap; margin-bottom:12px; position:relative; z-index:1; }
+  .bench{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:10px 8px; margin-top:12px; }
+  .bench h4{ margin:0 0 8px; text-align:center; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.5px; }
+  .shirt{
+    width:88px; min-height:74px; background:var(--panel); border:1px solid var(--border);
+    border-radius:10px; padding:6px 4px; text-align:center; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:2px; position:relative;
+  }
+  @media (max-width:430px){ .shirt{ width:72px; min-height:68px; } }
+  .shirt .nm{ font-weight:700; font-size:12.5px; line-height:1.1; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .shirt .meta{ font-size:10.5px; color:var(--muted); }
+  .shirt .pr{ font-size:11px; font-weight:700; }
+  .shirt.empty{ border-style:dashed; cursor:pointer; color:var(--muted); background:rgba(0,0,0,.18); }
+  .shirt.empty:hover{ border-color:var(--accent); color:var(--text); }
+  .shirt .plus{ font-size:22px; font-weight:800; line-height:1; }
+  .shirt .top-badge{ position:absolute; top:-7px; left:-6px; }
+  .shirt .rm{ position:absolute; top:-7px; right:-6px; background:var(--red); color:#fff; border:none;
+    border-radius:50%; width:19px; height:19px; font-size:12px; cursor:pointer; line-height:1; padding:0; }
+  .shirt .capbtn{ font-size:10px; padding:1px 5px; border-radius:5px; border:1px solid var(--border);
+    background:var(--bg); color:var(--muted); cursor:pointer; margin-top:2px; }
+  .shirt .capbtn.on{ background:var(--gold); color:#3a2c00; border-color:var(--gold); }
+  .shirt .capbtn.von{ background:var(--accent-2); color:#00212e; border-color:var(--accent-2); }
+  /* ---- Position picker overlay ---- */
+  .pick-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:60; display:none; align-items:flex-start; justify-content:center; padding:40px 12px; overflow-y:auto; }
+  .pick-overlay.on{ display:flex; }
+  .pick-panel{ background:var(--panel); border:1px solid var(--border); border-radius:14px; width:100%; max-width:520px; padding:16px; box-shadow:var(--shadow); }
+  .pick-panel h3{ margin:0 0 10px; display:flex; justify-content:space-between; align-items:center; }
+  .pick-close{ background:none; border:none; color:var(--muted); font-size:22px; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -369,20 +409,13 @@
       </div>
 
       <div class="card">
-        <h3>🔎 Search &amp; add players <span class="tag">Tap to add</span></h3>
-        <p style="margin-top:0;color:var(--muted)">Type any player's name — pick from the list and they drop straight into your team. No need to know the exact spelling or price.</p>
-        <input class="textline" id="playerSearch" placeholder="🔎 Search any player… e.g. Saka, Haaland, a cheap defender" oninput="playerSearch(this.value)" autocomplete="off">
-        <div id="searchResults" style="margin-top:8px"></div>
-      </div>
-
-      <div class="card">
+        <p style="margin-top:0;color:var(--muted);font-size:13.5px">Tap a <b>＋</b> to add a player — it only shows players for that position. Tap <b>C</b> to captain, <b>✕</b> to remove.</p>
         <div id="posContainer"></div>
-        <div class="row-actions">
+        <div class="row-actions" style="margin-top:14px">
           <button class="btn" onclick="rateTeam()">⭐ Rate my team</button>
-          <button class="btn ghost" onclick="saveSquad()">💾 Save squad</button>
           <button class="btn ghost" onclick="clearSquad()">🗑 Clear all</button>
         </div>
-        <p class="save-note">Formation rule: 2 GK · 5 DEF · 5 MID · 3 FWD. On the pitch play 1 GK, 3–5 DEF, 2–5 MID, 1–3 FWD. Tap <span class="kbd">C</span> for captain, <span class="kbd">V</span> for vice.</p>
+        <p class="save-note">Your team saves automatically. Formation shown is 3-4-3 with a 4-man bench (2 GK · 5 DEF · 5 MID · 3 FWD in total).</p>
       </div>
 
       <div id="rateResult"></div>
@@ -410,6 +443,15 @@
         <p class="save-note"><b>Balanced</b>: best all-round team. <b>Attacking</b>: loads up on goals &amp; assists. <b>Value</b>: most points per £m, banking funds.</p>
       </div>
       <div id="autoPickDisplay"></div>
+    </div>
+
+    <!-- position-filtered player picker -->
+    <div class="pick-overlay" id="pickOverlay" onclick="if(event.target===this)closePicker()">
+      <div class="pick-panel">
+        <h3><span>Add a <span id="pickPosLabel">player</span></span><button class="pick-close" onclick="closePicker()">✕</button></h3>
+        <input class="textline" id="pickSearch" placeholder="🔎 Search…" oninput="pickerFilter(this.value)" autocomplete="off">
+        <div id="pickResults" style="margin-top:10px"></div>
+      </div>
     </div>
   </section>
 
@@ -651,49 +693,94 @@
     squad.captain = null; squad.vice = null;
   }
 
+  // Pitch layout (3-4-3 + 4 bench) → maps onto the 2/5/5/3 squad slots.
+  const PITCH_ROWS = [
+    [['GK',0]],
+    [['DEF',0],['DEF',1],['DEF',2]],
+    [['MID',0],['MID',1],['MID',2],['MID',3]],
+    [['FWD',0],['FWD',1],['FWD',2]],
+  ];
+  const BENCH_SLOTS = [['GK',1],['DEF',3],['DEF',4],['MID',4]];
+  function shirtHtml(pos, i){
+    const pl = (squad[pos] && squad[pos][i]) || {};
+    const id = pos + '-' + i;
+    if(!pl.name || !pl.name.trim()){
+      return `<div class="shirt empty" onclick="openPicker('${pos}',${i})"><div class="plus">＋</div><div class="meta">${pos}</div></div>`;
+    }
+    const isCap = squad.captain === id, isVc = squad.vice === id;
+    const badge = isCap ? '<span class="pill gold top-badge">C</span>' : isVc ? '<span class="pill blue top-badge">V</span>' : '';
+    return `<div class="shirt">
+      <button class="rm" title="Remove" onclick="removeSlot('${pos}',${i})">✕</button>${badge}
+      <div class="nm">${escapeHtml(pl.name)}</div>
+      <div class="meta">${escapeHtml(pl.team||'')} · ${pos}</div>
+      <div class="pr">£${(parseFloat(pl.price)||0).toFixed(1)}m</div>
+      <button class="capbtn ${isCap?'on':isVc?'von':''}" onclick="toggleCap('${pos}',${i})">${isCap?'C':isVc?'V':'C?'}</button>
+    </div>`;
+  }
   function renderSquad(){
-    const c = document.getElementById('posContainer');
-    c.innerHTML = '';
-    POSITIONS.forEach(pos => {
-      const block = document.createElement('div');
-      block.className = 'pos-block';
-      block.innerHTML = `<h4>${pos.label} · ${pos.n}</h4>`;
-      squad[pos.key].forEach((pl, i) => {
-        const id = pos.key + '-' + i;
-        const row = document.createElement('div');
-        row.className = 'player-row';
-        const isCap = squad.captain === id;
-        const isVc = squad.vice === id;
-        row.innerHTML = `
-          <input type="text" placeholder="Player name" value="${escapeHtml(pl.name)}" data-p="${pos.key}" data-i="${i}" data-f="name">
-          <input type="text" placeholder="Team (opt)" value="${escapeHtml(pl.team||'')}" data-p="${pos.key}" data-i="${i}" data-f="team">
-          <input type="number" step="0.1" min="0" placeholder="£m" value="${pl.price}" data-p="${pos.key}" data-i="${i}" data-f="price">
-          <button class="cap-btn ${isCap?'cap':isVc?'vc':''}" title="Click: C then V" data-cap="${id}">${isCap?'C':isVc?'V':'–'}</button>
-        `;
-        block.appendChild(row);
-      });
-      c.appendChild(block);
-    });
-    // wire inputs
-    c.querySelectorAll('input').forEach(inp => {
-      inp.addEventListener('input', () => {
-        const {p,i,f} = inp.dataset;
-        squad[p][i][f] = f==='price' ? inp.value : inp.value;
-        updateBudget(); store.set('fpl_squad', squad);
-      });
-    });
-    c.querySelectorAll('[data-cap]').forEach(b => {
-      b.addEventListener('click', () => {
-        const id = b.dataset.cap;
-        if(squad.captain === id){ squad.captain = null; }
-        else if(squad.vice === id){ squad.vice = null; }
-        else if(!squad.captain){ squad.captain = id; }
-        else if(!squad.vice){ squad.vice = id; }
-        else { squad.captain = id; } // reset cap
-        store.set('fpl_squad', squad); renderSquad(); updateBudget();
-      });
-    });
+    const c = document.getElementById('posContainer'); if(!c) return;
+    let html = '<div class="pitch">';
+    PITCH_ROWS.forEach(row => { html += '<div class="pitch-row">' + row.map(([p,i])=>shirtHtml(p,i)).join('') + '</div>'; });
+    html += '</div><div class="bench"><h4>🪑 Bench (subs come on in this order)</h4><div class="pitch-row">'
+          + BENCH_SLOTS.map(([p,i])=>shirtHtml(p,i)).join('') + '</div></div>';
+    c.innerHTML = html;
     updateBudget();
+  }
+  function toggleCap(pos, i){
+    const id = pos + '-' + i;
+    if(squad.captain === id){ squad.captain = null; }
+    else if(squad.vice === id){ squad.vice = null; }
+    else if(!squad.captain){ squad.captain = id; }
+    else if(!squad.vice){ squad.vice = id; }
+    else { squad.captain = id; }
+    store.set('fpl_squad', squad); renderSquad();
+  }
+  function removeSlot(pos, i){
+    const id = pos + '-' + i;
+    squad[pos][i] = {name:'', price:'', team:''};
+    if(squad.captain === id) squad.captain = null;
+    if(squad.vice === id) squad.vice = null;
+    store.set('fpl_squad', squad); renderSquad();
+  }
+  // Position-filtered picker
+  const POS_FULL = {GK:'Goalkeeper', DEF:'Defender', MID:'Midfielder', FWD:'Forward'};
+  let _pickTarget = null, _pickResults = [];
+  function openPicker(pos, i){
+    _pickTarget = {pos, i};
+    document.getElementById('pickPosLabel').textContent = POS_FULL[pos] || 'player';
+    document.getElementById('pickSearch').value = '';
+    document.getElementById('pickOverlay').classList.add('on');
+    ensureDb(db => pickerRender(db, pos, ''), () => {
+      document.getElementById('pickResults').innerHTML = '<div style="color:var(--muted);padding:8px">Player list not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>';
+    });
+    setTimeout(()=>{ const s=document.getElementById('pickSearch'); if(s) s.focus(); }, 60);
+  }
+  function closePicker(){ document.getElementById('pickOverlay').classList.remove('on'); _pickTarget = null; }
+  function pickerFilter(q){ if(!_pickTarget) return; ensureDb(db => pickerRender(db, _pickTarget.pos, q)); }
+  function pickerRender(db, pos, q){
+    const nq = normName(q), lq = (q||'').trim().toLowerCase();
+    const ownedKeys = new Set();
+    POSITIONS.forEach(P => squad[P.key].forEach(x => { if(x.name && x.name.trim()) ownedKeys.add(normName(x.name)); }));
+    let list = db.players.filter(p => p.pos === pos && !ownedKeys.has(normName(p.name)));
+    if(lq.length >= 1) list = list.filter(p => normName(p.name).includes(nq) || normName(p.full||'').includes(nq));
+    list = list.sort((a,b)=> b.rating - a.rating).slice(0, 40);
+    _pickResults = list;
+    const box = document.getElementById('pickResults');
+    if(!list.length){ box.innerHTML = '<div style="color:var(--muted);padding:8px">No '+pos+' found — try another search.</div>'; return; }
+    box.innerHTML = list.map((p,idx)=>{
+      const flag = p.avail ? '' : ' <span class="pill red">'+p.status+'</span>';
+      return `<div class="search-row" onclick="selectForSlot(${idx})" style="display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--border);border-radius:9px;margin-bottom:6px;cursor:pointer;background:var(--panel-2)">
+        <span class="pill ${POS_PILL2[p.pos]||'blue'}">${p.pos}</span>
+        <b style="flex:1">${escapeHtml(p.name)}${flag}</b>
+        <span style="color:var(--muted);font-size:12px">${escapeHtml(p.team)}</span>
+        <span style="font-weight:700">£${Number(p.price).toFixed(1)}m</span></div>`;
+    }).join('');
+  }
+  function selectForSlot(idx){
+    const p = _pickResults[idx]; if(!p || !_pickTarget) return;
+    const {pos, i} = _pickTarget;
+    squad[pos][i] = {name:p.name, price:String(p.price), team:p.team};
+    store.set('fpl_squad', squad); renderSquad(); closePicker(); flash(p.name + ' added ✓');
   }
 
   function updateBudget(){
@@ -897,50 +984,14 @@
       .catch(()=>{ out.innerHTML = `<div class="card" style="color:var(--muted)">Player database not loaded yet — the automated updater adds it on its next run, or run the <b>Update FPL data</b> workflow on GitHub. (Ratings are limited in preseason until games are played.)</div>`; });
   }
 
-  // ---------- Player search & click-to-add ----------
+  // ---------- Player database access ----------
   const POS_PILL2 = {GK:'blue', DEF:'green', MID:'gold', FWD:'purple'};
-  let _searchResults = [];
   function ensureDb(cb, onFail){
     if(_playersDb){ cb(_playersDb); return; }
     fetch('players-data.json', {cache:'no-store'})
       .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
       .then(db => { _playersDb = db; cb(db); })
       .catch(() => onFail && onFail());
-  }
-  function playerSearch(q){
-    const box = document.getElementById('searchResults');
-    q = (q||'').trim();
-    if(q.length < 2){ box.innerHTML = ''; return; }
-    ensureDb(db => {
-      const nq = normName(q), lq = q.toLowerCase();
-      const matches = db.players
-        .filter(p => normName(p.name).includes(nq) || normName(p.full||'').includes(nq) || (p.team||'').toLowerCase().includes(lq))
-        .sort((a,b) => b.rating - a.rating).slice(0, 15);
-      _searchResults = matches;
-      if(!matches.length){ box.innerHTML = '<div style="color:var(--muted);padding:8px">No player found — try part of the name.</div>'; return; }
-      box.innerHTML = matches.map((p,i)=>{
-        const flag = p.avail ? '' : ` <span class="pill red">${p.status}</span>`;
-        return `<div class="search-row" onclick="pickPlayer(${i})" style="display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--border);border-radius:9px;margin-bottom:6px;cursor:pointer;background:var(--panel-2)">
-          <span class="pill ${POS_PILL2[p.pos]||'blue'}">${p.pos}</span>
-          <b style="flex:1">${escapeHtml(p.name)}${flag}</b>
-          <span style="color:var(--muted);font-size:12px">${escapeHtml(p.team)}</span>
-          <span style="font-weight:700">£${Number(p.price).toFixed(1)}m</span>
-          <span class="btn" style="padding:5px 10px;font-size:12px;pointer-events:none">＋ Add</span>
-        </div>`;
-      }).join('');
-    }, () => { box.innerHTML = '<div style="color:var(--muted);padding:8px">Player list not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>'; });
-  }
-  function pickPlayer(i){
-    const p = _searchResults[i]; if(!p) return;
-    const arr = squad[p.pos]; if(!arr){ return; }
-    // already in the squad?
-    const dupe = POSITIONS.some(pos => squad[pos.key].some(x => normName(x.name)===normName(p.name)));
-    if(dupe){ flash(p.name + ' is already in your team'); return; }
-    const slot = arr.findIndex(x => !(x.name && x.name.trim()));
-    if(slot < 0){ flash('All ' + p.pos + ' spots are full — remove one first'); return; }
-    arr[slot] = { name: p.name, price: String(p.price), team: p.team };
-    store.set('fpl_squad', squad); renderSquad(); updateBudget();
-    flash(p.name + ' added ✓');
   }
 
   function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
