@@ -375,6 +375,13 @@
     </div>
 
     <div class="card">
+      <h3>🔎 Search &amp; add players <span class="tag">Tap to add</span></h3>
+      <p style="margin-top:0;color:var(--muted)">Type any player's name — pick from the list and they drop straight into your team. No need to know the exact spelling or price.</p>
+      <input class="textline" id="playerSearch" placeholder="🔎 Search any player… e.g. Saka, Haaland, a cheap defender" oninput="playerSearch(this.value)" autocomplete="off">
+      <div id="searchResults" style="margin-top:8px"></div>
+    </div>
+
+    <div class="card">
       <div id="posContainer"></div>
       <div class="row-actions">
         <button class="btn" onclick="rateTeam()">⭐ Rate my team</button>
@@ -843,6 +850,52 @@
       .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
       .then(run)
       .catch(()=>{ out.innerHTML = `<div class="card" style="color:var(--muted)">Player database not loaded yet — the automated updater adds it on its next run, or run the <b>Update FPL data</b> workflow on GitHub. (Ratings are limited in preseason until games are played.)</div>`; });
+  }
+
+  // ---------- Player search & click-to-add ----------
+  const POS_PILL2 = {GK:'blue', DEF:'green', MID:'gold', FWD:'purple'};
+  let _searchResults = [];
+  function ensureDb(cb, onFail){
+    if(_playersDb){ cb(_playersDb); return; }
+    fetch('players-data.json', {cache:'no-store'})
+      .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
+      .then(db => { _playersDb = db; cb(db); })
+      .catch(() => onFail && onFail());
+  }
+  function playerSearch(q){
+    const box = document.getElementById('searchResults');
+    q = (q||'').trim();
+    if(q.length < 2){ box.innerHTML = ''; return; }
+    ensureDb(db => {
+      const nq = normName(q), lq = q.toLowerCase();
+      const matches = db.players
+        .filter(p => normName(p.name).includes(nq) || (p.team||'').toLowerCase().includes(lq))
+        .sort((a,b) => b.rating - a.rating).slice(0, 15);
+      _searchResults = matches;
+      if(!matches.length){ box.innerHTML = '<div style="color:var(--muted);padding:8px">No player found — try part of the name.</div>'; return; }
+      box.innerHTML = matches.map((p,i)=>{
+        const flag = p.avail ? '' : ` <span class="pill red">${p.status}</span>`;
+        return `<div class="search-row" onclick="pickPlayer(${i})" style="display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--border);border-radius:9px;margin-bottom:6px;cursor:pointer;background:var(--panel-2)">
+          <span class="pill ${POS_PILL2[p.pos]||'blue'}">${p.pos}</span>
+          <b style="flex:1">${escapeHtml(p.name)}${flag}</b>
+          <span style="color:var(--muted);font-size:12px">${escapeHtml(p.team)}</span>
+          <span style="font-weight:700">£${Number(p.price).toFixed(1)}m</span>
+          <span class="btn" style="padding:5px 10px;font-size:12px;pointer-events:none">＋ Add</span>
+        </div>`;
+      }).join('');
+    }, () => { box.innerHTML = '<div style="color:var(--muted);padding:8px">Player list not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>'; });
+  }
+  function pickPlayer(i){
+    const p = _searchResults[i]; if(!p) return;
+    const arr = squad[p.pos]; if(!arr){ return; }
+    // already in the squad?
+    const dupe = POSITIONS.some(pos => squad[pos.key].some(x => normName(x.name)===normName(p.name)));
+    if(dupe){ flash(p.name + ' is already in your team'); return; }
+    const slot = arr.findIndex(x => !(x.name && x.name.trim()));
+    if(slot < 0){ flash('All ' + p.pos + ' spots are full — remove one first'); return; }
+    arr[slot] = { name: p.name, price: String(p.price), team: p.team };
+    store.set('fpl_squad', squad); renderSquad(); updateBudget();
+    flash(p.name + ' added ✓');
   }
 
   function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }

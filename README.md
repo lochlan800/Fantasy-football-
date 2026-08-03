@@ -133,6 +133,10 @@ The web tool now also includes:
   gameweeks ahead so single free transfers keep your squad healthy without hits.
 - **🪑 Bench-order & deadline guidance** in the Squad Builder.
 
+- **🔎 Search & add players** (Squad Builder) — a Google-style search over the whole
+  player database: type any name, pick from the live list (name, club, price,
+  rating), and they drop straight into the right squad slot. No exact spelling or
+  price needed; duplicates are blocked.
 - **⭐ Rate my team** (Squad Builder) — enter your 15 players and it scores your
   team out of 100 with a grade, flags injured/unavailable players, and suggests
   who to bring in for your weakest spots. Powered by `players-data.json` (every
