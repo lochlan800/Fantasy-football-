@@ -352,53 +352,64 @@
   <!-- ============ SQUAD BUILDER ============ -->
   <section class="tab" id="squad">
     <h2><span class="em">🧮</span>Squad Builder & Budget Calculator</h2>
-    <p class="lede">Build your 15 within the £100.0m budget. Enter each player's price and it tracks your spend live. Everything saves automatically in this browser.</p>
+    <p class="lede">Build your own 15 in <b>My Team</b>, or peek at the optimiser's suggested team in <b>Auto-Pick</b> — they're kept separate, so your team stays yours.</p>
 
-    <div class="budget-bar">
-      <div class="stat"><b>£100.0m</b><span>Total budget</span></div>
-      <div class="stat"><b id="spent">£0.0m</b><span>Spent</span></div>
-      <div class="stat"><b id="left" class="money-left ok">£100.0m</b><span>Remaining</span></div>
-      <div class="stat"><b id="count">0/15</b><span>Players in</span></div>
+    <div class="row-actions" id="sbToggle" style="margin-bottom:16px">
+      <button class="btn sb-btn active" data-sb="myteam" onclick="setSbView('myteam')">🧮 My Team</button>
+      <button class="btn ghost sb-btn" data-sb="autopick" onclick="setSbView('autopick')">⚡ Auto-Pick (suggested)</button>
     </div>
 
-    <div class="card" style="border-color:var(--accent)">
-      <h3>⚡ Let the tactics build it for you <span class="tag">Auto-pick</span></h3>
-      <p style="margin-top:0;color:var(--muted)">Runs the optimiser on live data: maximises points for your £100.0m within all the rules (2/5/5/3, max 3 per club). It reads the underlying stats — expected goals &amp; assists (xG/xA), minutes played, penalty &amp; set-piece takers and the new defensive-contribution points — and favours nailed players with good fixtures.</p>
-      <p style="margin:10px 0 6px;font-size:13px;color:var(--muted)"><b>Choose a strategy:</b></p>
-      <div class="row-actions" id="stratToggle">
-        <button class="btn strat-btn active" data-strat="balanced" onclick="autoBuild('balanced')">⚖️ Balanced</button>
-        <button class="btn ghost strat-btn" data-strat="attacking" onclick="autoBuild('attacking')">⚔️ Attacking</button>
-        <button class="btn ghost strat-btn" data-strat="value" onclick="autoBuild('value')">💷 Value</button>
+    <!-- ---- MY TEAM ---- -->
+    <div id="sbMyTeam">
+      <div class="budget-bar">
+        <div class="stat"><b>£100.0m</b><span>Total budget</span></div>
+        <div class="stat"><b id="spent">£0.0m</b><span>Spent</span></div>
+        <div class="stat"><b id="left" class="money-left ok">£100.0m</b><span>Remaining</span></div>
+        <div class="stat"><b id="count">0/15</b><span>Players in</span></div>
       </div>
-      <p class="save-note" id="buildMsg" style="margin-top:8px"></p>
-      <p class="save-note"><b>Balanced</b>: best all-round team. <b>Attacking</b>: loads up on goals &amp; assists (high ceiling). <b>Value</b>: squeezes the most points per £m, banking funds for later. The automated updater refreshes all three twice a day.</p>
-    </div>
 
-    <div class="card">
-      <h3>🔎 Search &amp; add players <span class="tag">Tap to add</span></h3>
-      <p style="margin-top:0;color:var(--muted)">Type any player's name — pick from the list and they drop straight into your team. No need to know the exact spelling or price.</p>
-      <input class="textline" id="playerSearch" placeholder="🔎 Search any player… e.g. Saka, Haaland, a cheap defender" oninput="playerSearch(this.value)" autocomplete="off">
-      <div id="searchResults" style="margin-top:8px"></div>
-    </div>
-
-    <div class="card">
-      <div id="posContainer"></div>
-      <div class="row-actions">
-        <button class="btn" onclick="rateTeam()">⭐ Rate my team</button>
-        <button class="btn ghost" onclick="saveSquad()">💾 Save squad</button>
-        <button class="btn ghost" onclick="clearSquad()">🗑 Clear all</button>
+      <div class="card">
+        <h3>🔎 Search &amp; add players <span class="tag">Tap to add</span></h3>
+        <p style="margin-top:0;color:var(--muted)">Type any player's name — pick from the list and they drop straight into your team. No need to know the exact spelling or price.</p>
+        <input class="textline" id="playerSearch" placeholder="🔎 Search any player… e.g. Saka, Haaland, a cheap defender" oninput="playerSearch(this.value)" autocomplete="off">
+        <div id="searchResults" style="margin-top:8px"></div>
       </div>
-      <p class="save-note">Formation rule: 2 GK · 5 DEF · 5 MID · 3 FWD. On the pitch play 1 GK, 3–5 DEF, 2–5 MID, 1–3 FWD. Tap <span class="kbd">C</span> for captain, <span class="kbd">V</span> for vice.</p>
+
+      <div class="card">
+        <div id="posContainer"></div>
+        <div class="row-actions">
+          <button class="btn" onclick="rateTeam()">⭐ Rate my team</button>
+          <button class="btn ghost" onclick="saveSquad()">💾 Save squad</button>
+          <button class="btn ghost" onclick="clearSquad()">🗑 Clear all</button>
+        </div>
+        <p class="save-note">Formation rule: 2 GK · 5 DEF · 5 MID · 3 FWD. On the pitch play 1 GK, 3–5 DEF, 2–5 MID, 1–3 FWD. Tap <span class="kbd">C</span> for captain, <span class="kbd">V</span> for vice.</p>
+      </div>
+
+      <div id="rateResult"></div>
+
+      <div class="callout blue">
+        <b>🪑 Bench order matters (a quiet points-saver):</b> if one of your starters doesn't play, the game automatically subs in your bench <b>in order</b> — so put your <b>most-likely-to-play</b> outfield sub first. Two more freebies: never leave a gap (always field 11 players who are actually playing), and check the Friday press conferences for injuries before you finalise.
+      </div>
+
+      <div class="callout blue">
+        <b>💡 Suggested split for a balanced £100m squad:</b> ~£24–28m on 2–3 premium attackers, ~£8–9m on a rotating GK pair, ~£20–24m on defence (mix one premium + budget enablers), and the rest on a strong mid-price midfield. Keep ~£0.0–0.5m in the bank for flexibility.
+      </div>
     </div>
 
-    <div id="rateResult"></div>
-
-    <div class="callout blue">
-      <b>🪑 Bench order matters (a quiet points-saver):</b> if one of your starters doesn't play, the game automatically subs in your bench <b>in order</b> — so put your <b>most-likely-to-play</b> outfield sub first. Two more freebies: never leave a gap (always field 11 players who are actually playing), and check the Friday press conferences for injuries before you finalise.
-    </div>
-
-    <div class="callout blue">
-      <b>💡 Suggested split for a balanced £100m squad:</b> ~£24–28m on 2–3 premium attackers, ~£8–9m on a rotating GK pair, ~£20–24m on defence (mix one premium + budget enablers), and the rest on a strong mid-price midfield. Keep ~£0.0–0.5m in the bank for flexibility.
+    <!-- ---- AUTO-PICK ---- -->
+    <div id="sbAutoPick" style="display:none">
+      <div class="card" style="border-color:var(--accent)">
+        <h3>⚡ The optimiser's suggested team <span class="tag">Auto-pick</span></h3>
+        <p style="margin-top:0;color:var(--muted)">Maximises points for £100.0m within all the rules (2/5/5/3, max 3 per club), using the underlying stats — xG/xA, minutes, penalty &amp; set-piece takers and defensive-contribution points — and good fixtures. This is just a <b>suggestion</b>; it won't touch your own team unless you tap "Use this".</p>
+        <p style="margin:10px 0 6px;font-size:13px;color:var(--muted)"><b>Choose a strategy:</b></p>
+        <div class="row-actions" id="stratToggle">
+          <button class="btn strat-btn active" data-strat="balanced" onclick="autoBuild('balanced')">⚖️ Balanced</button>
+          <button class="btn ghost strat-btn" data-strat="attacking" onclick="autoBuild('attacking')">⚔️ Attacking</button>
+          <button class="btn ghost strat-btn" data-strat="value" onclick="autoBuild('value')">💷 Value</button>
+        </div>
+        <p class="save-note"><b>Balanced</b>: best all-round team. <b>Attacking</b>: loads up on goals &amp; assists. <b>Value</b>: most points per £m, banking funds.</p>
+      </div>
+      <div id="autoPickDisplay"></div>
     </div>
   </section>
 
@@ -700,11 +711,17 @@
     document.getElementById('count').textContent = count + '/15';
   }
 
-  // Auto-build: load the optimiser's squad-data.json into the builder.
-  // Supports strategy variants (balanced / attacking / value) via toggle buttons.
-  let _squadData = null;   // cached fetch
-  function fillFromVariant(variant, msg){
-    if(!variant || !variant.players){ throw new Error('novariant'); }
+  // Sub-tabs inside the Squad Builder: My Team (yours) vs Auto-Pick (suggestion).
+  function setSbView(v){
+    document.getElementById('sbMyTeam').style.display = v==='myteam' ? '' : 'none';
+    document.getElementById('sbAutoPick').style.display = v==='autopick' ? '' : 'none';
+    document.querySelectorAll('.sb-btn').forEach(b=>{ const on=b.dataset.sb===v; b.classList.toggle('active',on); b.classList.toggle('ghost',!on); });
+    if(v==='autopick' && !_autoVariant) autoBuild('balanced');
+  }
+
+  // Auto-Pick: show the optimiser's team read-only; only copy it into My Team on request.
+  let _squadData = null, _autoVariant = null, _autoStrat = 'balanced';
+  function copyVariantToSquad(variant){
     const fresh = {}; POSITIONS.forEach(p => fresh[p.key] = Array.from({length:p.n}, ()=>({name:'',price:'',team:''})));
     fresh.captain = null; fresh.vice = null;
     const idx = {GK:0, DEF:0, MID:0, FWD:0};
@@ -717,34 +734,59 @@
       if(pl.vice) fresh.vice = id;
       idx[pos]++;
     });
-    squad = fresh; store.set('fpl_squad', squad); renderSquad();
-    const spent = variant.budget_spent!=null ? ('£'+Number(variant.budget_spent).toFixed(1)+'m spent') : '';
-    msg.textContent = '✓ Built! ' + spent; msg.style.color = 'var(--accent)';
+    return fresh;
+  }
+  function useAutoTeam(){
+    if(!_autoVariant) return;
+    squad = copyVariantToSquad(_autoVariant); store.set('fpl_squad', squad); renderSquad();
+    setSbView('myteam'); flash('Copied into My Team ✓');
   }
   function setActiveStrat(strat){
     document.querySelectorAll('.strat-btn').forEach(b => {
       const on = b.dataset.strat === strat;
-      b.classList.toggle('active', on);
-      b.classList.toggle('ghost', !on);
+      b.classList.toggle('active', on); b.classList.toggle('ghost', !on);
     });
   }
+  const AP_ORDER = {GK:0, DEF:1, MID:2, FWD:3};
+  function renderAutoPick(variant){
+    const disp = document.getElementById('autoPickDisplay');
+    if(!variant || !variant.players){ disp.innerHTML = ''; return; }
+    _autoVariant = variant;
+    const players = [...variant.players].sort((a,b)=> (AP_ORDER[a.pos]-AP_ORDER[b.pos]));
+    const rows = players.map(p=>{
+      const role = p.captain ? '<span class="pill gold">C</span>' : p.vice ? '<span class="pill blue">V</span>' : '';
+      const bench = p.starting===false ? '<span style="color:var(--muted);font-size:12px"> · bench</span>' : '';
+      const flags = (p.pens?' <span class="pill gold" style="font-size:10px">PEN</span>':'') + (p.setpiece?' <span class="pill green" style="font-size:10px">SP</span>':'');
+      return `<div class="player-row" style="grid-template-columns:44px 1fr auto auto">
+        <span class="pill ${POS_PILL2[p.pos]||'blue'}">${p.pos}</span>
+        <span><b>${escapeHtml(p.name)}</b> ${role}${flags}<span style="color:var(--muted);font-size:12px"> ${escapeHtml(p.team)}</span>${bench}</span>
+        <span style="font-weight:700">£${Number(p.price).toFixed(1)}m</span></div>`;
+    }).join('');
+    const spent = variant.budget_spent!=null ? Number(variant.budget_spent).toFixed(1) : '—';
+    disp.innerHTML = `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+        <h3 style="margin:0">Suggested XV <span class="tag">£${spent}m spent</span></h3>
+        <button class="btn" onclick="useAutoTeam()">⬇ Use this as my team</button>
+      </div>
+      ${rows}
+      <p class="save-note">This is a suggestion only. Tap <b>⬇ Use this as my team</b> to copy it into My Team (it replaces what's there), then tweak it yourself.</p>
+    </div>`;
+  }
   function autoBuild(strat){
-    strat = strat || 'balanced';
-    const msg = document.getElementById('buildMsg');
+    strat = strat || 'balanced'; _autoStrat = strat;
+    const disp = document.getElementById('autoPickDisplay');
     setActiveStrat(strat);
     const apply = data => {
-      // new format has variants{}; fall back to the flat (single-team) format
       const variant = (data.variants && data.variants[strat]) || (data.variants && data.variants[data.default]) || data;
-      fillFromVariant(variant, msg);
+      renderAutoPick(variant);
     };
     if(_squadData){ try { apply(_squadData); return; } catch(e){} }
-    msg.textContent = 'Loading…'; msg.style.color = 'var(--muted)';
+    disp.innerHTML = '<div class="card" style="color:var(--muted)">Loading…</div>';
     fetch('squad-data.json', {cache:'no-store'})
       .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
       .then(data => { _squadData = data; apply(data); })
       .catch(() => {
-        msg.style.color = 'var(--red)';
-        msg.textContent = 'Not built yet — run the "Update FPL data" workflow on GitHub (Actions tab), then reload. Or build manually below.';
+        disp.innerHTML = '<div class="card" style="color:var(--muted)">Not built yet — run the "Update FPL data" workflow on GitHub (Actions tab), then reload. Or just build your own team in My Team.</div>';
       });
   }
 
