@@ -377,11 +377,14 @@
     <div class="card">
       <div id="posContainer"></div>
       <div class="row-actions">
-        <button class="btn" onclick="saveSquad()">💾 Save squad</button>
+        <button class="btn" onclick="rateTeam()">⭐ Rate my team</button>
+        <button class="btn ghost" onclick="saveSquad()">💾 Save squad</button>
         <button class="btn ghost" onclick="clearSquad()">🗑 Clear all</button>
       </div>
       <p class="save-note">Formation rule: 2 GK · 5 DEF · 5 MID · 3 FWD. On the pitch play 1 GK, 3–5 DEF, 2–5 MID, 1–3 FWD. Tap <span class="kbd">C</span> for captain, <span class="kbd">V</span> for vice.</p>
     </div>
+
+    <div id="rateResult"></div>
 
     <div class="callout blue">
       <b>🪑 Bench order matters (a quiet points-saver):</b> if one of your starters doesn't play, the game automatically subs in your bench <b>in order</b> — so put your <b>most-likely-to-play</b> outfield sub first. Two more freebies: never leave a gap (always field 11 players who are actually playing), and check the Friday press conferences for injuries before you finalise.
@@ -745,6 +748,103 @@
     squad.captain = null; squad.vice = null;
     store.set('fpl_squad', squad); renderSquad();
   }
+  // ---------- Rate My Team ----------
+  let _playersDb = null;
+  const normName = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+  function buildDbIndex(db){
+    const idx = {};
+    db.players.forEach(p => { const k = normName(p.name); if(!idx[k]) idx[k]=p; });
+    return idx;
+  }
+  function pct(rating, samePos){
+    // percentile of this rating among available same-position players (0-100)
+    const pool = samePos.filter(p=>p.avail).map(p=>p.rating);
+    if(!pool.length) return 50;
+    const below = pool.filter(r=>r<=rating).length;
+    return Math.round(below / pool.length * 100);
+  }
+  function rateTeam(){
+    const out = document.getElementById('rateResult');
+    out.innerHTML = '<div class="card" style="color:var(--muted)">Rating your team…</div>';
+    const run = db => {
+      _playersDb = db;
+      const idx = buildDbIndex(db);
+      const byPos = {GK:[],DEF:[],MID:[],FWD:[]};
+      db.players.forEach(p=>{ if(byPos[p.pos]) byPos[p.pos].push(p); });
+      // gather the user's entered players
+      const owned = [], unmatched = [], ownedKeys = new Set();
+      POSITIONS.forEach(pos => squad[pos.key].forEach((pl,slot)=>{
+        const nm = (pl.name||'').trim(); if(!nm) return;
+        const match = idx[normName(nm)];
+        if(match){ owned.push(Object.assign({}, match, {slot:pos.key+'-'+slot, entered:nm}));
+                   ownedKeys.add(normName(match.name)); }
+        else unmatched.push(nm);
+      }));
+      if(owned.length < 3){
+        out.innerHTML = `<div class="card"><h3>⭐ Rate my team</h3><p style="color:var(--muted)">Enter your players' names in the squad above first (I matched ${owned.length}). Spelling should match the FPL name, e.g. "Saka", "B.Fernandes".</p></div>`;
+        return;
+      }
+      // percentile score per owned player
+      owned.forEach(p => p.pctl = pct(p.rating, byPos[p.pos]||[]));
+      // best XI from owned (simple: 1 GK + best 10 outfield respecting min 3DEF/2MID/1FWD)
+      const gk=[...owned.filter(p=>p.pos==='GK')].sort((a,b)=>b.rating-a.rating);
+      const def=[...owned.filter(p=>p.pos==='DEF')].sort((a,b)=>b.rating-a.rating);
+      const mid=[...owned.filter(p=>p.pos==='MID')].sort((a,b)=>b.rating-a.rating);
+      const fwd=[...owned.filter(p=>p.pos==='FWD')].sort((a,b)=>b.rating-a.rating);
+      const xi=[];
+      if(gk[0]) xi.push(gk[0]);
+      def.slice(0,3).forEach(p=>xi.push(p)); mid.slice(0,2).forEach(p=>xi.push(p)); fwd.slice(0,1).forEach(p=>xi.push(p));
+      const rest=[...def.slice(3),...mid.slice(2),...fwd.slice(1)].sort((a,b)=>b.rating-a.rating);
+      rest.slice(0,4).forEach(p=>xi.push(p));   // fill to 11
+      // team score = average percentile of best XI (captain weighted 1.5x if set)
+      const capKey = squad.captain;
+      let wsum=0, w=0;
+      xi.forEach(p=>{ const cw = (capKey && p.slot===capKey)?1.5:1; wsum += p.pctl*cw; w += cw; });
+      const score = Math.round(w? wsum/w : 0);
+      const grade = score>=88?'A+':score>=80?'A':score>=70?'B':score>=60?'C':score>=48?'D':'Needs work';
+      const gcol = score>=80?'#0e8a3e':score>=60?'#b8860b':'#c9314b';
+      // transfer suggestions: genuinely weak owned players (<60th pctl), best affordable upgrade
+      const weak=[...owned].filter(p=>p.pctl<60).sort((a,b)=>a.pctl-b.pctl).slice(0,3);
+      const suggested = new Set();
+      const sugg = weak.map(p=>{
+        const cand=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating*1.15 && c.price<=p.price+2.0
+                     && !ownedKeys.has(normName(c.name)) && !suggested.has(normName(c.name)))
+                   .sort((a,b)=>b.rating-a.rating)[0];
+        if(cand) suggested.add(normName(cand.name));
+        return {out:p, in:cand};
+      }).filter(s=>s.in);
+      // injured owned players
+      const injured = owned.filter(p=>!p.avail);
+      // render
+      let html = `<div class="card"><h3>⭐ Your team rating</h3>
+        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:10px">
+          <div style="font-size:46px;font-weight:800;color:${gcol};line-height:1">${score}<span style="font-size:20px;color:var(--muted)">/100</span></div>
+          <div><div style="font-size:22px;font-weight:800;color:${gcol}">${grade}</div>
+          <div style="color:var(--muted);font-size:13px">Best XI averages the ${score}th percentile of all players at their positions${capKey?' (captain weighted)':''}.</div></div>
+        </div>`;
+      if(injured.length) html += `<div class="callout red" style="margin:8px 0"><b>⚠️ Flagged in your squad:</b> ${injured.map(p=>escapeHtml(p.name)+' ('+p.status+')').join(', ')} — not fully available. Consider replacing.</div>`;
+      if(unmatched.length) html += `<div class="callout" style="margin:8px 0"><b>Couldn't find:</b> ${unmatched.map(escapeHtml).join(', ')} — check the spelling against the FPL name.</div>`;
+      if(sugg.length){
+        html += `<h4 style="margin:14px 0 6px">🔁 Who to bring in</h4><div style="overflow-x:auto"><table><thead><tr><th>Weak spot</th><th></th><th>Upgrade to</th><th>£m</th></tr></thead><tbody>`;
+        sugg.forEach(s=>{
+          html += `<tr><td>${escapeHtml(s.out.name)} <span class="pill red">${s.out.pctl}%</span></td><td>▸</td>`+
+            `<td><b>${escapeHtml(s.in.name)}</b> <span class="pill green">${pct(s.in.rating,byPos[s.in.pos])}%</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(s.in.team)}</span></td>`+
+            `<td>£${Number(s.in.price).toFixed(1)}m</td></tr>`;
+        });
+        html += `</tbody></table></div><p class="save-note">Suggestions are the best-rated available upgrade at each weak spot within ~£2.0m (assuming a little in the bank). Always sense-check fixtures and team news first.</p>`;
+      } else {
+        html += `<p style="color:var(--accent)">💪 No obvious upgrades within budget — strong squad!</p>`;
+      }
+      html += `</div>`;
+      out.innerHTML = html;
+    };
+    if(_playersDb){ run(_playersDb); return; }
+    fetch('players-data.json', {cache:'no-store'})
+      .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
+      .then(run)
+      .catch(()=>{ out.innerHTML = `<div class="card" style="color:var(--muted)">Player database not loaded yet — the automated updater adds it on its next run, or run the <b>Update FPL data</b> workflow on GitHub. (Ratings are limited in preseason until games are played.)</div>`; });
+  }
+
   function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
   function flash(msg){
     const n = document.createElement('div');

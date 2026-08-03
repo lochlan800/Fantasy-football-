@@ -133,6 +133,11 @@ The web tool now also includes:
   gameweeks ahead so single free transfers keep your squad healthy without hits.
 - **🪑 Bench-order & deadline guidance** in the Squad Builder.
 
+- **⭐ Rate my team** (Squad Builder) — enter your 15 players and it scores your
+  team out of 100 with a grade, flags injured/unavailable players, and suggests
+  who to bring in for your weakest spots. Powered by `players-data.json` (every
+  player with a tactic-based rating), matched to the names you type.
+
 All of these save in your browser, and the data-driven ones refresh automatically
 via the twice-daily GitHub Action.
 

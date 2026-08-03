@@ -395,31 +395,53 @@ STRATEGIES = {
 }
 
 
+def player_rating(p, team_diff, weights):
+    """The tactic-based score for one player (higher = better pick)."""
+    diff = team_diff.get(p["team"], 3.0)
+    fixture_mult = 1 + (3.0 - diff) * 0.06            # easy run boosts, hard run penalises
+    mins_factor = 0.55 + 0.45 * min(p["minutes"], 1200) / 1200.0   # reward nailed minutes
+    rating = (weights["quality"] * p["ppg"]
+              + weights["form"] * p["form"]
+              + weights["xgi"] * p["xgi90"]
+              + weights["defcon"] * p["dc90"])
+    if p["pens"]:
+        rating += weights["pen"]                      # penalty takers: extra points route
+    if p["setpiece"]:
+        rating += weights["setpiece"]                 # corners/free-kick takers
+    if weights.get("value"):
+        rating += weights["value"] * (p["ppm"] / 5.0)   # tilt toward cheap points
+    return round(rating * fixture_mult * mins_factor, 3)
+
+
 def score_players(players, ranking, weights):
-    """Attach a tactic-based `score` to each player using the given weights."""
+    """Attach a tactic-based `score` to each available player using the weights."""
     team_diff = {r["short"]: r["avg"] for r in ranking}
     pool = []
     for p in players:
         if p["status"] != "a":          # skip injured/suspended/doubtful
             continue
-        diff = team_diff.get(p["team"], 3.0)
-        fixture_mult = 1 + (3.0 - diff) * 0.06        # easy run boosts, hard run penalises
-        # "nailed" factor: heavily reward players who actually rack up minutes
-        mins_factor = 0.55 + 0.45 * min(p["minutes"], 1200) / 1200.0
-        rating = (weights["quality"] * p["ppg"]
-                  + weights["form"] * p["form"]
-                  + weights["xgi"] * p["xgi90"]
-                  + weights["defcon"] * p["dc90"])
-        if p["pens"]:
-            rating += weights["pen"]                  # penalty takers: extra points route
-        if p["setpiece"]:
-            rating += weights["setpiece"]             # corners/free-kick takers
-        if weights.get("value"):
-            rating += weights["value"] * (p["ppm"] / 5.0)   # tilt toward cheap points
         p = dict(p)
-        p["score"] = round(rating * fixture_mult * mins_factor, 3)
+        p["score"] = player_rating(p, team_diff, weights)
         pool.append(p)
     return pool
+
+
+def write_players_db(players, ranking):
+    """Write players-data.json: every player with a rating, for the Rate-My-Team tool."""
+    team_diff = {r["short"]: r["avg"] for r in ranking}
+    w = STRATEGIES["balanced"]
+    db = []
+    for p in players:
+        avail = p["status"] == "a"
+        db.append({
+            "name": p["name"], "team": p["team"], "pos": p["pos"], "price": p["price"],
+            "owned": p["owned"], "form": p["form"], "xgi90": round(p["xgi90"], 2),
+            "rating": player_rating(p, team_diff, w) if avail else 0.0,
+            "pens": p["pens"], "avail": avail, "status": p["status"],
+        })
+    with open("players-data.json", "w") as fh:
+        json.dump({"players": db}, fh, indent=2)
+    print(f"  Saved players-data.json ({len(db)} players) for Rate-My-Team.", file=sys.stderr)
 
 
 def _club_counts(squad):
@@ -829,6 +851,7 @@ def main():
         _, _, ranking = compute_fixture_ranking(boot, fixtures)
         report_build(players, ranking)
         write_insights(players)
+        write_players_db(players, ranking)
 
     if show_all or args.build or args.understat:
         write_understat()
