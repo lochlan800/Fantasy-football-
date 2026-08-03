@@ -942,11 +942,13 @@
       const score = Math.round(w? wsum/w : 0);
       const grade = score>=88?'A+':score>=80?'A':score>=70?'B':score>=60?'C':score>=48?'D':'Needs work';
       const gcol = score>=80?'#0e8a3e':score>=60?'#b8860b':'#c9314b';
-      // transfer suggestions: genuinely weak owned players (<60th pctl), best affordable upgrade
+      // transfer suggestions: genuinely weak owned players (<60th pctl) → a BETTER
+      // player at (roughly) the SAME price. Never a cheaper downgrade.
       const weak=[...owned].filter(p=>p.pctl<60).sort((a,b)=>a.pctl-b.pctl).slice(0,3);
       const suggested = new Set();
       const sugg = weak.map(p=>{
-        const cand=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating*1.15 && c.price<=p.price+2.0
+        const cand=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
+                     && Math.abs(c.price-p.price)<=0.5                    // same price (±£0.5m), no downgrade
                      && !ownedKeys.has(normName(c.name)) && !suggested.has(normName(c.name)))
                    .sort((a,b)=>b.rating-a.rating)[0];
         if(cand) suggested.add(normName(cand.name));
@@ -964,15 +966,17 @@
       if(injured.length) html += `<div class="callout red" style="margin:8px 0"><b>⚠️ Flagged in your squad:</b> ${injured.map(p=>escapeHtml(p.name)+' ('+p.status+')').join(', ')} — not fully available. Consider replacing.</div>`;
       if(unmatched.length) html += `<div class="callout" style="margin:8px 0"><b>Couldn't find:</b> ${unmatched.map(escapeHtml).join(', ')} — check the spelling against the FPL name.</div>`;
       if(sugg.length){
-        html += `<h4 style="margin:14px 0 6px">🔁 Who to bring in</h4><div style="overflow-x:auto"><table><thead><tr><th>Weak spot</th><th></th><th>Upgrade to</th><th>£m</th></tr></thead><tbody>`;
+        html += `<h4 style="margin:14px 0 6px">🔁 Who to bring in <span style="font-weight:400;color:var(--muted);font-size:13px">— better players at the same price</span></h4><div style="overflow-x:auto"><table><thead><tr><th>Weak spot</th><th></th><th>Upgrade to (same price)</th><th>Price</th></tr></thead><tbody>`;
         sugg.forEach(s=>{
-          html += `<tr><td>${escapeHtml(s.out.name)} <span class="pill red">${s.out.pctl}%</span></td><td>▸</td>`+
+          const diff = Number(s.in.price) - Number(s.out.price);
+          const diffTxt = Math.abs(diff) < 0.05 ? 'same price' : (diff>0?'+£'+diff.toFixed(1)+'m':'−£'+Math.abs(diff).toFixed(1)+'m');
+          html += `<tr><td>${escapeHtml(s.out.name)} <span class="pill red">${s.out.pctl}%</span> <span style="color:var(--muted);font-size:12px">£${Number(s.out.price).toFixed(1)}m</span></td><td>▸</td>`+
             `<td><b>${escapeHtml(s.in.name)}</b> <span class="pill green">${pct(s.in.rating,byPos[s.in.pos])}%</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(s.in.team)}</span></td>`+
-            `<td>£${Number(s.in.price).toFixed(1)}m</td></tr>`;
+            `<td>£${Number(s.in.price).toFixed(1)}m <span style="color:var(--muted);font-size:11px">(${diffTxt})</span></td></tr>`;
         });
-        html += `</tbody></table></div><p class="save-note">Suggestions are the best-rated available upgrade at each weak spot within ~£2.0m (assuming a little in the bank). Always sense-check fixtures and team news first.</p>`;
+        html += `</tbody></table></div><p class="save-note">Each is a higher-rated player at roughly the same price — a straight quality upgrade, not a cheaper downgrade. Always sense-check fixtures and team news first.</p>`;
       } else {
-        html += `<p style="color:var(--accent)">💪 No obvious upgrades within budget — strong squad!</p>`;
+        html += `<p style="color:var(--accent)">💪 No better players available at the same prices — strong squad!</p>`;
       }
       html += `</div>`;
       out.innerHTML = html;
