@@ -902,6 +902,21 @@
     const below = pool.filter(r=>r<=rating).length;
     return Math.round(below / pool.length * 100);
   }
+  // Hierarchy signals for choosing an upgrade.
+  const isNailed = c => (c.mins!=null && c.mins>=1500) || (c.starts!=null && c.starts>=15);
+  const goodFix  = c => (c.fixdiff!=null && c.fixdiff<3.0);
+  const onSetPiece = c => !!(c.pens || c.setpiece);
+  function candTier(c){
+    return { top: (isNailed(c) && goodFix(c)) ? 1 : 0, setp: onSetPiece(c) ? 1 : 0 };
+  }
+  function candReasons(c){
+    const r = [];
+    if(isNailed(c)) r.push('<span class="pill green" style="font-size:10px">🔒 nailed</span>');
+    if(goodFix(c)) r.push('<span class="pill blue" style="font-size:10px">🟢 fixtures</span>');
+    if(c.pens) r.push('<span class="pill gold" style="font-size:10px">🎯 pens</span>');
+    else if(c.setpiece) r.push('<span class="pill purple" style="font-size:10px">⚽ set-piece</span>');
+    return r.join(' ');
+  }
   function rateTeam(){
     const out = document.getElementById('rateResult');
     out.innerHTML = '<div class="card" style="color:var(--muted)">Rating your team…</div>';
@@ -947,11 +962,17 @@
       const weak=[...owned].filter(p=>p.pctl<60).sort((a,b)=>a.pctl-b.pctl).slice(0,3);
       const suggested = new Set();
       const sugg = weak.map(p=>{
-        const cand=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
+        const pool=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
                      && Math.abs(c.price-p.price)<=0.5                    // same price (±£0.5m), no downgrade
                      && (c.mins==null || c.mins>=600)                     // must actually play (not a fringe/academy player)
-                     && !ownedKeys.has(normName(c.name)) && !suggested.has(normName(c.name)))
-                   .sort((a,b)=>b.rating-a.rating)[0];
+                     && !ownedKeys.has(normName(c.name)) && !suggested.has(normName(c.name)));
+        // hierarchy: 1) nailed AND good fixtures  2) on pens/free-kicks/corners  then rating
+        const cand=pool.sort((a,b)=>{
+          const ta=candTier(a), tb=candTier(b);
+          if(tb.top!==ta.top) return tb.top-ta.top;      // nailed + good fixtures first
+          if(tb.setp!==ta.setp) return tb.setp-ta.setp;  // then set-piece / penalty takers
+          return b.rating-a.rating;                       // then overall rating
+        })[0];
         if(cand) suggested.add(normName(cand.name));
         return {out:p, in:cand};
       }).filter(s=>s.in);
@@ -972,10 +993,10 @@
           const diff = Number(s.in.price) - Number(s.out.price);
           const diffTxt = Math.abs(diff) < 0.05 ? 'same price' : (diff>0?'+£'+diff.toFixed(1)+'m':'−£'+Math.abs(diff).toFixed(1)+'m');
           html += `<tr><td>${escapeHtml(s.out.name)} <span class="pill red">${s.out.pctl}%</span> <span style="color:var(--muted);font-size:12px">£${Number(s.out.price).toFixed(1)}m</span></td><td>▸</td>`+
-            `<td><b>${escapeHtml(s.in.name)}</b> <span class="pill green">${pct(s.in.rating,byPos[s.in.pos])}%</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(s.in.team)}</span></td>`+
+            `<td><b>${escapeHtml(s.in.name)}</b> <span class="pill green">${pct(s.in.rating,byPos[s.in.pos])}%</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(s.in.team)}</span><br>${candReasons(s.in)||'<span style="color:var(--muted);font-size:11px">higher rated</span>'}</td>`+
             `<td>£${Number(s.in.price).toFixed(1)}m <span style="color:var(--muted);font-size:11px">(${diffTxt})</span></td></tr>`;
         });
-        html += `</tbody></table></div><p class="save-note">Each is a higher-rated player at roughly the same price — a straight quality upgrade, not a cheaper downgrade. Always sense-check fixtures and team news first.</p>`;
+        html += `</tbody></table></div><p class="save-note">Same price, higher quality. Picked in priority order: <b>1)</b> nailed-on with good fixtures, <b>2)</b> on penalties / free-kicks / corners, then overall rating. Always sense-check the latest team news first.</p>`;
       } else {
         html += `<p style="color:var(--accent)">💪 No better players available at the same prices — strong squad!</p>`;
       }

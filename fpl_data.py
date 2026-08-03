@@ -442,7 +442,9 @@ def write_players_db(players, ranking):
             "mins": p["minutes"], "starts": p.get("starts", 0),
             "owned": p["owned"], "form": p["form"], "xgi90": round(p["xgi90"], 2),
             "rating": player_rating(p, team_diff, w) if avail else 0.0,
-            "pens": p["pens"], "avail": avail, "status": p["status"],
+            "pens": p["pens"], "setpiece": p["setpiece"],
+            "fixdiff": round(team_diff.get(p["team"], 3.0), 2),   # avg upcoming fixture difficulty
+            "avail": avail, "status": p["status"],
         })
     with open("players-data.json", "w") as fh:
         json.dump({"players": db}, fh, indent=2)
