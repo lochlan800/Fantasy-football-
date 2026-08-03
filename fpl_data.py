@@ -400,7 +400,9 @@ def player_rating(p, team_diff, weights):
     """The tactic-based score for one player (higher = better pick)."""
     diff = team_diff.get(p["team"], 3.0)
     fixture_mult = 1 + (3.0 - diff) * 0.06            # easy run boosts, hard run penalises
-    mins_factor = 0.55 + 0.45 * min(p["minutes"], 1200) / 1200.0   # reward nailed minutes
+    # Heavily discount low-minute players: their per-90 stats are noisy small
+    # samples, so a fringe player shouldn't out-rate a proven starter.
+    mins_factor = 0.15 + 0.85 * min(p["minutes"], 1800) / 1800.0
     rating = (weights["quality"] * p["ppg"]
               + weights["form"] * p["form"]
               + weights["xgi"] * p["xgi90"]
@@ -437,6 +439,7 @@ def write_players_db(players, ranking):
         db.append({
             "name": p["name"], "full": p.get("full_name", ""),
             "team": p["team"], "pos": p["pos"], "price": p["price"],
+            "mins": p["minutes"], "starts": p.get("starts", 0),
             "owned": p["owned"], "form": p["form"], "xgi90": round(p["xgi90"], 2),
             "rating": player_rating(p, team_diff, w) if avail else 0.0,
             "pens": p["pens"], "avail": avail, "status": p["status"],

@@ -949,6 +949,7 @@
       const sugg = weak.map(p=>{
         const cand=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
                      && Math.abs(c.price-p.price)<=0.5                    // same price (±£0.5m), no downgrade
+                     && (c.mins==null || c.mins>=600)                     // must actually play (not a fringe/academy player)
                      && !ownedKeys.has(normName(c.name)) && !suggested.has(normName(c.name)))
                    .sort((a,b)=>b.rating-a.rating)[0];
         if(cand) suggested.add(normName(cand.name));
