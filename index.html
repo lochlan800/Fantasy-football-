@@ -802,7 +802,10 @@
   const normName = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
   function buildDbIndex(db){
     const idx = {};
-    db.players.forEach(p => { const k = normName(p.name); if(!idx[k]) idx[k]=p; });
+    db.players.forEach(p => {
+      const k = normName(p.name); if(k && !idx[k]) idx[k]=p;
+      const fk = normName(p.full||''); if(fk && !idx[fk]) idx[fk]=p;
+    });
     return idx;
   }
   function pct(rating, samePos){
@@ -911,7 +914,7 @@
     ensureDb(db => {
       const nq = normName(q), lq = q.toLowerCase();
       const matches = db.players
-        .filter(p => normName(p.name).includes(nq) || (p.team||'').toLowerCase().includes(lq))
+        .filter(p => normName(p.name).includes(nq) || normName(p.full||'').includes(nq) || (p.team||'').toLowerCase().includes(lq))
         .sort((a,b) => b.rating - a.rating).slice(0, 15);
       _searchResults = matches;
       if(!matches.length){ box.innerHTML = '<div style="color:var(--muted);padding:8px">No player found — try part of the name.</div>'; return; }

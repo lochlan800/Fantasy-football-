@@ -90,6 +90,7 @@ def build_players(boot):
         players.append({
             "id": e["id"],
             "name": e["web_name"],
+            "full_name": (str(e.get("first_name", "")) + " " + str(e.get("second_name", ""))).strip(),
             "team_id": e["team"],
             "team": teams.get(e["team"], "?"),
             "pos": POS_MAP.get(e["element_type"], "?"),
@@ -434,7 +435,8 @@ def write_players_db(players, ranking):
     for p in players:
         avail = p["status"] == "a"
         db.append({
-            "name": p["name"], "team": p["team"], "pos": p["pos"], "price": p["price"],
+            "name": p["name"], "full": p.get("full_name", ""),
+            "team": p["team"], "pos": p["pos"], "price": p["price"],
             "owned": p["owned"], "form": p["form"], "xgi90": round(p["xgi90"], 2),
             "rating": player_rating(p, team_diff, w) if avail else 0.0,
             "pens": p["pens"], "avail": avail, "status": p["status"],
