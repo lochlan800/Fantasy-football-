@@ -29,6 +29,7 @@ import argparse
 import csv
 import datetime
 import json
+import math
 import re
 import sys
 import urllib.request
@@ -429,21 +430,93 @@ def score_players(players, ranking, weights):
     return pool
 
 
-def write_players_db(players, ranking):
-    """Write players-data.json: every player with a rating, for the Rate-My-Team tool."""
+def team_strengths(boot):
+    """Attack/defence strength per team (home & away) + league averages, from FPL data."""
+    st = {}
+    for t in boot["teams"]:
+        st[t["id"]] = {
+            "att_h": t.get("strength_attack_home", 1100), "att_a": t.get("strength_attack_away", 1100),
+            "def_h": t.get("strength_defence_home", 1100), "def_a": t.get("strength_defence_away", 1100),
+        }
+    n = max(len(st), 1)
+    avg_att = sum((s["att_h"] + s["att_a"]) / 2 for s in st.values()) / n
+    avg_def = sum((s["def_h"] + s["def_a"]) / 2 for s in st.values()) / n
+    return st, (avg_att or 1100), (avg_def or 1100)
+
+
+def compute_projections(players, boot, fixtures, horizon=5):
+    """Estimate projected FPL points per gameweek and clean-sheet % per team.
+
+    Free model from official data:
+      - clean sheet %: Poisson P(0) on expected goals conceded, from team attack/
+        defence strengths and home/away.
+      - projected points: season points-per-game adjusted for upcoming fixture
+        difficulty, availability, and an xG over/under-performance nudge.
+    Returns (xpts_by_id, cs_pct_by_team_id).
+    """
+    st, AVG_ATT, AVG_DEF = team_strengths(boot)
+    LG_GOALS = 1.35                                   # avg goals a team concedes per game
+    gw = current_gw(boot)
+    upcoming = range(gw, gw + horizon)
+    # per team: list of (opponent_id, is_home, difficulty)
+    fx = {t["id"]: [] for t in boot["teams"]}
+    for f in fixtures:
+        if f["event"] is None or f["event"] not in upcoming:
+            continue
+        fx.setdefault(f["team_h"], []).append((f["team_a"], True, f["team_h_difficulty"]))
+        fx.setdefault(f["team_a"], []).append((f["team_h"], False, f["team_a_difficulty"]))
+
+    cs_by_team, diff_by_team = {}, {}
+    for tid, games in fx.items():
+        if not games:
+            cs_by_team[tid], diff_by_team[tid] = None, 3.0
+            continue
+        cs_vals, diffs = [], []
+        for opp, home, d in games:
+            our_def = st[tid]["def_h"] if home else st[tid]["def_a"]
+            opp_att = st[opp]["att_a"] if home else st[opp]["att_h"]
+            gc = LG_GOALS * (opp_att / AVG_ATT) * (AVG_DEF / max(our_def, 1))
+            gc = min(max(gc, 0.2), 4.0)
+            cs_vals.append(math.exp(-gc))            # Poisson P(0 goals conceded)
+            diffs.append(d)
+        cs_by_team[tid] = round(sum(cs_vals) / len(cs_vals) * 100, 0)
+        diff_by_team[tid] = sum(diffs) / len(diffs)
+
+    xpts = {}
+    for p in players:
+        if p["status"] != "a":
+            xpts[p["id"]] = 0.0
+            continue
+        chance = 100 if p["chance"] is None else p["chance"]
+        avail = chance / 100.0
+        d = diff_by_team.get(p["team_id"], 3.0)
+        fixture_adj = 1 + 0.10 * (3.0 - d)           # easy run boosts, hard run trims
+        games = max(p["minutes"] / 90.0, 1)
+        per_game_diff = (p["xgi_total"] - p["gi_actual"]) / games   # + = due, − = riding luck
+        xg_nudge = min(max(1 + 0.12 * per_game_diff, 0.85), 1.20)
+        xpts[p["id"]] = round(p["ppg"] * fixture_adj * avail * xg_nudge, 1)
+    return xpts, cs_by_team
+
+
+def write_players_db(players, ranking, boot, fixtures):
+    """Write players-data.json: every player with a rating, projection and clean-sheet %."""
     team_diff = {r["short"]: r["avg"] for r in ranking}
     w = STRATEGIES["balanced"]
+    xpts, cs_by_team = compute_projections(players, boot, fixtures)
     db = []
     for p in players:
         avail = p["status"] == "a"
+        cs = cs_by_team.get(p["team_id"])
         db.append({
             "name": p["name"], "full": p.get("full_name", ""),
             "team": p["team"], "pos": p["pos"], "price": p["price"],
             "mins": p["minutes"], "starts": p.get("starts", 0),
             "owned": p["owned"], "form": p["form"], "xgi90": round(p["xgi90"], 2),
             "rating": player_rating(p, team_diff, w) if avail else 0.0,
+            "xpts": xpts.get(p["id"], 0.0),                    # projected points / gameweek
+            "cs": (int(cs) if cs is not None else None),        # team clean-sheet % (for GK/DEF)
             "pens": p["pens"], "setpiece": p["setpiece"],
-            "fixdiff": round(team_diff.get(p["team"], 3.0), 2),   # avg upcoming fixture difficulty
+            "fixdiff": round(team_diff.get(p["team"], 3.0), 2),
             "avail": avail, "status": p["status"],
         })
     with open("players-data.json", "w") as fh:
@@ -779,13 +852,15 @@ def write_understat():
             "games": int(num(p.get("games"))),
             "goals": int(goals), "xg": round(xg, 1),
             "assists": int(assists), "xa": round(xa, 1),
+            "shots": int(num(p.get("shots"))),        # total shots
+            "kp": int(num(p.get("key_passes"))),       # key passes (chances created)
             "threat": round(xg + xa, 1),          # total goal involvement threat (xG+xA)
             "over": round((goals + assists) - (xg + xa), 1),   # + = overperforming (lucky)
         })
 
     def slim(p):
         return {k: p[k] for k in ("name", "team", "pos", "games", "goals", "xg",
-                                  "assists", "xa", "threat", "over")}
+                                  "assists", "xa", "shots", "kp", "threat", "over")}
 
     out = {
         "season": year,
@@ -858,7 +933,7 @@ def main():
         _, _, ranking = compute_fixture_ranking(boot, fixtures)
         report_build(players, ranking)
         write_insights(players)
-        write_players_db(players, ranking)
+        write_players_db(players, ranking, boot, fixtures)
 
     if show_all or args.build or args.understat:
         write_understat()

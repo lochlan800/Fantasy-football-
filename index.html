@@ -709,11 +709,13 @@
     }
     const isCap = squad.captain === id, isVc = squad.vice === id;
     const badge = isCap ? '<span class="pill gold top-badge">C</span>' : isVc ? '<span class="pill blue top-badge">V</span>' : '';
+    const info = dbLookup(pl.name);
+    const proj = (info && info.xpts!=null) ? `<div class="meta" style="color:var(--accent)">≈${Number(info.xpts).toFixed(1)} pts</div>` : '';
     return `<div class="shirt">
       <button class="rm" title="Remove" onclick="removeSlot('${pos}',${i})">✕</button>${badge}
       <div class="nm">${escapeHtml(pl.name)}</div>
       <div class="meta">${escapeHtml(pl.team||'')} · ${pos}</div>
-      <div class="pr">£${(parseFloat(pl.price)||0).toFixed(1)}m</div>
+      <div class="pr">£${(parseFloat(pl.price)||0).toFixed(1)}m</div>${proj}
       <button class="capbtn ${isCap?'on':isVc?'von':''}" onclick="toggleCap('${pos}',${i})">${isCap?'C':isVc?'V':'C?'}</button>
     </div>`;
   }
@@ -769,9 +771,12 @@
     if(!list.length){ box.innerHTML = '<div style="color:var(--muted);padding:8px">No '+pos+' found — try another search.</div>'; return; }
     box.innerHTML = list.map((p,idx)=>{
       const flag = p.avail ? '' : ' <span class="pill red">'+p.status+'</span>';
-      return `<div class="search-row" onclick="selectForSlot(${idx})" style="display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--border);border-radius:9px;margin-bottom:6px;cursor:pointer;background:var(--panel-2)">
+      const proj = p.xpts!=null ? `<span class="pill green" title="Projected points per gameweek">≈${Number(p.xpts).toFixed(1)}</span>` : '';
+      const cs = (p.cs!=null && (p.pos==='GK'||p.pos==='DEF')) ? `<span class="pill blue" title="Clean-sheet chance">🛡${p.cs}%</span>` : '';
+      return `<div class="search-row" onclick="selectForSlot(${idx})" style="display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid var(--border);border-radius:9px;margin-bottom:6px;cursor:pointer;background:var(--panel-2);flex-wrap:wrap">
         <span class="pill ${POS_PILL2[p.pos]||'blue'}">${p.pos}</span>
-        <b style="flex:1">${escapeHtml(p.name)}${flag}</b>
+        <b style="flex:1;min-width:90px">${escapeHtml(p.name)}${flag}</b>
+        ${proj}${cs}
         <span style="color:var(--muted);font-size:12px">${escapeHtml(p.team)}</span>
         <span style="font-weight:700">£${Number(p.price).toFixed(1)}m</span></div>`;
     }).join('');
@@ -885,7 +890,7 @@
     store.set('fpl_squad', squad); renderSquad();
   }
   // ---------- Rate My Team ----------
-  let _playersDb = null;
+  let _playersDb = null, _dbIndex = null;
   const normName = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
   function buildDbIndex(db){
     const idx = {};
@@ -957,6 +962,10 @@
       const score = Math.round(w? wsum/w : 0);
       const grade = score>=88?'A+':score>=80?'A':score>=70?'B':score>=60?'C':score>=48?'D':'Needs work';
       const gcol = score>=80?'#0e8a3e':score>=60?'#b8860b':'#c9314b';
+      // projected points for the best XI next gameweek (captain doubled)
+      let projTotal = 0, haveProj = false;
+      xi.forEach(p=>{ if(p.xpts!=null){ haveProj=true; projTotal += Number(p.xpts) * ((capKey && p.slot===capKey)?2:1); } });
+      projTotal = Math.round(projTotal);
       // transfer suggestions: genuinely weak owned players (<60th pctl) → a BETTER
       // player at (roughly) the SAME price. Never a cheaper downgrade.
       const weak=[...owned].filter(p=>p.pctl<60).sort((a,b)=>a.pctl-b.pctl).slice(0,3);
@@ -984,6 +993,7 @@
           <div style="font-size:46px;font-weight:800;color:${gcol};line-height:1">${score}<span style="font-size:20px;color:var(--muted)">/100</span></div>
           <div><div style="font-size:22px;font-weight:800;color:${gcol}">${grade}</div>
           <div style="color:var(--muted);font-size:13px">Best XI averages the ${score}th percentile of all players at their positions${capKey?' (captain weighted)':''}.</div></div>
+          ${haveProj ? `<div style="border-left:1px solid var(--border);padding-left:18px"><div style="font-size:30px;font-weight:800;color:var(--accent);line-height:1">${projTotal}</div><div style="color:var(--muted);font-size:13px">projected pts<br>next GW${capKey?' (with captain)':' — set a captain'}</div></div>` : ''}
         </div>`;
       if(injured.length) html += `<div class="callout red" style="margin:8px 0"><b>⚠️ Flagged in your squad:</b> ${injured.map(p=>escapeHtml(p.name)+' ('+p.status+')').join(', ')} — not fully available. Consider replacing.</div>`;
       if(unmatched.length) html += `<div class="callout" style="margin:8px 0"><b>Couldn't find:</b> ${unmatched.map(escapeHtml).join(', ')} — check the spelling against the FPL name.</div>`;
@@ -1016,9 +1026,10 @@
     if(_playersDb){ cb(_playersDb); return; }
     fetch('players-data.json', {cache:'no-store'})
       .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
-      .then(db => { _playersDb = db; cb(db); })
+      .then(db => { _playersDb = db; _dbIndex = buildDbIndex(db); cb(db); })
       .catch(() => onFail && onFail());
   }
+  function dbLookup(name){ return _dbIndex ? _dbIndex[normName(name)] : null; }
 
   function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
   function flash(msg){
@@ -1498,14 +1509,16 @@
     const overCol = p => { const o=Number(p.over); return o>0?'<span class="pill red">+'+o+'</span>':'<span class="pill green">'+o+'</span>'; };
     const dueCol = p => '<span class="pill green">+'+(Number(p.threat) - Number(p.goals+p.assists)).toFixed(1).replace('-','')+'</span>';
     const base = [{h:'Player',f:uNameCell},{h:'Goals',f:p=>p.goals},{h:'xG',f:p=>p.xg},{h:'Assists',f:p=>p.assists},{h:'xA',f:p=>p.xa}];
+    const shotsCol = {h:'Shots',f:p=>p.shots!=null?p.shots:'—'};
+    const kpCol = {h:'Key passes',f:p=>p.kp!=null?p.kp:'—'};
     return `<div class="card"><h3>🧮 Understat xG <span class="tag">${d.season} · ${d.source}</span></h3>
-      <div class="callout blue" style="margin-top:0">A <b>second, independent xG model</b> (Understat's own) to cross-check the FPL numbers. When two models agree a player is underperforming his chances, that's a strong buy signal.</div>
+      <div class="callout blue" style="margin-top:0">A <b>second, independent xG model</b> (Understat's own) to cross-check the FPL numbers. <b>Shots</b> and <b>key passes</b> show raw goal threat and chance creation. When two models agree a player is underperforming his chances, that's a strong buy signal.</div>
       <h4 style="color:var(--muted);font-size:13px;text-transform:uppercase;margin:14px 0 6px">💎 Due a haul — most underperforming their xG+xA</h4>
-      ${tbl(d.xg_under, base.concat([{h:'Under by',f:p=>'<span class="pill green">'+Math.abs(p.over)+'</span>'}]))}
+      ${tbl(d.xg_under, base.concat([shotsCol, kpCol, {h:'Under by',f:p=>'<span class="pill green">'+Math.abs(p.over)+'</span>'}]))}
       <h4 style="color:var(--muted);font-size:13px;text-transform:uppercase;margin:18px 0 6px">⚠️ Riding their luck — most overperforming</h4>
-      ${tbl(d.xg_over, base.concat([{h:'Over by',f:p=>'<span class="pill red">+'+p.over+'</span>'}]))}
+      ${tbl(d.xg_over, base.concat([shotsCol, kpCol, {h:'Over by',f:p=>'<span class="pill red">+'+p.over+'</span>'}]))}
       <h4 style="color:var(--muted);font-size:13px;text-transform:uppercase;margin:18px 0 6px">🔥 Biggest goal threat (xG + xA)</h4>
-      ${tbl(d.top_threat, base.concat([{h:'Threat',f:p=>'<span class="pill gold">'+p.threat+'</span>'}]))}
+      ${tbl(d.top_threat, base.concat([shotsCol, kpCol, {h:'Threat',f:p=>'<span class="pill gold">'+p.threat+'</span>'}]))}
     </div>`;
   }
   function showInsight(view){
@@ -1550,6 +1563,7 @@
 
   // ---------- Init ----------
   renderSquad(); renderChips(); loadCaptain(); renderChecklist();
+  ensureDb(() => renderSquad(), () => {});   // load projections onto the shirts once available
   renderTransferPlan(); loadRival(); renderWatchlist();
 </script>
 </body>

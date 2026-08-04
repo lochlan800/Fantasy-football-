@@ -139,6 +139,15 @@ The web tool now also includes:
   only shows defenders), pick a player and they drop into the shirt. Tap **C** to
   captain, **✕** to remove. Searches by first name or surname (accents ignored),
   blocks duplicates, and tracks your budget live.
+- **📈 Points projections** — an "expected FPL points per gameweek" figure for every
+  player (from season points-per-game, fixture difficulty, availability and an
+  xG over/under-performance nudge). Shown on each pitch shirt, in the position
+  picker, and summed for your best XI (captain doubled) in Rate My Team — a free
+  take on the paid sites' headline feature.
+- **🛡 Clean-sheet %** for defenders and goalkeepers, from the FPL team
+  attack/defence **strength ratings** (Poisson on expected goals conceded), shown
+  in the position picker.
+- **Understat shots & key passes** columns in the Understat xG view.
 - **⭐ Rate my team** (Squad Builder) — enter your 15 players and it scores your
   team out of 100 with a grade, flags injured/unavailable players, and suggests
   who to bring in for your weakest spots. Powered by `players-data.json` (every
