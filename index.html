@@ -223,6 +223,7 @@
     <button data-tab="fixtures">📅 Fixture Ranking</button>
     <button data-tab="insights">📊 Player Insights</button>
     <button data-tab="stats">📋 Stats</button>
+    <button data-tab="guide">📖 Guide</button>
     <button data-tab="watchlist">👀 Watchlist</button>
     <button data-tab="squad">🧮 Squad Builder</button>
     <button data-tab="chips">🎴 Chip Planner</button>
@@ -370,6 +371,82 @@
     <input class="textline" id="statsSearch" placeholder="🔎 Search a player or club…" oninput="renderStats()" autocomplete="off" style="margin-bottom:12px">
     <div id="statsTable"></div>
     <p class="save-note">Pts = total points · PPG = points per game · CS = clean sheets · xGI90 = expected goals+assists per 90 · ICT = Influence/Creativity/Threat index · Bns = bonus · BPS = bonus points system · Val = value (points per £m) · xPts = projected points next GW. Showing the top 150 for the filter.</p>
+  </section>
+
+  <!-- ============ STATS GUIDE ============ -->
+  <section class="tab" id="guide">
+    <h2><span class="em">📖</span>Stats Guide — what every stat means &amp; how to use it</h2>
+    <p class="lede">Every column on the Stats table explained in plain English — what it is, why it matters, and how to turn it into points.</p>
+
+    <div class="callout gold">
+      <b>Golden rule:</b> no single stat picks a player. The trick is <b>combining</b> them — e.g. a player with high <b>xGI90</b> (creating chances) + low <b>goals</b> (unlucky so far) + easy <b>fixtures</b> + high <b>value</b> is a brilliant buy before everyone else catches on.
+    </div>
+
+    <div class="card">
+      <h3>🏆 Scoring &amp; form</h3>
+      <table>
+        <tbody>
+          <tr><td><b>Pts</b></td><td>Total FPL points this season. <span style="color:var(--muted)">The bottom line — but backward-looking. A great player at a new club may have low points but be about to explode.</span></td></tr>
+          <tr><td><b>PPG</b></td><td>Points per game. <span style="color:var(--muted)">Fairer than total points because it ignores games missed. <b>Use it</b> to compare a player who's been injured vs an ever-present.</span></td></tr>
+          <tr><td><b>Form</b></td><td>Average points over the last ~30 days. <span style="color:var(--muted)"><b>Use it</b> to spot who's hot <em>right now</em> — but don't overpay for a short hot streak.</span></td></tr>
+          <tr><td><b>Min</b></td><td>Total minutes played. <span style="color:var(--muted)">The clearest "does he actually play?" signal. <b>Use it</b> to avoid rotation risks — high minutes = nailed on.</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>⚽ Attacking output &amp; underlying stats</h3>
+      <table>
+        <tbody>
+          <tr><td><b>G / A</b></td><td>Goals and assists. <span style="color:var(--muted)">A goal is worth 6pts for a defender/keeper, 5 for a midfielder, 4 for a forward; an assist is 3pts. The raw attacking returns.</span></td></tr>
+          <tr><td><b>xGI90</b></td><td><b>Expected goals + assists per 90 minutes</b> — the chances he creates/gets, per game. <span style="color:var(--muted)"><b>The most predictive stat.</b> High xGI90 but few goals = <span class="pill green">due a haul, buy now</span>. Low xGI90 but lots of goals = riding luck, sell before the crash.</span></td></tr>
+          <tr><td><b>ICT</b></td><td><b>Influence, Creativity &amp; Threat index</b> — FPL's own all-in-one attacking score. <span style="color:var(--muted)"><b>Use it</b> as a quick "how involved is he?" number. High ICT = heavily involved in his team's attacks.</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>🛡 Defensive stats</h3>
+      <table>
+        <tbody>
+          <tr><td><b>CS</b></td><td>Clean sheets. <span style="color:var(--muted)">Defenders/keepers get 4pts for a clean sheet. <b>Use it</b> (with the clean-sheet % in the picker) to find defenders from mean defences.</span></td></tr>
+          <tr><td><b>Sv</b></td><td>Saves (goalkeepers). <span style="color:var(--muted)">Keepers get 1pt per 3 saves. <b>Use it</b> — a busy keeper at a weaker team can still rack up save points even without clean sheets.</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>🎖 Bonus points</h3>
+      <table>
+        <tbody>
+          <tr><td><b>BPS</b></td><td><b>Bonus Points System</b> — a behind-the-scenes score for everything a player does in a match (passes, tackles, saves, etc.). <span style="color:var(--muted)">The top 3 BPS scorers in each game get bonus points.</span></td></tr>
+          <tr><td><b>Bns</b></td><td>Actual bonus points earned (1–3 extra per game). <span style="color:var(--muted)"><b>Use it</b> — players who consistently earn bonus quietly add 30–60 points a season. A big hidden edge.</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>💷 Value, ownership &amp; projections</h3>
+      <table>
+        <tbody>
+          <tr><td><b>Val</b></td><td><b>Value</b> = points per £m. <span style="color:var(--muted)"><b>Use it</b> to find cheap "enablers" — players who score well for their price, freeing up cash for your premiums.</span></td></tr>
+          <tr><td><b>Own%</b></td><td>How many managers own him. <span style="color:var(--muted)"><b>High</b> = a "template" player; owning him protects your rank. <b>Low (&lt;10%)</b> = a differential to climb with. Both have their place.</span></td></tr>
+          <tr><td><b>xPts</b></td><td><b>Projected points next gameweek</b> — our forecast from form, fixtures, availability and xG. <span style="color:var(--muted)"><b>Use it</b> to compare transfer targets and pick your captain (sort by xPts, look at the top).</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>🎯 Quick recipes — how to actually use the Stats table</h3>
+      <ul class="clean">
+        <li><b>Find a captain:</b> sort by <b>xPts</b> — the top few are your best armband options this week.</li>
+        <li><b>Find a bargain:</b> filter a position, sort by <b>Val</b> — the best points-per-£m for cheap enablers.</li>
+        <li><b>Find the best defenders:</b> filter <b>DEF</b>, sort by <b>CS</b> (clean sheets) or <b>Pts</b>.</li>
+        <li><b>Spot a player about to explode:</b> sort by <b>xGI90</b>, then look for ones with <em>low</em> goals — they're creating chances but haven't cashed in yet.</li>
+        <li><b>Find bonus-point magnets:</b> sort by <b>Bns</b> — consistent bonus is free points most managers ignore.</li>
+        <li><b>Beat the crowd:</b> sort by form or xPts, then check <b>Own%</b> — a strong player with low ownership is how you climb your mini-league.</li>
+      </ul>
+    </div>
   </section>
 
   <!-- ============ WATCHLIST ============ -->
