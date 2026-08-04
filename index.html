@@ -361,13 +361,21 @@
     <h2><span class="em">📋</span>Player Statistics</h2>
     <p class="lede">Every player, every stat — <b>tap any column heading to sort</b>. Filter by position and search by name. This is the big stats table the paid sites charge for.</p>
 
-    <div class="row-actions" id="statsPosFilter" style="margin-bottom:10px">
+    <div class="row-actions" id="statsPosFilter" style="margin-bottom:8px">
       <button class="btn sp-btn active" data-sp="ALL" onclick="setStatsPos('ALL')">All</button>
       <button class="btn ghost sp-btn" data-sp="GK" onclick="setStatsPos('GK')">GK</button>
       <button class="btn ghost sp-btn" data-sp="DEF" onclick="setStatsPos('DEF')">DEF</button>
       <button class="btn ghost sp-btn" data-sp="MID" onclick="setStatsPos('MID')">MID</button>
       <button class="btn ghost sp-btn" data-sp="FWD" onclick="setStatsPos('FWD')">FWD</button>
     </div>
+    <div class="row-actions" id="statsMinsFilter" style="margin-bottom:8px;align-items:center">
+      <span style="color:var(--muted);font-size:13px">Min. minutes:</span>
+      <button class="btn ghost sm-btn" data-sm="0" onclick="setStatsMins(0)">Any</button>
+      <button class="btn ghost sm-btn" data-sm="250" onclick="setStatsMins(250)">250+</button>
+      <button class="btn sm-btn active" data-sm="500" onclick="setStatsMins(500)">500+</button>
+      <button class="btn ghost sm-btn" data-sm="1000" onclick="setStatsMins(1000)">1000+</button>
+    </div>
+    <div class="callout blue" style="margin-top:0;font-size:13px">⚠️ <b>"Per 90" stats (xGI90) mislead for players with few minutes</b> — one moment in a short cameo looks elite. The minutes filter (default 500+) hides those flukes so the list reflects players who actually play. Lower it only if you want to see everyone.</div>
     <input class="textline" id="statsSearch" placeholder="🔎 Search a player or club…" oninput="renderStats()" autocomplete="off" style="margin-bottom:12px">
     <div id="statsTable"></div>
     <p class="save-note">Pts = total points · PPG = points per game · CS = clean sheets · xGI90 = expected goals+assists per 90 · ICT = Influence/Creativity/Threat index · Bns = bonus · BPS = bonus points system · Val = value (points per £m) · xPts = projected points next GW. Showing the top 150 for the filter.</p>
@@ -804,7 +812,7 @@
     }
     const isCap = squad.captain === id, isVc = squad.vice === id;
     const badge = isCap ? '<span class="pill gold top-badge">C</span>' : isVc ? '<span class="pill blue top-badge">V</span>' : '';
-    const info = dbLookup(pl.name);
+    const info = dbLookup(pl.name, pl.team);
     const proj = (info && info.xpts!=null) ? `<div class="meta" style="color:var(--accent)">≈${Number(info.xpts).toFixed(1)} pts</div>` : '';
     return `<div class="shirt">
       <button class="rm" title="Remove" onclick="removeSlot('${pos}',${i})">✕</button>${badge}
@@ -992,6 +1000,10 @@
     db.players.forEach(p => {
       const k = normName(p.name); if(k && !idx[k]) idx[k]=p;
       const fk = normName(p.full||''); if(fk && !idx[fk]) idx[fk]=p;
+      // name+club keys disambiguate duplicate surnames (two Wilsons, etc.)
+      const tm = (p.team||'').toLowerCase();
+      if(k) idx[k+'|'+tm] = p;
+      if(fk) idx[fk+'|'+tm] = p;
     });
     return idx;
   }
@@ -1029,7 +1041,8 @@
       const owned = [], unmatched = [], ownedKeys = new Set();
       POSITIONS.forEach(pos => squad[pos.key].forEach((pl,slot)=>{
         const nm = (pl.name||'').trim(); if(!nm) return;
-        const match = idx[normName(nm)];
+        const tm = (pl.team||'').toLowerCase();
+        const match = idx[normName(nm)+'|'+tm] || idx[normName(nm)];   // prefer name+club
         if(match){ owned.push(Object.assign({}, match, {slot:pos.key+'-'+slot, entered:nm}));
                    ownedKeys.add(normName(match.name)); }
         else unmatched.push(nm);
@@ -1124,10 +1137,15 @@
       .then(db => { _playersDb = db; _dbIndex = buildDbIndex(db); cb(db); })
       .catch(() => onFail && onFail());
   }
-  function dbLookup(name){ return _dbIndex ? _dbIndex[normName(name)] : null; }
+  function dbLookup(name, team){
+    if(!_dbIndex) return null;
+    const nk = normName(name);
+    if(team){ const hit = _dbIndex[nk+'|'+String(team).toLowerCase()]; if(hit) return hit; }
+    return _dbIndex[nk];
+  }
 
   // ---------- Sortable Stats table ----------
-  let _statsSort = {key:'points', dir:-1}, _statsPos = 'ALL';
+  let _statsSort = {key:'points', dir:-1}, _statsPos = 'ALL', _statsMins = 500;
   const STAT_COLS = [
     {key:'name',  label:'Player', num:false, get:p=>nameCell(p)},
     {key:'price', label:'£m',    num:true, get:p=>'£'+Number(p.price||0).toFixed(1)},
@@ -1153,6 +1171,11 @@
     document.querySelectorAll('.sp-btn').forEach(b=>{ const on=b.dataset.sp===pos; b.classList.toggle('active',on); b.classList.toggle('ghost',!on); });
     renderStats();
   }
+  function setStatsMins(m){
+    _statsMins = m;
+    document.querySelectorAll('.sm-btn').forEach(b=>{ const on=Number(b.dataset.sm)===m; b.classList.toggle('active',on); b.classList.toggle('ghost',!on); });
+    renderStats();
+  }
   function sortStats(key){
     if(_statsSort.key===key) _statsSort.dir *= -1; else _statsSort = {key, dir: key==='name'?1:-1};
     renderStats();
@@ -1162,6 +1185,7 @@
     ensureDb(db => {
       let list = db.players.slice();
       if(_statsPos!=='ALL') list = list.filter(p=>p.pos===_statsPos);
+      if(_statsMins>0) list = list.filter(p=> (p.mins!=null?p.mins:9999) >= _statsMins);
       const q = normName(document.getElementById('statsSearch').value);
       const lq = (document.getElementById('statsSearch').value||'').trim().toLowerCase();
       if(lq) list = list.filter(p=> normName(p.name).includes(q) || normName(p.full||'').includes(q) || (p.team||'').toLowerCase().includes(lq));

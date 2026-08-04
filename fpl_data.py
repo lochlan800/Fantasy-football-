@@ -465,6 +465,10 @@ def compute_projections(players, boot, fixtures, horizon=5):
     """
     st, AVG_ATT, AVG_DEF = team_strengths(boot)
     LG_GOALS = 1.35                                   # avg goals a team concedes per game
+    # Preseason, FPL hasn't set team strengths yet (they come through as 0/tiny).
+    # Without real strengths the clean-sheet model is meaningless, so mark it unknown.
+    have_strengths = AVG_ATT > 500 and AVG_DEF > 500 and \
+        any((st[t]["att_h"] or 0) > 100 for t in st)
     gw = current_gw(boot)
     upcoming = range(gw, gw + horizon)
     # per team: list of (opponent_id, is_home, difficulty)
@@ -484,12 +488,13 @@ def compute_projections(players, boot, fixtures, horizon=5):
         for opp, home, d in games:
             our_def = st[tid]["def_h"] if home else st[tid]["def_a"]
             opp_att = st[opp]["att_a"] if home else st[opp]["att_h"]
-            gc = LG_GOALS * (opp_att / AVG_ATT) * (AVG_DEF / max(our_def, 1))
-            gc = min(max(gc, 0.2), 4.0)
-            cs_vals.append(math.exp(-gc))            # Poisson P(0 goals conceded)
+            if our_def and opp_att:
+                gc = LG_GOALS * (opp_att / AVG_ATT) * (AVG_DEF / our_def)
+                cs_vals.append(math.exp(-min(max(gc, 0.15), 4.0)))   # Poisson P(0 conceded)
             diffs.append(d)
-        cs_by_team[tid] = round(sum(cs_vals) / len(cs_vals) * 100, 0)
-        diff_by_team[tid] = sum(diffs) / len(diffs)
+        cs_by_team[tid] = (round(sum(cs_vals) / len(cs_vals) * 100, 0)
+                           if (have_strengths and cs_vals) else None)
+        diff_by_team[tid] = sum(diffs) / len(diffs) if diffs else 3.0
 
     xpts = {}
     for p in players:
@@ -503,7 +508,10 @@ def compute_projections(players, boot, fixtures, horizon=5):
         games = max(p["minutes"] / 90.0, 1)
         per_game_diff = (p["xgi_total"] - p["gi_actual"]) / games   # + = due, − = riding luck
         xg_nudge = min(max(1 + 0.12 * per_game_diff, 0.85), 1.20)
-        xpts[p["id"]] = round(p["ppg"] * fixture_adj * avail * xg_nudge, 1)
+        # confidence in his minutes: a player who barely features shouldn't project
+        # like a nailed starter even if his few games looked good.
+        mins_conf = 0.2 + 0.8 * min(p["minutes"], 1800) / 1800.0
+        xpts[p["id"]] = round(p["ppg"] * fixture_adj * avail * xg_nudge * mins_conf, 1)
     return xpts, cs_by_team
 
 
