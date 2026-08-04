@@ -112,6 +112,15 @@ def build_players(boot):
             "news": (e.get("news") or "").strip(),                   # injury/availability note
             "goals": e.get("goals_scored", 0),
             "assists": e.get("assists", 0),
+            # --- more box-score stats (for the stats table) ---
+            "clean_sheets": e.get("clean_sheets", 0) or 0,
+            "saves": e.get("saves", 0) or 0,
+            "goals_conceded": e.get("goals_conceded", 0) or 0,
+            "bonus": e.get("bonus", 0) or 0,
+            "bps": e.get("bps", 0) or 0,
+            "ict": _f(e.get("ict_index")),                            # Influence+Creativity+Threat
+            "threat": _f(e.get("threat")),
+            "creativity": _f(e.get("creativity")),
             # --- underlying / predictive stats ---
             "xgi90": _f(e.get("expected_goal_involvements_per_90")),  # xG + xA per 90
             "xgi_total": _f(e.get("expected_goal_involvements")),      # season xG + xA
@@ -517,6 +526,11 @@ def write_players_db(players, ranking, boot, fixtures):
             "cs": (int(cs) if cs is not None else None),        # team clean-sheet % (for GK/DEF)
             "pens": p["pens"], "setpiece": p["setpiece"],
             "fixdiff": round(team_diff.get(p["team"], 3.0), 2),
+            # box-score stats for the sortable Stats table
+            "points": p["points"], "ppg": p["ppg"], "goals": p["goals"], "assists": p["assists"],
+            "clean_sheets": p["clean_sheets"], "saves": p["saves"], "gc": p["goals_conceded"],
+            "bonus": p["bonus"], "bps": p["bps"], "ict": round(p["ict"], 1),
+            "vseason": p["value_season"], "vform": p["value_form"],
             "avail": avail, "status": p["status"],
         })
     with open("players-data.json", "w") as fh:

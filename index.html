@@ -222,6 +222,7 @@
     <button data-tab="strategy" class="active">📋 Core Strategy</button>
     <button data-tab="fixtures">📅 Fixture Ranking</button>
     <button data-tab="insights">📊 Player Insights</button>
+    <button data-tab="stats">📋 Stats</button>
     <button data-tab="watchlist">👀 Watchlist</button>
     <button data-tab="squad">🧮 Squad Builder</button>
     <button data-tab="chips">🎴 Chip Planner</button>
@@ -352,6 +353,23 @@
         <li>To load them <b>now</b>: open the <b>Actions</b> tab on GitHub → <b>Update FPL data</b> → <b>Run workflow</b>, wait a minute, then refresh.</li>
       </ul>
     </div>
+  </section>
+
+  <!-- ============ STATS TABLE ============ -->
+  <section class="tab" id="stats">
+    <h2><span class="em">📋</span>Player Statistics</h2>
+    <p class="lede">Every player, every stat — <b>tap any column heading to sort</b>. Filter by position and search by name. This is the big stats table the paid sites charge for.</p>
+
+    <div class="row-actions" id="statsPosFilter" style="margin-bottom:10px">
+      <button class="btn sp-btn active" data-sp="ALL" onclick="setStatsPos('ALL')">All</button>
+      <button class="btn ghost sp-btn" data-sp="GK" onclick="setStatsPos('GK')">GK</button>
+      <button class="btn ghost sp-btn" data-sp="DEF" onclick="setStatsPos('DEF')">DEF</button>
+      <button class="btn ghost sp-btn" data-sp="MID" onclick="setStatsPos('MID')">MID</button>
+      <button class="btn ghost sp-btn" data-sp="FWD" onclick="setStatsPos('FWD')">FWD</button>
+    </div>
+    <input class="textline" id="statsSearch" placeholder="🔎 Search a player or club…" oninput="renderStats()" autocomplete="off" style="margin-bottom:12px">
+    <div id="statsTable"></div>
+    <p class="save-note">Pts = total points · PPG = points per game · CS = clean sheets · xGI90 = expected goals+assists per 90 · ICT = Influence/Creativity/Threat index · Bns = bonus · BPS = bonus points system · Val = value (points per £m) · xPts = projected points next GW. Showing the top 150 for the filter.</p>
   </section>
 
   <!-- ============ WATCHLIST ============ -->
@@ -1030,6 +1048,63 @@
       .catch(() => onFail && onFail());
   }
   function dbLookup(name){ return _dbIndex ? _dbIndex[normName(name)] : null; }
+
+  // ---------- Sortable Stats table ----------
+  let _statsSort = {key:'points', dir:-1}, _statsPos = 'ALL';
+  const STAT_COLS = [
+    {key:'name',  label:'Player', num:false, get:p=>nameCell(p)},
+    {key:'price', label:'£m',    num:true, get:p=>'£'+Number(p.price||0).toFixed(1)},
+    {key:'points',label:'Pts',   num:true, get:p=>p.points},
+    {key:'ppg',   label:'PPG',   num:true, get:p=>fmt(p.ppg)},
+    {key:'form',  label:'Form',  num:true, get:p=>fmt(p.form)},
+    {key:'owned', label:'Own%',  num:true, get:p=>fmt(p.owned)},
+    {key:'mins',  label:'Min',   num:true, get:p=>p.mins},
+    {key:'goals', label:'G',     num:true, get:p=>p.goals},
+    {key:'assists',label:'A',    num:true, get:p=>p.assists},
+    {key:'clean_sheets',label:'CS',num:true, get:p=>p.clean_sheets},
+    {key:'saves', label:'Sv',    num:true, get:p=>p.saves},
+    {key:'xgi90', label:'xGI90', num:true, get:p=>fmt(p.xgi90)},
+    {key:'ict',   label:'ICT',   num:true, get:p=>fmt(p.ict)},
+    {key:'bonus', label:'Bns',   num:true, get:p=>p.bonus},
+    {key:'bps',   label:'BPS',   num:true, get:p=>p.bps},
+    {key:'vseason',label:'Val',  num:true, get:p=>fmt(p.vseason)},
+    {key:'xpts',  label:'xPts',  num:true, get:p=>p.xpts!=null?fmt(p.xpts):'—'},
+  ];
+  function fmt(v){ return (v==null||v==='')?'—':(typeof v==='number'?(Number.isInteger(v)?v:v.toFixed(1)):v); }
+  function setStatsPos(pos){
+    _statsPos = pos;
+    document.querySelectorAll('.sp-btn').forEach(b=>{ const on=b.dataset.sp===pos; b.classList.toggle('active',on); b.classList.toggle('ghost',!on); });
+    renderStats();
+  }
+  function sortStats(key){
+    if(_statsSort.key===key) _statsSort.dir *= -1; else _statsSort = {key, dir: key==='name'?1:-1};
+    renderStats();
+  }
+  function renderStats(){
+    const box = document.getElementById('statsTable');
+    ensureDb(db => {
+      let list = db.players.slice();
+      if(_statsPos!=='ALL') list = list.filter(p=>p.pos===_statsPos);
+      const q = normName(document.getElementById('statsSearch').value);
+      const lq = (document.getElementById('statsSearch').value||'').trim().toLowerCase();
+      if(lq) list = list.filter(p=> normName(p.name).includes(q) || normName(p.full||'').includes(q) || (p.team||'').toLowerCase().includes(lq));
+      const {key, dir} = _statsSort;
+      list.sort((a,b)=>{
+        if(key==='name') return dir * String(a.name).localeCompare(String(b.name));
+        const av = (a[key]==null?-Infinity:a[key]), bv = (b[key]==null?-Infinity:b[key]);
+        return dir * (av>bv?1:av<bv?-1:0);
+      });
+      list = list.slice(0, 150);
+      const head = STAT_COLS.map(c=>{
+        const arrow = _statsSort.key===c.key ? (_statsSort.dir<0?' ▼':' ▲') : '';
+        const hl = _statsSort.key===c.key ? 'color:var(--accent)' : '';
+        return `<th onclick="sortStats('${c.key}')" style="cursor:pointer;white-space:nowrap;${hl}">${c.label}${arrow}</th>`;
+      }).join('');
+      const body = list.map(p=>'<tr>'+STAT_COLS.map(c=>`<td style="white-space:nowrap${c.num?';text-align:center':''}">${c.get(p)}</td>`).join('')+'</tr>').join('');
+      box.innerHTML = `<div style="overflow-x:auto"><table style="font-size:13px"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+    }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Stats not loaded yet — run the <b>Update FPL data</b> workflow on GitHub (Actions tab), then reload.</div>'; });
+  }
+  document.querySelector('[data-tab="stats"]').addEventListener('click', () => renderStats());
 
   function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
   function flash(msg){
