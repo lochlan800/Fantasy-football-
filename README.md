@@ -145,7 +145,9 @@ The web tool now also includes:
 - **🔄 Rotations tab** — finds the best pairs of teams to own one cheap player from
   each and rotate, playing whichever has the better fixture each week; ranked over
   the next 10 gameweeks with a week-by-week "play this team" grid. Great for £4.0–4.5m
-  keepers and defenders.
+  keepers and defenders. Also includes a **⚖️ Compare two teams** picker — choose any
+  two clubs and see their fixture difficulty side by side over the next 10 GWs, with
+  each team's average and which one to play each week.
 - **▶ "Assume he starts" override** — for players you expect to play more than the
   data shows (a new signing, or a backup covering an injury), tap ▶ on their shirt
   and their projection uses full minutes instead of their historical minutes. Your

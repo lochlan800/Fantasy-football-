@@ -1959,6 +1959,49 @@
 
   // ---------- Rotation Pairs ----------
   function avgDiffOf(games){ return games.length ? games.reduce((s,g)=>s+g.diff,0)/games.length : null; }
+  let _rotA = '', _rotB = '';
+  function setRotTeam(which, val){ if(which==='A') _rotA = val; else _rotB = val; renderRotCompare(); }
+  function rotWindow(season){
+    const startGw = season.current_gw || 1, gws = [];
+    for(let g=startGw; g<Math.min(startGw+10, (season.max_gw||38)+1); g++) gws.push(g);
+    return gws;
+  }
+  function renderRotCompare(){
+    const el = document.getElementById('rotCompareResult'); if(!el) return;
+    if(!_rotA || !_rotB || _rotA===_rotB){ el.innerHTML = '<p style="color:var(--muted);font-size:13px;margin:8px 0 0">Pick two different teams above to compare their fixtures side by side.</p>'; return; }
+    ensureSeason(season => {
+      const gws = rotWindow(season);
+      const A = season.teams.find(t=>t.short===_rotA), B = season.teams.find(t=>t.short===_rotB);
+      if(!A || !B){ el.innerHTML = ''; return; }
+      const cell = (t, gw) => {
+        const games = t.gws[gw] || [];
+        if(!games.length) return `<td style="text-align:center;background:#0d1117;color:#3d4b5f;border-radius:6px">–</td>`;
+        const d = Math.round(games.reduce((s,g)=>s+g.diff,0)/games.length);
+        const inner = games.map(g=>`${escapeHtml(g.opp)} (${g.venue})`).join('<br>');
+        return `<td style="text-align:center;background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'};border-radius:6px;font-weight:700;font-size:11px">${inner}<br><small>${d}${games.length>1?' •':''}</small></td>`;
+      };
+      const teamAvg = t => { let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{s+=x.diff;n++;})); return n?s/n:null; };
+      const playRow = gws.map(g => {
+        const da = avgDiffOf(A.gws[g]||[]), db = avgDiffOf(B.gws[g]||[]);
+        let pick='—'; if(da==null&&db==null) pick='—'; else if(da==null) pick=B.short; else if(db==null) pick=A.short; else pick = da<=db?A.short:B.short;
+        const col = pick===A.short?'#0e8a3e':pick===B.short?'#00697a':'#0d1117';
+        return `<td style="text-align:center;background:${col};color:#fff;border-radius:6px;font-weight:700;font-size:11px">${pick==='—'?'✕':pick}</td>`;
+      }).join('');
+      const avgA=teamAvg(A), avgB=teamAvg(B);
+      el.innerHTML = `
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin:10px 0;font-size:13px">
+          <span><b>${A.short}</b> avg <b style="color:${avgA<2.6?'var(--accent)':avgA>3.4?'var(--red)':'var(--gold)'}">${avgA!=null?avgA.toFixed(2):'—'}</b></span>
+          <span><b>${B.short}</b> avg <b style="color:${avgB<2.6?'var(--accent)':avgB>3.4?'var(--red)':'var(--gold)'}">${avgB!=null?avgB.toFixed(2):'—'}</b></span>
+        </div>
+        <div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:4px">
+          <thead><tr><th></th>${gws.map(g=>`<th style="font-size:11px;color:var(--muted)">GW${g}</th>`).join('')}</tr></thead>
+          <tbody>
+            <tr><td style="font-weight:700">${A.short}</td>${gws.map(g=>cell(A,g)).join('')}</tr>
+            <tr><td style="font-weight:700">${B.short}</td>${gws.map(g=>cell(B,g)).join('')}</tr>
+            <tr><td style="font-size:11px;color:var(--muted)">play →</td>${playRow}</tr>
+          </tbody></table></div>`;
+    });
+  }
   function renderRotations(){
     const box = document.getElementById('rotationsBody'); if(!box) return;
     box.innerHTML = '<div class="card" style="color:var(--muted)">Finding the best rotations…</div>';
@@ -1966,6 +2009,16 @@
       const HORIZON = 10;
       const startGw = season.current_gw || 1;
       const gws = []; for(let g=startGw; g<Math.min(startGw+HORIZON, (season.max_gw||38)+1); g++) gws.push(g);
+      const teamOpts = [...season.teams].sort((a,b)=>a.short.localeCompare(b.short))
+        .map(t=>`<option value="${t.short}">${t.short} — ${escapeHtml(t.name)}</option>`).join('');
+      const compareCard = `<div class="card"><h3>⚖️ Compare two teams</h3>
+        <div class="row-actions" style="align-items:center">
+          <select class="textline" style="width:auto" id="rotSelA" onchange="setRotTeam('A',this.value)"><option value="">Team A…</option>${teamOpts}</select>
+          <span style="color:var(--muted)">vs</span>
+          <select class="textline" style="width:auto" id="rotSelB" onchange="setRotTeam('B',this.value)"><option value="">Team B…</option>${teamOpts}</select>
+        </div>
+        <div id="rotCompareResult"></div>
+      </div>`;
       const teams = season.teams;
       // per team per GW: average difficulty that week (null if blank)
       const diff = {};
@@ -2005,7 +2058,13 @@
           <tbody><tr><td style="font-size:11px;color:var(--muted);white-space:nowrap">play →</td>${cells}</tr></tbody></table></div>
         </div>`;
       }).join('');
-      box.innerHTML = `<div class="callout blue" style="margin-top:0">Each row is a <b>pair of teams</b>. The grid shows <b>which team to play each week</b> (the one with the easier fixture), colour-coded green (easy) to red (hard), <b>✕</b> = both blank. Lower avg difficulty = a better rotation. Own a cheap player from each and start whichever is green that week.</div>${rows}`;
+      box.innerHTML = compareCard
+        + `<h3 style="margin:18px 0 8px">🏆 Best rotation pairs</h3>`
+        + `<div class="callout blue" style="margin-top:0">Each row is a <b>pair of teams</b>. The grid shows <b>which team to play each week</b> (the one with the easier fixture), colour-coded green (easy) to red (hard), <b>✕</b> = both blank. Lower avg difficulty = a better rotation. Own a cheap player from each and start whichever is green that week.</div>${rows}`;
+      // restore the compare picker selections and render the comparison
+      if(_rotA){ const s=document.getElementById('rotSelA'); if(s) s.value=_rotA; }
+      if(_rotB){ const s=document.getElementById('rotSelB'); if(s) s.value=_rotB; }
+      renderRotCompare();
     }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Season fixtures not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>'; });
   }
   document.querySelector('[data-tab="rotations"]').addEventListener('click', () => renderRotations());
