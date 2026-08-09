@@ -520,7 +520,7 @@
           <button class="btn" onclick="rateTeam()">⭐ Rate my team</button>
           <button class="btn ghost" onclick="clearSquad()">🗑 Clear all</button>
         </div>
-        <p class="save-note">Your team saves automatically. Formation shown is 3-4-3 with a 4-man bench (2 GK · 5 DEF · 5 MID · 3 FWD in total). <b>Tap a player then tap another in the same position to swap</b> — rotate a bench keeper or defender into your XI for the week.</p>
+        <p class="save-note">Your team saves automatically (2 GK · 5 DEF · 5 MID · 3 FWD, with a 4-man bench). <b>To substitute:</b> tap a player in your XI, then tap a bench player — they swap, and the formation flexes to any legal shape (3-5 DEF, 2-5 MID, 1-3 FWD). Tap two bench players to reorder them.</p>
       </div>
 
       <div id="rateResult"></div>
@@ -826,24 +826,45 @@
     if(_starters[k]) delete _starters[k]; else _starters[k] = true;
     store.set('fpl_starters', _starters); renderSquad();
   }
-  // Tap-to-swap: tap a player, then tap another in the SAME position to swap
-  // them (e.g. rotate a bench keeper/defender into your XI for a gameweek).
+  // Tap-to-substitute: tap a starter then a bench player (or two bench players to
+  // reorder). Any position swap is allowed as long as the formation stays legal
+  // (1 GK, 3-5 DEF, 2-5 MID, 1-3 FWD) — so you can bench a forward for a midfielder.
   let _swapSel = null;
+  function xiOutfieldCounts(){
+    const benchSet = new Set(squad.bench || []);
+    const c = {DEF:0, MID:0, FWD:0};
+    ['DEF','MID','FWD'].forEach(pos => squad[pos].forEach((pl,i) => { if(!benchSet.has(pos+'-'+i)) c[pos]++; }));
+    return c;
+  }
+  function doSub(idA, idB){
+    if(!Array.isArray(squad.bench) || squad.bench.length!==4) squad.bench = ['GK-1','DEF-3','DEF-4','MID-4'];
+    const benchSet = new Set(squad.bench);
+    const aBench = benchSet.has(idA), bBench = benchSet.has(idB);
+    if(aBench && bBench){                                   // both benched → reorder bench priority
+      const ia=squad.bench.indexOf(idA), ib=squad.bench.indexOf(idB);
+      [squad.bench[ia], squad.bench[ib]] = [squad.bench[ib], squad.bench[ia]];
+      store.set('fpl_squad', squad); flash('Bench order updated'); return;
+    }
+    if(aBench === bBench){ flash('Tap a starter, then a bench player, to substitute'); return; }
+    const starterId = aBench ? idB : idA, benchId = aBench ? idA : idB;
+    const sPos = starterId.split('-')[0], bPos = benchId.split('-')[0];
+    if((sPos==='GK') !== (bPos==='GK')){ flash('A goalkeeper can only swap with your other goalkeeper'); return; }
+    if(sPos !== 'GK'){                                      // formation check for outfield subs
+      const c = xiOutfieldCounts(); c[sPos]--; c[bPos]++;
+      if(c.DEF<3||c.DEF>5||c.MID<2||c.MID>5||c.FWD<1||c.FWD>3){
+        flash('That would break the formation (need 3-5 DEF, 2-5 MID, 1-3 FWD)'); return;
+      }
+    }
+    squad.bench[squad.bench.indexOf(benchId)] = starterId;  // starter goes to bench, bench player starts
+    store.set('fpl_squad', squad); flash('Substituted ✓');
+  }
   function shirtTap(pos, i, ev){
     if(ev && ev.target.closest('button')) return;   // let ✕ / C / ▶ do their own thing
     const id = pos + '-' + i;
     if(_swapSel === id){ _swapSel = null; renderSquad(); return; }
     if(_swapSel === null){ _swapSel = id; renderSquad(); return; }
-    const a = _swapSel.split('-');
-    if(a[0] !== pos){ flash('Tap two players in the same position to swap'); _swapSel = id; renderSquad(); return; }
-    const ia = +a[1];
-    const tmp = squad[pos][ia]; squad[pos][ia] = squad[pos][i]; squad[pos][i] = tmp;
-    const swp = v => v === _swapSel ? id : v === id ? _swapSel : v;   // keep captain/vice with the player
-    squad.captain = swp(squad.captain); squad.vice = swp(squad.vice);
-    Object.keys(_gwCaptain).forEach(g => { if(_gwCaptain[g]) _gwCaptain[g] = swp(_gwCaptain[g]); });
-    _swapSel = null;
-    store.set('fpl_squad', squad); store.set('fpl_gwcaptain', _gwCaptain);
-    renderSquad(); flash('Swapped ✓');
+    doSub(_swapSel, id);
+    _swapSel = null; renderSquad();
   }
   function teamGwsFor(short){ return _seasonGws ? _seasonGws[short] : null; }
   // Resolve a squad player's club from the database (so a blank/mismatched team
@@ -956,10 +977,17 @@
       </div>
       <p class="save-note" style="margin:-6px 0 10px">Use ◀ ▶ to plan future weeks — projected points, opponent (H/A), captain (tap <b>C</b>) and chip all apply to the shown gameweek. Tap <b>▶</b> on a player to "assume he starts" (e.g. a new signing or injury cover) so his projection uses full minutes. "blank" = no game that week.</p>`;
     }
+    // bench = 4 slot ids; the other 11 slots are the starting XI (formation flexes)
+    if(!Array.isArray(squad.bench) || squad.bench.length !== 4) squad.bench = ['GK-1','DEF-3','DEF-4','MID-4'];
+    const benchSet = new Set(squad.bench);
+    const starterRows = {GK:[], DEF:[], MID:[], FWD:[]};
+    POSITIONS.forEach(p => squad[p.key].forEach((pl,i) => { const id=p.key+'-'+i; if(!benchSet.has(id)) starterRows[p.key].push([p.key,i]); }));
     let html = nav + '<div class="pitch">';
-    PITCH_ROWS.forEach(row => { html += '<div class="pitch-row">' + row.map(([p,i])=>shirtHtml(p,i)).join('') + '</div>'; });
+    ['GK','DEF','MID','FWD'].forEach(pos => {
+      if(starterRows[pos].length) html += '<div class="pitch-row">' + starterRows[pos].map(([p,i])=>shirtHtml(p,i)).join('') + '</div>';
+    });
     html += '</div><div class="bench"><h4>🪑 Bench (subs come on in this order)</h4><div class="pitch-row">'
-          + BENCH_SLOTS.map(([p,i])=>shirtHtml(p,i)).join('') + '</div></div>';
+          + squad.bench.map(id => { const a=id.split('-'); return shirtHtml(a[0], +a[1]); }).join('') + '</div></div>';
     c.innerHTML = html;
     updateBudget();
   }

@@ -139,9 +139,11 @@ The web tool now also includes:
   gameweeks ahead so single free transfers keep your squad healthy without hits.
 - **🪑 Bench-order & deadline guidance** in the Squad Builder.
 
-- **🔁 Tap-to-swap substitutions** — on the pitch, tap a player then tap another in
-  the same position to swap them, rotating a bench keeper/defender into your XI for
-  a gameweek (captain follows the player).
+- **🔁 Substitutions (formation-flexible)** — on the pitch, tap a player in your XI
+  then tap a bench player to swap them; the formation reshapes to any legal shape
+  (3-5 DEF, 2-5 MID, 1-3 FWD), so you can bench a forward and bring on a
+  midfielder/defender. Illegal swaps (e.g. a keeper for an outfielder, or a
+  formation outside the limits) are blocked. Tap two bench players to reorder them.
 - **🔄 Rotations tab** — finds the best pairs of teams to own one cheap player from
   each and rotate, playing whichever has the better fixture each week; ranked over
   the next 10 gameweeks with a week-by-week "play this team" grid. Great for £4.0–4.5m
