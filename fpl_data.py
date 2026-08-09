@@ -504,7 +504,7 @@ def compute_projections(players, boot, fixtures, horizon=5):
         chance = 100 if p["chance"] is None else p["chance"]
         avail = chance / 100.0
         d = diff_by_team.get(p["team_id"], 3.0)
-        fixture_adj = 1 + 0.10 * (3.0 - d)           # easy run boosts, hard run trims
+        fixture_adj = 1 + 0.16 * (3.0 - d)           # easy run boosts, hard run trims (strong swing)
         games = max(p["minutes"] / 90.0, 1)
         per_game_diff = (p["xgi_total"] - p["gi_actual"]) / games   # + = due, − = riding luck
         xg_nudge = min(max(1 + 0.12 * per_game_diff, 0.85), 1.20)

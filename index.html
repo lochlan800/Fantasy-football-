@@ -865,8 +865,14 @@
     const badge = isCap ? '<span class="pill gold top-badge">C</span>' : isVc ? '<span class="pill blue top-badge">V</span>' : '';
     let proj = '';
     if(planning){
+      const games = (teamGwsFor(pl.team) || {})[_teamGw] || [];
+      const oppLine = games.length
+        ? games.map(g => { const col = g.diff<=2?'var(--accent)':g.diff>=4?'var(--red)':'var(--muted)';
+            return `<span style="color:${col}">${escapeHtml(g.opp)} (${g.venue})</span>`; }).join(' &amp; ')
+        : '<span style="color:var(--muted)">no game</span>';
       const pts = projectSlotPts(pl, _teamGw);
-      proj = `<div class="meta" style="color:${pts>0?'var(--accent)':'var(--muted)'}">${pts>0?('≈'+pts.toFixed(1)+' pts'):'blank'}</div>`;
+      proj = `<div class="meta" style="font-size:10px;line-height:1.1">${oppLine}</div>`
+           + `<div class="meta" style="color:${pts>0?'var(--accent)':'var(--muted)'}">${pts>0?('≈'+pts.toFixed(1)+' pts'):'blank'}</div>`;
     } else {
       const info = dbLookup(pl.name, pl.team);
       if(info && info.xpts!=null) proj = `<div class="meta" style="color:var(--accent)">≈${Number(info.xpts).toFixed(1)} pts</div>`;
@@ -1844,7 +1850,8 @@
     if(!games.length) return 0;                        // blank gameweek → no points
     const mconf = 0.2 + 0.8 * Math.min(info.mins||0, 1800) / 1800;
     let pts = 0;
-    games.forEach(g => { pts += (info.ppg||0) * (1 + 0.10*(3 - g.diff)) * mconf; });   // sums doubles
+    // fixture swing: easy games (diff 1-2) lift points, hard games (4-5) cut them
+    games.forEach(g => { pts += (info.ppg||0) * (1 + 0.16*(3 - g.diff)) * mconf; });   // sums doubles
     return pts;
   }
   function setPlannerChip(gw, val){ _plannerChips[gw] = val; store.set('fpl_planner_chips', _plannerChips); renderPlanner(); }
