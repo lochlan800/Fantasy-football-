@@ -139,6 +139,13 @@ The web tool now also includes:
   gameweeks ahead so single free transfers keep your squad healthy without hits.
 - **🪑 Bench-order & deadline guidance** in the Squad Builder.
 
+- **🔁 Tap-to-swap substitutions** — on the pitch, tap a player then tap another in
+  the same position to swap them, rotating a bench keeper/defender into your XI for
+  a gameweek (captain follows the player).
+- **🔄 Rotations tab** — finds the best pairs of teams to own one cheap player from
+  each and rotate, playing whichever has the better fixture each week; ranked over
+  the next 10 gameweeks with a week-by-week "play this team" grid. Great for £4.0–4.5m
+  keepers and defenders.
 - **▶ "Assume he starts" override** — for players you expect to play more than the
   data shows (a new signing, or a backup covering an injury), tap ▶ on their shirt
   and their projection uses full minutes instead of their historical minutes. Your

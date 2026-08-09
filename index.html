@@ -227,6 +227,7 @@
     <button data-tab="watchlist">👀 Watchlist</button>
     <button data-tab="squad">🧮 Squad Builder</button>
     <button data-tab="planner">📆 Season Planner</button>
+    <button data-tab="rotations">🔄 Rotations</button>
     <button data-tab="chips">🎴 Chip Planner</button>
     <button data-tab="captain">©️ Captaincy & Transfers</button>
     <button data-tab="edge">🧠 Winning Edge</button>
@@ -519,7 +520,7 @@
           <button class="btn" onclick="rateTeam()">⭐ Rate my team</button>
           <button class="btn ghost" onclick="clearSquad()">🗑 Clear all</button>
         </div>
-        <p class="save-note">Your team saves automatically. Formation shown is 3-4-3 with a 4-man bench (2 GK · 5 DEF · 5 MID · 3 FWD in total).</p>
+        <p class="save-note">Your team saves automatically. Formation shown is 3-4-3 with a 4-man bench (2 GK · 5 DEF · 5 MID · 3 FWD in total). <b>Tap a player then tap another in the same position to swap</b> — rotate a bench keeper or defender into your XI for the week.</p>
       </div>
 
       <div id="rateResult"></div>
@@ -564,6 +565,13 @@
     <h2><span class="em">📆</span>Season Planner</h2>
     <p class="lede">Your team, projected across all 38 gameweeks. See which weeks score big and which dip, slot in your chips, and spot exactly when to transfer — using each player's scoring rate and their real fixtures every week.</p>
     <div id="plannerBody"></div>
+  </section>
+
+  <!-- ============ ROTATIONS ============ -->
+  <section class="tab" id="rotations">
+    <h2><span class="em">🔄</span>Rotation Pairs</h2>
+    <p class="lede">The best pairs of teams to own one cheap player from each and <b>rotate</b> — playing whichever has the better fixture each week. Perfect for £4.0–4.5m goalkeepers and defenders. Ranked over the next 10 gameweeks.</p>
+    <div id="rotationsBody"></div>
   </section>
 
   <!-- ============ CHIPS ============ -->
@@ -818,6 +826,25 @@
     if(_starters[k]) delete _starters[k]; else _starters[k] = true;
     store.set('fpl_starters', _starters); renderSquad();
   }
+  // Tap-to-swap: tap a player, then tap another in the SAME position to swap
+  // them (e.g. rotate a bench keeper/defender into your XI for a gameweek).
+  let _swapSel = null;
+  function shirtTap(pos, i, ev){
+    if(ev && ev.target.closest('button')) return;   // let ✕ / C / ▶ do their own thing
+    const id = pos + '-' + i;
+    if(_swapSel === id){ _swapSel = null; renderSquad(); return; }
+    if(_swapSel === null){ _swapSel = id; renderSquad(); return; }
+    const a = _swapSel.split('-');
+    if(a[0] !== pos){ flash('Tap two players in the same position to swap'); _swapSel = id; renderSquad(); return; }
+    const ia = +a[1];
+    const tmp = squad[pos][ia]; squad[pos][ia] = squad[pos][i]; squad[pos][i] = tmp;
+    const swp = v => v === _swapSel ? id : v === id ? _swapSel : v;   // keep captain/vice with the player
+    squad.captain = swp(squad.captain); squad.vice = swp(squad.vice);
+    Object.keys(_gwCaptain).forEach(g => { if(_gwCaptain[g]) _gwCaptain[g] = swp(_gwCaptain[g]); });
+    _swapSel = null;
+    store.set('fpl_squad', squad); store.set('fpl_gwcaptain', _gwCaptain);
+    renderSquad(); flash('Swapped ✓');
+  }
   function teamGwsFor(short){ return _seasonGws ? _seasonGws[short] : null; }
   // Resolve a squad player's club from the database (so a blank/mismatched team
   // field in the saved squad still finds the right fixtures).
@@ -895,7 +922,8 @@
       ? `<button class="capbtn ${isStarter(pl)?'on':''}" onclick="toggleStarter('${pos}',${i})" title="Assume he starts every week (full minutes) — for new signings or injury cover">▶</button>`
       : '';
     const shownTeam = (_dbIndex ? resolveTeam(pl) : pl.team) || pl.team || '';
-    return `<div class="shirt">
+    const sel = _swapSel === id;
+    return `<div class="shirt" onclick="shirtTap('${pos}',${i},event)" style="cursor:pointer${sel?';outline:2px solid var(--gold);outline-offset:1px':''}">
       <button class="rm" title="Remove" onclick="removeSlot('${pos}',${i})">✕</button>${badge}
       <div class="nm">${escapeHtml(pl.name)}</div>
       <div class="meta">${escapeHtml(shownTeam)} · ${pos}</div>
@@ -1928,6 +1956,59 @@
     }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Player data not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>'; });
   }
   document.querySelector('[data-tab="planner"]').addEventListener('click', () => renderPlanner());
+
+  // ---------- Rotation Pairs ----------
+  function avgDiffOf(games){ return games.length ? games.reduce((s,g)=>s+g.diff,0)/games.length : null; }
+  function renderRotations(){
+    const box = document.getElementById('rotationsBody'); if(!box) return;
+    box.innerHTML = '<div class="card" style="color:var(--muted)">Finding the best rotations…</div>';
+    ensureSeason(season => {
+      const HORIZON = 10;
+      const startGw = season.current_gw || 1;
+      const gws = []; for(let g=startGw; g<Math.min(startGw+HORIZON, (season.max_gw||38)+1); g++) gws.push(g);
+      const teams = season.teams;
+      // per team per GW: average difficulty that week (null if blank)
+      const diff = {};
+      teams.forEach(t => { diff[t.short] = {}; gws.forEach(g => diff[t.short][g] = avgDiffOf(t.gws[g] || [])); });
+      const pairs = [];
+      for(let a=0; a<teams.length; a++) for(let b=a+1; b<teams.length; b++){
+        const A = teams[a].short, B = teams[b].short;
+        const per = gws.map(g => {
+          const da = diff[A][g], db = diff[B][g];
+          if(da==null && db==null) return {g, play:'—', d:5};              // both blank = bad week
+          if(da==null) return {g, play:B, d:db};
+          if(db==null) return {g, play:A, d:da};
+          return da<=db ? {g, play:A, d:da} : {g, play:B, d:db};           // play the easier one
+        });
+        const avg = per.reduce((s,p)=>s+p.d,0)/per.length;
+        // reward genuine rotation: how often the team you play switches
+        let switches = 0; for(let i=1;i<per.length;i++) if(per[i].play!==per[i-1].play && per[i].play!=='—' && per[i-1].play!=='—') switches++;
+        pairs.push({A, B, avg, switches, per});
+      }
+      pairs.sort((x,y)=> x.avg - y.avg || y.switches - x.switches);
+      const DIFF_BG2 = {1:'#0e8a3e',2:'#37d67a',3:'#5a6472',4:'#ff8a5c',5:'#ff5c73'};
+      const DIFF_FG2 = {1:'#fff',2:'#06210f',3:'#fff',4:'#3a1400',5:'#3a0009'};
+      let head = '<th>Play →</th>' + gws.map(g=>`<th>GW${g}</th>`).join('');
+      const rows = pairs.slice(0, 12).map(p => {
+        const cells = p.per.map(x=>{
+          const d = Math.round(x.d);
+          const bg = x.play==='—' ? '#0d1117' : (DIFF_BG2[d]||'#5a6472');
+          const fg = x.play==='—' ? '#3d4b5f' : (DIFF_FG2[d]||'#fff');
+          return `<td style="text-align:center;background:${bg};color:${fg};border-radius:6px;font-weight:700;font-size:12px">${x.play==='—'?'✕':x.play}</td>`;
+        }).join('');
+        return `<div class="card" style="padding:12px 14px;margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+            <h3 style="margin:0">${p.A} + ${p.B}</h3>
+            <span style="color:var(--muted);font-size:13px">avg difficulty <b style="color:${p.avg<2.6?'var(--accent)':'var(--gold)'}">${p.avg.toFixed(2)}</b> · rotates ${p.switches}×</span>
+          </div>
+          <div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:4px"><thead><tr><th></th>${gws.map(g=>`<th style="font-size:11px;color:var(--muted)">GW${g}</th>`).join('')}</tr></thead>
+          <tbody><tr><td style="font-size:11px;color:var(--muted);white-space:nowrap">play →</td>${cells}</tr></tbody></table></div>
+        </div>`;
+      }).join('');
+      box.innerHTML = `<div class="callout blue" style="margin-top:0">Each row is a <b>pair of teams</b>. The grid shows <b>which team to play each week</b> (the one with the easier fixture), colour-coded green (easy) to red (hard), <b>✕</b> = both blank. Lower avg difficulty = a better rotation. Own a cheap player from each and start whichever is green that week.</div>${rows}`;
+    }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Season fixtures not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>'; });
+  }
+  document.querySelector('[data-tab="rotations"]').addEventListener('click', () => renderRotations());
 
   // ---------- Init ----------
   renderSquad(); renderChips(); loadCaptain(); renderChecklist();
