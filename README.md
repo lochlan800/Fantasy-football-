@@ -139,6 +139,10 @@ The web tool now also includes:
   gameweeks ahead so single free transfers keep your squad healthy without hits.
 - **🪑 Bench-order & deadline guidance** in the Squad Builder.
 
+- **▶ "Assume he starts" override** — for players you expect to play more than the
+  data shows (a new signing, or a backup covering an injury), tap ▶ on their shirt
+  and their projection uses full minutes instead of their historical minutes. Your
+  own read, applied to the numbers — without faking the official data.
 - **⏭ Gameweek stepper on the pitch** (Squad Builder → My Team) — ◀ / ▶ buttons
   step your team through every gameweek. Each week the shirts show that GW's
   projected points ("blank" if no game), you set the captain (tap C) and a chip

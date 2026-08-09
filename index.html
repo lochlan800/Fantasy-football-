@@ -807,8 +807,19 @@
   // Gameweek-by-gameweek planning state (shared with the Season Planner tab)
   let _teamGw = null, _seasonGws = null;
   let _gwCaptain = store.get('fpl_gwcaptain', {});   // {gw: slotId} — captain per gameweek
+  // "Assume he starts" overrides — for players you expect to play more than the
+  // data shows (new signings, backups covering an injury). Boosts their projection.
+  let _starters = store.get('fpl_starters', {});
+  const starterKey = pl => normName(pl.name) + '|' + (pl.team||'').toLowerCase();
+  const isStarter = pl => !!_starters[starterKey(pl)];
+  function toggleStarter(pos, i){
+    const pl = squad[pos][i]; if(!pl || !pl.name) return;
+    const k = starterKey(pl);
+    if(_starters[k]) delete _starters[k]; else _starters[k] = true;
+    store.set('fpl_starters', _starters); renderSquad();
+  }
   function teamGwsFor(short){ return _seasonGws ? _seasonGws[short] : null; }
-  function projectSlotPts(pl, gw){ return playerGwPoints(dbLookup(pl.name, pl.team), teamGwsFor(pl.team), gw); }
+  function projectSlotPts(pl, gw){ return playerGwPoints(dbLookup(pl.name, pl.team), teamGwsFor(pl.team), gw, isStarter(pl)); }
   function gwCaptainSlot(gw){
     if(_gwCaptain[gw] !== undefined) return _gwCaptain[gw];   // per-week override (incl. explicit none)
     return squad.captain;                                      // else default to your main captain
@@ -877,12 +888,18 @@
       const info = dbLookup(pl.name, pl.team);
       if(info && info.xpts!=null) proj = `<div class="meta" style="color:var(--accent)">≈${Number(info.xpts).toFixed(1)} pts</div>`;
     }
+    const starterBtn = planning
+      ? `<button class="capbtn ${isStarter(pl)?'on':''}" onclick="toggleStarter('${pos}',${i})" title="Assume he starts every week (full minutes) — for new signings or injury cover">▶</button>`
+      : '';
     return `<div class="shirt">
       <button class="rm" title="Remove" onclick="removeSlot('${pos}',${i})">✕</button>${badge}
       <div class="nm">${escapeHtml(pl.name)}</div>
       <div class="meta">${escapeHtml(pl.team||'')} · ${pos}</div>
       <div class="pr">£${(parseFloat(pl.price)||0).toFixed(1)}m</div>${proj}
-      <button class="capbtn ${isCap?'on':isVc?'von':''}" onclick="toggleCap('${pos}',${i})">${isCap?'C':isVc?'V':'C?'}</button>
+      <div style="display:flex;gap:3px;justify-content:center">
+        <button class="capbtn ${isCap?'on':isVc?'von':''}" onclick="toggleCap('${pos}',${i})">${isCap?'C':isVc?'V':'C?'}</button>
+        ${starterBtn}
+      </div>
     </div>`;
   }
   function renderSquad(){
@@ -905,7 +922,7 @@
         </div>
         <div class="stat"><b style="color:var(--accent)">${proj.total}</b><span>proj pts · GW${_teamGw}</span></div>
       </div>
-      <p class="save-note" style="margin:-6px 0 10px">Use ◀ ▶ to plan future weeks — the projected points, captain (tap C) and chip all apply to the shown gameweek. "blank" = that player has no game that week.</p>`;
+      <p class="save-note" style="margin:-6px 0 10px">Use ◀ ▶ to plan future weeks — projected points, opponent (H/A), captain (tap <b>C</b>) and chip all apply to the shown gameweek. Tap <b>▶</b> on a player to "assume he starts" (e.g. a new signing or injury cover) so his projection uses full minutes. "blank" = no game that week.</p>`;
     }
     let html = nav + '<div class="pitch">';
     PITCH_ROWS.forEach(row => { html += '<div class="pitch-row">' + row.map(([p,i])=>shirtHtml(p,i)).join('') + '</div>'; });
@@ -1844,11 +1861,12 @@
       })
       .catch(() => onFail && onFail());
   }
-  function playerGwPoints(info, teamGws, gw){
+  function playerGwPoints(info, teamGws, gw, assumeStart){
     if(!info) return 0;
     const games = (teamGws && teamGws[gw]) || [];
     if(!games.length) return 0;                        // blank gameweek → no points
-    const mconf = 0.2 + 0.8 * Math.min(info.mins||0, 1800) / 1800;
+    // "assume starts" → treat as a full-minutes nailed starter regardless of past minutes
+    const mconf = assumeStart ? 1.0 : (0.2 + 0.8 * Math.min(info.mins||0, 1800) / 1800);
     let pts = 0;
     // fixture swing: easy games (diff 1-2) lift points, hard games (4-5) cut them
     games.forEach(g => { pts += (info.ppg||0) * (1 + 0.16*(3 - g.diff)) * mconf; });   // sums doubles
