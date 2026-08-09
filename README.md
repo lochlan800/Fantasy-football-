@@ -120,6 +120,12 @@ it against the latest team news before your deadline.
 
 ## More in the app
 The web tool now also includes:
+- **📆 Season Planner** — projects your team across all 38 gameweeks: each week's
+  best-XI projected points (green = big week, red = a dip), using every player's
+  scoring rate × their real fixture that week (doubles counted, blanks = 0). Slot
+  chips into any week from a dropdown (Triple Captain / Bench Boost adjust the
+  projection), see your season points total and your best/toughest weeks, and plan
+  transfers around the red weeks. Saves automatically.
 - **📊 Player Insights tab** — live shortlists from the data (`insights-data.json`,
   auto-generated with `--build`): players *due a haul* (high xG, few goals) vs
   *riding their luck*; penalty & set-piece takers; a searchable *nailed-on checker*
