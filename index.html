@@ -804,6 +804,46 @@
     squad.captain = null; squad.vice = null;
   }
 
+  // Gameweek-by-gameweek planning state (shared with the Season Planner tab)
+  let _teamGw = null, _seasonGws = null;
+  let _gwCaptain = store.get('fpl_gwcaptain', {});   // {gw: slotId} — captain per gameweek
+  function teamGwsFor(short){ return _seasonGws ? _seasonGws[short] : null; }
+  function projectSlotPts(pl, gw){ return playerGwPoints(dbLookup(pl.name, pl.team), teamGwsFor(pl.team), gw); }
+  function gwCaptainSlot(gw){
+    if(_gwCaptain[gw] !== undefined) return _gwCaptain[gw];   // per-week override (incl. explicit none)
+    return squad.captain;                                      // else default to your main captain
+  }
+  // Projected best-XI total for a gameweek (used by both the pitch and the planner)
+  function teamGwProjection(gw){
+    const entered = POSITIONS.flatMap(p => squad[p.key].map((x,slot)=>({name:(x.name||'').trim(), team:x.team, pos:p.key, slot:p.key+'-'+slot}))).filter(x=>x.name);
+    entered.forEach(pl => pl._g = projectSlotPts(pl, gw));
+    const gk=entered.filter(p=>p.pos==='GK').sort((a,b)=>b._g-a._g);
+    const df=entered.filter(p=>p.pos==='DEF').sort((a,b)=>b._g-a._g);
+    const md=entered.filter(p=>p.pos==='MID').sort((a,b)=>b._g-a._g);
+    const fw=entered.filter(p=>p.pos==='FWD').sort((a,b)=>b._g-a._g);
+    const xi=[]; if(gk[0]) xi.push(gk[0]);
+    df.slice(0,3).forEach(p=>xi.push(p)); md.slice(0,2).forEach(p=>xi.push(p)); fw.slice(0,1).forEach(p=>xi.push(p));
+    [...df.slice(3),...md.slice(2),...fw.slice(1)].sort((a,b)=>b._g-a._g).slice(0,4).forEach(p=>xi.push(p));
+    const xiSlots = new Set(xi.map(p=>p.slot));
+    let total = xi.reduce((s,p)=>s+p._g,0);
+    const capSlot = gwCaptainSlot(gw), chip = _plannerChips[gw] || '';
+    const cap = entered.find(p=>p.slot===capSlot);
+    if(cap && xiSlots.has(cap.slot)) total += cap._g * (chip==='tc'?2:1);
+    if(chip==='bb') entered.filter(p=>!xiSlots.has(p.slot)).forEach(p=>total+=p._g);
+    const perSlot = {}; entered.forEach(p => perSlot[p.slot] = p._g);
+    return {total: Math.round(total), xiSlots, perSlot, capSlot, chip};
+  }
+  function shiftTeamGw(d){
+    if(!_season) return;
+    _teamGw = Math.min(Math.max(_season.current_gw||1, _teamGw + d), _season.max_gw||38);
+    renderSquad();
+  }
+  function setTeamChip(gw, val){ _plannerChips[gw] = val; store.set('fpl_planner_chips', _plannerChips); renderSquad(); }
+  function chipSelectHtml(gw, cur){
+    return `<select onchange="setTeamChip(${gw},this.value)" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:4px 6px;font-size:12px">`
+      + Object.keys(CHIP_LABEL).map(k=>`<option value="${k}" ${k===cur?'selected':''}>${CHIP_LABEL[k]}</option>`).join('') + '</select>';
+  }
+
   // Pitch layout (3-4-3 + 4 bench) → maps onto the 2/5/5/3 squad slots.
   const PITCH_ROWS = [
     [['GK',0]],
@@ -818,10 +858,19 @@
     if(!pl.name || !pl.name.trim()){
       return `<div class="shirt empty" onclick="openPicker('${pos}',${i})"><div class="plus">＋</div><div class="meta">${pos}</div></div>`;
     }
-    const isCap = squad.captain === id, isVc = squad.vice === id;
+    const planning = _season && _teamGw != null;
+    const capSlot = planning ? gwCaptainSlot(_teamGw) : squad.captain;
+    const isCap = capSlot === id;
+    const isVc = (squad.vice === id) && (!planning || _teamGw === _season.current_gw);
     const badge = isCap ? '<span class="pill gold top-badge">C</span>' : isVc ? '<span class="pill blue top-badge">V</span>' : '';
-    const info = dbLookup(pl.name, pl.team);
-    const proj = (info && info.xpts!=null) ? `<div class="meta" style="color:var(--accent)">≈${Number(info.xpts).toFixed(1)} pts</div>` : '';
+    let proj = '';
+    if(planning){
+      const pts = projectSlotPts(pl, _teamGw);
+      proj = `<div class="meta" style="color:${pts>0?'var(--accent)':'var(--muted)'}">${pts>0?('≈'+pts.toFixed(1)+' pts'):'blank'}</div>`;
+    } else {
+      const info = dbLookup(pl.name, pl.team);
+      if(info && info.xpts!=null) proj = `<div class="meta" style="color:var(--accent)">≈${Number(info.xpts).toFixed(1)} pts</div>`;
+    }
     return `<div class="shirt">
       <button class="rm" title="Remove" onclick="removeSlot('${pos}',${i})">✕</button>${badge}
       <div class="nm">${escapeHtml(pl.name)}</div>
@@ -832,7 +881,27 @@
   }
   function renderSquad(){
     const c = document.getElementById('posContainer'); if(!c) return;
-    let html = '<div class="pitch">';
+    const hasTeam = POSITIONS.some(p => squad[p.key].some(x => x.name && x.name.trim()));
+    let nav = '';
+    if(_season && _teamGw != null && hasTeam){
+      const proj = teamGwProjection(_teamGw);
+      const minGw = _season.current_gw || 1, maxGw = _season.max_gw || 38;
+      const atStart = _teamGw <= minGw, atEnd = _teamGw >= maxGw;
+      const isNow = _teamGw === minGw;
+      nav = `<div class="budget-bar" style="justify-content:space-between;gap:10px">
+        <div class="row-actions" style="margin:0;align-items:center">
+          <button class="btn ghost" onclick="shiftTeamGw(-1)" ${atStart?'disabled':''} style="${atStart?'opacity:.4':''}">◀</button>
+          <b style="font-size:16px;min-width:64px;text-align:center">GW ${_teamGw}${isNow?' • now':''}</b>
+          <button class="btn ghost" onclick="shiftTeamGw(1)" ${atEnd?'disabled':''} style="${atEnd?'opacity:.4':''}">▶</button>
+        </div>
+        <div class="row-actions" style="margin:0;align-items:center">
+          <span style="color:var(--muted);font-size:12px">Chip:</span> ${chipSelectHtml(_teamGw, proj.chip)}
+        </div>
+        <div class="stat"><b style="color:var(--accent)">${proj.total}</b><span>proj pts · GW${_teamGw}</span></div>
+      </div>
+      <p class="save-note" style="margin:-6px 0 10px">Use ◀ ▶ to plan future weeks — the projected points, captain (tap C) and chip all apply to the shown gameweek. "blank" = that player has no game that week.</p>`;
+    }
+    let html = nav + '<div class="pitch">';
     PITCH_ROWS.forEach(row => { html += '<div class="pitch-row">' + row.map(([p,i])=>shirtHtml(p,i)).join('') + '</div>'; });
     html += '</div><div class="bench"><h4>🪑 Bench (subs come on in this order)</h4><div class="pitch-row">'
           + BENCH_SLOTS.map(([p,i])=>shirtHtml(p,i)).join('') + '</div></div>';
@@ -841,12 +910,21 @@
   }
   function toggleCap(pos, i){
     const id = pos + '-' + i;
+    // Future gameweek → set that week's captain only (per-GW plan).
+    if(_season && _teamGw != null && _teamGw !== _season.current_gw){
+      _gwCaptain[_teamGw] = (_gwCaptain[_teamGw] === id) ? null : id;
+      store.set('fpl_gwcaptain', _gwCaptain); renderSquad(); return;
+    }
+    // Current gameweek (or no season data) → original captain/vice cycling.
     if(squad.captain === id){ squad.captain = null; }
     else if(squad.vice === id){ squad.vice = null; }
     else if(!squad.captain){ squad.captain = id; }
     else if(!squad.vice){ squad.vice = id; }
     else { squad.captain = id; }
-    store.set('fpl_squad', squad); renderSquad();
+    if(_season) _gwCaptain[_season.current_gw] = squad.captain;
+    store.set('fpl_squad', squad);
+    if(_season) store.set('fpl_gwcaptain', _gwCaptain);
+    renderSquad();
   }
   function removeSlot(pos, i){
     const id = pos + '-' + i;
@@ -1752,7 +1830,12 @@
     if(_season){ cb(_season); return; }
     fetch('fixtures-season.json', {cache:'no-store'})
       .then(r => r.ok ? r.json() : null)
-      .then(s => { if(s && s.teams){ _season = s; cb(s); } else onFail&&onFail(); })
+      .then(s => {
+        if(s && s.teams){
+          _season = s; _seasonGws = {}; s.teams.forEach(t => _seasonGws[t.short] = t.gws);
+          cb(s);
+        } else onFail && onFail();
+      })
       .catch(() => onFail && onFail());
   }
   function playerGwPoints(info, teamGws, gw){
@@ -1775,31 +1858,13 @@
     box.innerHTML = '<div class="card" style="color:var(--muted)">Projecting your season…</div>';
     ensureDb(db => {
       ensureSeason(season => {
-        const idx = _dbIndex || buildDbIndex(db);
-        const gwsByShort = {}; season.teams.forEach(t => gwsByShort[t.short] = t.gws);
-        entered.forEach(pl => {
-          pl.info = idx[normName(pl.name)+'|'+(pl.team||'').toLowerCase()] || idx[normName(pl.name)];
-          pl.gws = gwsByShort[pl.team];
-        });
-        const capSlot = squad.captain;
+        if(!_dbIndex) _dbIndex = buildDbIndex(db);
         const startGw = season.current_gw || 1, maxGw = season.max_gw || 38;
-        // pass 1: compute each GW's projected total for the best XI
+        // one projection per gameweek (shared with the pitch's GW stepper)
         const weeks = [];
         for(let gw=startGw; gw<=maxGw; gw++){
-          entered.forEach(pl => pl._g = playerGwPoints(pl.info, pl.gws, gw));
-          const gk=entered.filter(p=>p.pos==='GK').sort((a,b)=>b._g-a._g);
-          const df=entered.filter(p=>p.pos==='DEF').sort((a,b)=>b._g-a._g);
-          const md=entered.filter(p=>p.pos==='MID').sort((a,b)=>b._g-a._g);
-          const fw=entered.filter(p=>p.pos==='FWD').sort((a,b)=>b._g-a._g);
-          const xi=[]; if(gk[0]) xi.push(gk[0]);
-          df.slice(0,3).forEach(p=>xi.push(p)); md.slice(0,2).forEach(p=>xi.push(p)); fw.slice(0,1).forEach(p=>xi.push(p));
-          [...df.slice(3),...md.slice(2),...fw.slice(1)].sort((a,b)=>b._g-a._g).slice(0,4).forEach(p=>xi.push(p));
-          let total = xi.reduce((s,p)=>s+p._g,0);
-          const cap = entered.find(p=>p.slot===capSlot);
-          const chip = _plannerChips[gw] || '';
-          if(cap && xi.includes(cap)) total += cap._g * (chip==='tc'?2:1);   // ×2 normal, ×3 with TC
-          if(chip==='bb') entered.filter(p=>!xi.includes(p)).forEach(p=>total+=p._g);
-          weeks.push({gw, total: Math.round(total), chip});
+          const p = teamGwProjection(gw);
+          weeks.push({gw, total: p.total, chip: _plannerChips[gw] || ''});
         }
         const totals = weeks.map(w=>w.total);
         const seasonTotal = totals.reduce((a,b)=>a+b,0);
@@ -1838,6 +1903,7 @@
   // ---------- Init ----------
   renderSquad(); renderChips(); loadCaptain(); renderChecklist();
   ensureDb(() => renderSquad(), () => {});   // load projections onto the shirts once available
+  ensureSeason(s => { _teamGw = s.current_gw || 1; renderSquad(); }, () => {});   // enable the GW stepper
   renderTransferPlan(); loadRival(); renderWatchlist();
 </script>
 </body>

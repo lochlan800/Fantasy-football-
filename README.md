@@ -139,6 +139,11 @@ The web tool now also includes:
   gameweeks ahead so single free transfers keep your squad healthy without hits.
 - **🪑 Bench-order & deadline guidance** in the Squad Builder.
 
+- **⏭ Gameweek stepper on the pitch** (Squad Builder → My Team) — ◀ / ▶ buttons
+  step your team through every gameweek. Each week the shirts show that GW's
+  projected points ("blank" if no game), you set the captain (tap C) and a chip
+  from the dropdown per week, and a header shows the projected total for that GW.
+  Shares the same plan as the Season Planner tab.
 - **⚽ Pitch view** (Squad Builder → My Team) — your team laid out on a football
   pitch in a 3-4-3 with a 4-man bench, like the real FPL. Tap the **＋** on any
   empty shirt to open a search that's locked to that position (a defender slot
