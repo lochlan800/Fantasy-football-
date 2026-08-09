@@ -819,7 +819,10 @@
     store.set('fpl_starters', _starters); renderSquad();
   }
   function teamGwsFor(short){ return _seasonGws ? _seasonGws[short] : null; }
-  function projectSlotPts(pl, gw){ return playerGwPoints(dbLookup(pl.name, pl.team), teamGwsFor(pl.team), gw, isStarter(pl)); }
+  // Resolve a squad player's club from the database (so a blank/mismatched team
+  // field in the saved squad still finds the right fixtures).
+  function resolveTeam(pl){ const info = dbLookup(pl.name, pl.team); return (info && info.team) || pl.team; }
+  function projectSlotPts(pl, gw){ return playerGwPoints(dbLookup(pl.name, pl.team), teamGwsFor(resolveTeam(pl)), gw, isStarter(pl)); }
   function gwCaptainSlot(gw){
     if(_gwCaptain[gw] !== undefined) return _gwCaptain[gw];   // per-week override (incl. explicit none)
     return squad.captain;                                      // else default to your main captain
@@ -876,7 +879,7 @@
     const badge = isCap ? '<span class="pill gold top-badge">C</span>' : isVc ? '<span class="pill blue top-badge">V</span>' : '';
     let proj = '';
     if(planning){
-      const games = (teamGwsFor(pl.team) || {})[_teamGw] || [];
+      const games = (teamGwsFor(resolveTeam(pl)) || {})[_teamGw] || [];
       const oppLine = games.length
         ? games.map(g => { const col = g.diff<=2?'var(--accent)':g.diff>=4?'var(--red)':'var(--muted)';
             return `<span style="color:${col}">${escapeHtml(g.opp)} (${g.venue})</span>`; }).join(' &amp; ')
@@ -891,10 +894,11 @@
     const starterBtn = planning
       ? `<button class="capbtn ${isStarter(pl)?'on':''}" onclick="toggleStarter('${pos}',${i})" title="Assume he starts every week (full minutes) — for new signings or injury cover">▶</button>`
       : '';
+    const shownTeam = (_dbIndex ? resolveTeam(pl) : pl.team) || pl.team || '';
     return `<div class="shirt">
       <button class="rm" title="Remove" onclick="removeSlot('${pos}',${i})">✕</button>${badge}
       <div class="nm">${escapeHtml(pl.name)}</div>
-      <div class="meta">${escapeHtml(pl.team||'')} · ${pos}</div>
+      <div class="meta">${escapeHtml(shownTeam)} · ${pos}</div>
       <div class="pr">£${(parseFloat(pl.price)||0).toFixed(1)}m</div>${proj}
       <div style="display:flex;gap:3px;justify-content:center">
         <button class="capbtn ${isCap?'on':isVc?'von':''}" onclick="toggleCap('${pos}',${i})">${isCap?'C':isVc?'V':'C?'}</button>
