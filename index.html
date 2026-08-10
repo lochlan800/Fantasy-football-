@@ -42,20 +42,61 @@
   header .pitch { color: var(--accent); }
   header p { margin: 0; color: var(--muted); font-size: 15px; }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px 80px; }
-  nav.tabs {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    justify-content: center;
+  /* Sticky top navigation: a burger bar that toggles the tab list */
+  .topnav {
     position: sticky;
     top: 0;
     z-index: 20;
-    padding: 12px 0;
     background: rgba(13,17,23,.92);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--border);
     margin-bottom: 26px;
   }
+  .navbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+  }
+  .burger {
+    flex: none;
+    width: 42px; height: 38px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--panel);
+    cursor: pointer;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 0;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .burger:hover { border-color: var(--accent); }
+  .burger span {
+    display: block;
+    width: 21px; height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform .22s ease, opacity .18s ease;
+  }
+  /* menu OPEN (not collapsed) → morph the three lines into an ✕ */
+  .topnav:not(.collapsed) .burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .topnav:not(.collapsed) .burger span:nth-child(2) { opacity: 0; }
+  .topnav:not(.collapsed) .burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .cur-tab { font-weight: 700; font-size: 15px; color: var(--text); }
+  .cur-tab .menu-hint { color: var(--muted); font-weight: 500; font-size: 12.5px; margin-left: 6px; }
+  nav.tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 4px 0 14px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  .topnav.collapsed nav.tabs { display: none; }
   nav.tabs button {
     background: var(--panel);
     color: var(--muted);
@@ -219,6 +260,13 @@
 </header>
 
 <div class="wrap">
+  <div class="topnav" id="topnav">
+    <div class="navbar">
+      <button class="burger" id="burger" onclick="toggleMenu()" aria-label="Toggle menu" aria-expanded="true" title="Show / hide the menu">
+        <span></span><span></span><span></span>
+      </button>
+      <span class="cur-tab" id="curTab">📋 Core Strategy<span class="menu-hint">— tap ☰ for the menu</span></span>
+    </div>
   <nav class="tabs" id="tabs">
     <button data-tab="strategy" class="active">📋 Core Strategy</button>
     <button data-tab="fixtures">📅 Fixture Ranking</button>
@@ -234,6 +282,7 @@
     <button data-tab="edge">🧠 Winning Edge</button>
     <button data-tab="checklist">✅ Weekly Routine</button>
   </nav>
+  </div>
 
   <!-- ============ STRATEGY ============ -->
   <section class="tab active" id="strategy">
@@ -783,16 +832,46 @@
 </div>
 
 <script>
-  // ---------- Tabs ----------
+  // ---------- Tabs + burger menu ----------
   const tabs = document.getElementById('tabs');
+  const topnav = document.getElementById('topnav');
+  const curTabEl = document.getElementById('curTab');
+  // restore the menu open/closed choice (default: open)
+  const _menuCollapsed = (() => { try { return localStorage.getItem('fpl_menu_collapsed')==='1'; } catch(e){ return false; } })();
+  if(_menuCollapsed) topnav.classList.add('collapsed');
+  function syncBurger(){
+    const collapsed = topnav.classList.contains('collapsed');
+    const b = document.getElementById('burger'); if(b) b.setAttribute('aria-expanded', String(!collapsed));
+  }
+  function toggleMenu(){
+    topnav.classList.toggle('collapsed');
+    try { localStorage.setItem('fpl_menu_collapsed', topnav.classList.contains('collapsed')?'1':'0'); } catch(e){}
+    syncBurger();
+    setCurTabLabel(document.querySelector('nav.tabs button.active'));
+  }
+  function setCurTabLabel(btn){
+    if(!curTabEl || !btn) return;
+    const collapsed = topnav.classList.contains('collapsed');
+    curTabEl.innerHTML = escapeHtml(btn.textContent.trim()) + (collapsed ? '<span class="menu-hint">— tap ☰ for the menu</span>' : '');
+  }
   tabs.addEventListener('click', e => {
     const btn = e.target.closest('button'); if(!btn) return;
     document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
     document.querySelectorAll('section.tab').forEach(s=>s.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
+    // on phones, tuck the menu away after a pick so it's not in the way (comes back with ☰)
+    if(window.innerWidth <= 640 && !topnav.classList.contains('collapsed')){
+      topnav.classList.add('collapsed');
+      try { localStorage.setItem('fpl_menu_collapsed','1'); } catch(e){}
+      syncBurger();
+    }
+    setCurTabLabel(btn);
     window.scrollTo({top:0, behavior:'smooth'});
   });
+  // initial label from whichever tab is active on load
+  setCurTabLabel(document.querySelector('nav.tabs button.active'));
+  syncBurger();
 
   // ---------- Squad Builder ----------
   const BUDGET = 100.0;

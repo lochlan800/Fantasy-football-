@@ -120,6 +120,12 @@ it against the latest team news before your deadline.
 
 ## More in the app
 The web tool now also includes:
+- **☰ Burger menu** — the tab list (Squad Builder, Stats, Guide, Rotations, etc.)
+  lives behind a three-line burger button that's **always** pinned to the top. Tap
+  it to tuck the menu away for a cleaner screen and tap it again to bring it back;
+  the button morphs to an ✕ while open and the bar shows which tab you're on. On
+  phones the menu auto-tucks after you pick a tab, and your open/closed choice is
+  remembered between visits.
 - **📆 Season Planner** — projects your team across all 38 gameweeks: each week's
   best-XI projected points (green = big week, red = a dip), using every player's
   scoring rate × their real fixture that week (doubles counted, blanks = 0). Slot
