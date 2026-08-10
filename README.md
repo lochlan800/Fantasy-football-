@@ -156,6 +156,14 @@ The web tool now also includes:
   data shows (a new signing, or a backup covering an injury), tap ▶ on their shirt
   and their projection uses full minutes instead of their historical minutes. Your
   own read, applied to the numbers — without faking the official data.
+- **🌍 World Cup returnee flag** — tap the red 🌍 button on a player's shirt to mark
+  someone who went deep at the summer World Cup (e.g. France, England, Spain,
+  Argentina). They come back late with almost no pre-season, so their projected
+  points are cut for the opening weeks — **−45% in GW1**, **−20% in GW2**, then
+  **fully back to normal from GW3**. Flagged players show a red **🌍 WC** tag on the
+  shirt and a red "WC return −x%" line on the affected gameweeks. The reduction
+  flows through the pitch projections, your XI total, the ⚡ Optimise pick and the
+  Season Planner, so the tool won't over-rate a tired returnee in the early GWs.
 - **💾 Per-gameweek lineups** — each gameweek keeps its own saved lineup, captain and
   chip, so changes on one week don't overwrite another. A "Save this lineup" button
   confirms it, and a "saved" tag shows which weeks you've set.

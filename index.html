@@ -203,6 +203,7 @@
     background:var(--bg); color:var(--muted); cursor:pointer; margin-top:2px; }
   .shirt .capbtn.on{ background:var(--gold); color:#3a2c00; border-color:var(--gold); }
   .shirt .capbtn.von{ background:var(--accent-2); color:#00212e; border-color:var(--accent-2); }
+  .shirt .capbtn.wc{ background:var(--red); color:#fff; border-color:var(--red); }
   /* ---- Position picker overlay ---- */
   .pick-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:60; display:none; align-items:flex-start; justify-content:center; padding:40px 12px; overflow-y:auto; }
   .pick-overlay.on{ display:flex; }
@@ -872,6 +873,20 @@
     if(_starters[k]) delete _starters[k]; else _starters[k] = true;
     store.set('fpl_starters', _starters); renderSquad();
   }
+  // World Cup returnees — players who went deep at the summer World Cup come back
+  // late with almost no pre-season, so they're a fatigue/rotation risk in the
+  // opening weeks. Hit hardest in GW1, easing in GW2, back to full from GW3.
+  let _worldcup = store.get('fpl_worldcup', {});
+  const isWorldCup = pl => !!_worldcup[starterKey(pl)];
+  const WC_FACTOR = {1:0.55, 2:0.80};                 // GW → projection multiplier
+  const wcGwFactor = gw => (WC_FACTOR[gw] != null ? WC_FACTOR[gw] : 1);
+  const wcMultiplier = (pl, gw) => (isWorldCup(pl) ? wcGwFactor(gw) : 1);
+  function toggleWorldCup(pos, i){
+    const pl = squad[pos][i]; if(!pl || !pl.name) return;
+    const k = starterKey(pl);
+    if(_worldcup[k]) delete _worldcup[k]; else _worldcup[k] = true;
+    store.set('fpl_worldcup', _worldcup); renderSquad();
+  }
   // Tap-to-substitute: tap a starter then a bench player (or two bench players to
   // reorder). Any position swap is allowed as long as the formation stays legal
   // (1 GK, 3-5 DEF, 2-5 MID, 1-3 FWD) — so you can bench a forward for a midfielder.
@@ -916,7 +931,7 @@
   // Resolve a squad player's club from the database (so a blank/mismatched team
   // field in the saved squad still finds the right fixtures).
   function resolveTeam(pl){ const info = dbLookup(pl.name, pl.team); return (info && info.team) || pl.team; }
-  function projectSlotPts(pl, gw){ return playerGwPoints(dbLookup(pl.name, pl.team), teamGwsFor(resolveTeam(pl)), gw, isStarter(pl)); }
+  function projectSlotPts(pl, gw){ return playerGwPoints(dbLookup(pl.name, pl.team), teamGwsFor(resolveTeam(pl)), gw, isStarter(pl)) * wcMultiplier(pl, gw); }
   function gwCaptainSlot(gw){
     if(_gwCaptain[gw] !== undefined) return _gwCaptain[gw];   // per-week override (incl. explicit none)
     return squad.captain;                                      // else default to your main captain
@@ -971,6 +986,8 @@
     const isCap = capSlot === id;
     const isVc = (squad.vice === id) && (!planning || _teamGw === _season.current_gw);
     const badge = isCap ? '<span class="pill gold top-badge">C</span>' : isVc ? '<span class="pill blue top-badge">V</span>' : '';
+    const wcOn = isWorldCup(pl);
+    const wcTag = wcOn ? ' <span style="background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:1px 4px;border-radius:999px">🌍 WC</span>' : '';
     let proj = '';
     if(planning){
       const games = (teamGwsFor(resolveTeam(pl)) || {})[_teamGw] || [];
@@ -981,6 +998,9 @@
       const pts = projectSlotPts(pl, _teamGw);
       proj = `<div class="meta" style="font-size:10px;line-height:1.1">${oppLine}</div>`
            + `<div class="meta" style="color:${pts>0?'var(--accent)':'var(--muted)'}">${pts>0?('≈'+pts.toFixed(1)+' pts'):'blank'}</div>`;
+      if(wcOn && games.length && wcGwFactor(_teamGw) < 1){
+        proj += `<div class="meta" style="color:var(--red);font-size:9px;font-weight:700">🌍 WC return −${Math.round((1-wcGwFactor(_teamGw))*100)}%</div>`;
+      }
     } else {
       const info = dbLookup(pl.name, pl.team);
       if(info && info.xpts!=null) proj = `<div class="meta" style="color:var(--accent)">≈${Number(info.xpts).toFixed(1)} pts</div>`;
@@ -988,16 +1008,17 @@
     const starterBtn = planning
       ? `<button class="capbtn ${isStarter(pl)?'on':''}" onclick="toggleStarter('${pos}',${i})" title="Assume he starts every week (full minutes) — for new signings or injury cover">▶</button>`
       : '';
+    const wcBtn = `<button class="capbtn ${wcOn?'wc':''}" onclick="toggleWorldCup('${pos}',${i})" title="Played deep at the World Cup — late return, weaker for the first 2 gameweeks (fine from GW3)">🌍</button>`;
     const shownTeam = (_dbIndex ? resolveTeam(pl) : pl.team) || pl.team || '';
     const sel = _swapSel === id;
     return `<div class="shirt" onclick="shirtTap('${pos}',${i},event)" style="cursor:pointer${sel?';outline:2px solid var(--gold);outline-offset:1px':''}">
       <button class="rm" title="Remove" onclick="removeSlot('${pos}',${i})">✕</button>${badge}
       <div class="nm">${escapeHtml(pl.name)}</div>
-      <div class="meta">${escapeHtml(shownTeam)} · ${pos}</div>
+      <div class="meta">${escapeHtml(shownTeam)} · ${pos}${wcTag}</div>
       <div class="pr">£${(parseFloat(pl.price)||0).toFixed(1)}m</div>${proj}
-      <div style="display:flex;gap:3px;justify-content:center">
+      <div style="display:flex;gap:3px;justify-content:center;flex-wrap:wrap">
         <button class="capbtn ${isCap?'on':isVc?'von':''}" onclick="toggleCap('${pos}',${i})">${isCap?'C':isVc?'V':'C?'}</button>
-        ${starterBtn}
+        ${starterBtn}${wcBtn}
       </div>
     </div>`;
   }
@@ -1027,7 +1048,7 @@
         <button class="btn" onclick="optimizeGw()">⚡ Optimise for GW${_teamGw}</button>
         <button class="btn ghost" onclick="saveGwLineup()">💾 Save this lineup</button>
       </div>
-      <p class="save-note" style="margin:0 0 10px">Each gameweek keeps its <b>own</b> lineup, captain and chip — changes on one week don't affect another. <b>⚡ Optimise</b> picks your highest-projected legal XI for the week and benches the rest. Tap <b>▶</b> on a player to "assume he starts". "blank" = no game that week.</p>`;
+      <p class="save-note" style="margin:0 0 10px">Each gameweek keeps its <b>own</b> lineup, captain and chip — changes on one week don't affect another. <b>⚡ Optimise</b> picks your highest-projected legal XI for the week and benches the rest. Tap <b>▶</b> on a player to "assume he starts", or <b style="color:var(--red)">🌍</b> to mark a <b>World Cup returnee</b> — they're weaker in GW1–2 (tired, late back) and fine from GW3. "blank" = no game that week.</p>`;
     }
     // bench = 4 slot ids for the current view; the other 11 slots are the XI (formation flexes)
     const benchArr = activeBench();
