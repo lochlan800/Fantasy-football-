@@ -2046,40 +2046,63 @@
     for(let g=startGw; g<Math.min(startGw+10, (season.max_gw||38)+1); g++) gws.push(g);
     return gws;
   }
+  // Reusable side-by-side fixture grid + "play this team each week" row + rotation avg.
+  function rotPairTable(season, gws, aShort, bShort){
+    const A = season.teams.find(t=>t.short===aShort), B = season.teams.find(t=>t.short===bShort);
+    if(!A || !B) return {html:'', rotAvg:99};
+    const cell = (t, gw) => {
+      const games = t.gws[gw] || [];
+      if(!games.length) return `<td style="text-align:center;background:#0d1117;color:#3d4b5f;border-radius:6px">–</td>`;
+      const d = Math.round(games.reduce((s,g)=>s+g.diff,0)/games.length);
+      const inner = games.map(g=>`${escapeHtml(g.opp)} (${g.venue})`).join('<br>');
+      return `<td style="text-align:center;background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'};border-radius:6px;font-weight:700;font-size:11px">${inner}<br><small>${d}${games.length>1?' •':''}</small></td>`;
+    };
+    const teamAvg = t => { let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{s+=x.diff;n++;})); return n?s/n:null; };
+    let rotSum=0;
+    const playRow = gws.map(g => {
+      const da = avgDiffOf(A.gws[g]||[]), db = avgDiffOf(B.gws[g]||[]);
+      let pick='—', best=5; if(da==null&&db==null){pick='—';best=5;} else if(da==null){pick=B.short;best=db;} else if(db==null){pick=A.short;best=da;} else { pick = da<=db?A.short:B.short; best=Math.min(da,db); }
+      rotSum += best;
+      const col = pick===A.short?'#0e8a3e':pick===B.short?'#00697a':'#0d1117';
+      return `<td style="text-align:center;background:${col};color:#fff;border-radius:6px;font-weight:700;font-size:11px">${pick==='—'?'✕':pick}</td>`;
+    }).join('');
+    const avgA=teamAvg(A), avgB=teamAvg(B), rotAvg = rotSum/gws.length;
+    const html = `
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin:10px 0;font-size:13px">
+        <span><b>${A.short}</b> avg <b style="color:${avgA<2.6?'var(--accent)':avgA>3.4?'var(--red)':'var(--gold)'}">${avgA!=null?avgA.toFixed(2):'—'}</b></span>
+        <span><b>${B.short}</b> avg <b style="color:${avgB<2.6?'var(--accent)':avgB>3.4?'var(--red)':'var(--gold)'}">${avgB!=null?avgB.toFixed(2):'—'}</b></span>
+        <span>rotation avg <b style="color:${rotAvg<2.4?'var(--accent)':rotAvg>3?'var(--red)':'var(--gold)'}">${rotAvg.toFixed(2)}</b></span>
+      </div>
+      <div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:4px">
+        <thead><tr><th></th>${gws.map(g=>`<th style="font-size:11px;color:var(--muted)">GW${g}</th>`).join('')}</tr></thead>
+        <tbody>
+          <tr><td style="font-weight:700">${A.short}</td>${gws.map(g=>cell(A,g)).join('')}</tr>
+          <tr><td style="font-weight:700">${B.short}</td>${gws.map(g=>cell(B,g)).join('')}</tr>
+          <tr><td style="font-size:11px;color:var(--muted)">play →</td>${playRow}</tr>
+        </tbody></table></div>`;
+    return {html, rotAvg};
+  }
   function renderRotCompare(){
     const el = document.getElementById('rotCompareResult'); if(!el) return;
     if(!_rotA || !_rotB || _rotA===_rotB){ el.innerHTML = '<p style="color:var(--muted);font-size:13px;margin:8px 0 0">Pick two different teams above to compare their fixtures side by side.</p>'; return; }
+    ensureSeason(season => { el.innerHTML = rotPairTable(season, rotWindow(season), _rotA, _rotB).html; });
+  }
+  // Pick one team → auto-find its best rotation partners.
+  let _rotSolo = '';
+  function setRotSolo(val){ _rotSolo = val; renderRotSolo(); }
+  function renderRotSolo(){
+    const el = document.getElementById('rotSoloResult'); if(!el) return;
+    if(!_rotSolo){ el.innerHTML = '<p style="color:var(--muted);font-size:13px;margin:8px 0 0">Pick one team and I\'ll find the teams that rotate best with it.</p>'; return; }
     ensureSeason(season => {
       const gws = rotWindow(season);
-      const A = season.teams.find(t=>t.short===_rotA), B = season.teams.find(t=>t.short===_rotB);
-      if(!A || !B){ el.innerHTML = ''; return; }
-      const cell = (t, gw) => {
-        const games = t.gws[gw] || [];
-        if(!games.length) return `<td style="text-align:center;background:#0d1117;color:#3d4b5f;border-radius:6px">–</td>`;
-        const d = Math.round(games.reduce((s,g)=>s+g.diff,0)/games.length);
-        const inner = games.map(g=>`${escapeHtml(g.opp)} (${g.venue})`).join('<br>');
-        return `<td style="text-align:center;background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'};border-radius:6px;font-weight:700;font-size:11px">${inner}<br><small>${d}${games.length>1?' •':''}</small></td>`;
-      };
-      const teamAvg = t => { let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{s+=x.diff;n++;})); return n?s/n:null; };
-      const playRow = gws.map(g => {
-        const da = avgDiffOf(A.gws[g]||[]), db = avgDiffOf(B.gws[g]||[]);
-        let pick='—'; if(da==null&&db==null) pick='—'; else if(da==null) pick=B.short; else if(db==null) pick=A.short; else pick = da<=db?A.short:B.short;
-        const col = pick===A.short?'#0e8a3e':pick===B.short?'#00697a':'#0d1117';
-        return `<td style="text-align:center;background:${col};color:#fff;border-radius:6px;font-weight:700;font-size:11px">${pick==='—'?'✕':pick}</td>`;
-      }).join('');
-      const avgA=teamAvg(A), avgB=teamAvg(B);
-      el.innerHTML = `
-        <div style="display:flex;gap:16px;flex-wrap:wrap;margin:10px 0;font-size:13px">
-          <span><b>${A.short}</b> avg <b style="color:${avgA<2.6?'var(--accent)':avgA>3.4?'var(--red)':'var(--gold)'}">${avgA!=null?avgA.toFixed(2):'—'}</b></span>
-          <span><b>${B.short}</b> avg <b style="color:${avgB<2.6?'var(--accent)':avgB>3.4?'var(--red)':'var(--gold)'}">${avgB!=null?avgB.toFixed(2):'—'}</b></span>
-        </div>
-        <div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:4px">
-          <thead><tr><th></th>${gws.map(g=>`<th style="font-size:11px;color:var(--muted)">GW${g}</th>`).join('')}</tr></thead>
-          <tbody>
-            <tr><td style="font-weight:700">${A.short}</td>${gws.map(g=>cell(A,g)).join('')}</tr>
-            <tr><td style="font-weight:700">${B.short}</td>${gws.map(g=>cell(B,g)).join('')}</tr>
-            <tr><td style="font-size:11px;color:var(--muted)">play →</td>${playRow}</tr>
-          </tbody></table></div>`;
+      const partners = season.teams.filter(t=>t.short!==_rotSolo)
+        .map(t => ({short:t.short, rotAvg: rotPairTable(season, gws, _rotSolo, t.short).rotAvg}))
+        .sort((a,b)=> a.rotAvg - b.rotAvg).slice(0, 3);
+      el.innerHTML = `<p style="margin:10px 0 4px;font-size:13px;color:var(--muted)">Best rotation partners for <b style="color:var(--text)">${_rotSolo}</b> (lowest combined difficulty over the next ${gws.length} GWs):</p>`
+        + partners.map((p,idx)=>{
+          const t = rotPairTable(season, gws, _rotSolo, p.short);
+          return `<div class="card" style="padding:12px 14px;margin-bottom:10px"><h3 style="margin:0">${idx===0?'⭐ ':''}${_rotSolo} + ${p.short}</h3>${t.html}</div>`;
+        }).join('');
     });
   }
   function renderRotations(){
@@ -2091,7 +2114,12 @@
       const gws = []; for(let g=startGw; g<Math.min(startGw+HORIZON, (season.max_gw||38)+1); g++) gws.push(g);
       const teamOpts = [...season.teams].sort((a,b)=>a.short.localeCompare(b.short))
         .map(t=>`<option value="${t.short}">${t.short} — ${escapeHtml(t.name)}</option>`).join('');
-      const compareCard = `<div class="card"><h3>⚖️ Compare two teams</h3>
+      const compareCard = `<div class="card"><h3>🎯 Find the best partner for a team</h3>
+        <p style="margin-top:0;color:var(--muted);font-size:13.5px">Pick one club and I'll find the teams that rotate best with it — showing their fixtures side by side so you don't have to compare them all yourself.</p>
+        <select class="textline" style="width:auto" id="rotSelSolo" onchange="setRotSolo(this.value)"><option value="">Best partner for…</option>${teamOpts}</select>
+        <div id="rotSoloResult"></div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+        <h3>⚖️ Or compare two teams yourself</h3>
         <div class="row-actions" style="align-items:center">
           <select class="textline" style="width:auto" id="rotSelA" onchange="setRotTeam('A',this.value)"><option value="">Team A…</option>${teamOpts}</select>
           <span style="color:var(--muted)">vs</span>
@@ -2141,10 +2169,11 @@
       box.innerHTML = compareCard
         + `<h3 style="margin:18px 0 8px">🏆 Best rotation pairs</h3>`
         + `<div class="callout blue" style="margin-top:0">Each row is a <b>pair of teams</b>. The grid shows <b>which team to play each week</b> (the one with the easier fixture), colour-coded green (easy) to red (hard), <b>✕</b> = both blank. Lower avg difficulty = a better rotation. Own a cheap player from each and start whichever is green that week.</div>${rows}`;
-      // restore the compare picker selections and render the comparison
+      // restore the picker selections and render
+      if(_rotSolo){ const s=document.getElementById('rotSelSolo'); if(s) s.value=_rotSolo; }
       if(_rotA){ const s=document.getElementById('rotSelA'); if(s) s.value=_rotA; }
       if(_rotB){ const s=document.getElementById('rotSelB'); if(s) s.value=_rotB; }
-      renderRotCompare();
+      renderRotSolo(); renderRotCompare();
     }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Season fixtures not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>'; });
   }
   document.querySelector('[data-tab="rotations"]').addEventListener('click', () => renderRotations());
