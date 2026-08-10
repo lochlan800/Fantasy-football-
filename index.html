@@ -1337,6 +1337,37 @@
       }).filter(s=>s.in);
       // injured owned players
       const injured = owned.filter(p=>!p.avail);
+      // --- How to push the score higher ---
+      // The score is the AVERAGE percentile of the XI, so it's anchored by your
+      // weakest starters. Work out which single same-price move lifts it the most.
+      const scoreIfSwap = (slot, newPctl) => {
+        let s=0, ww=0;
+        xi.forEach(p=>{ const cw=(capKey && p.slot===capKey)?1.5:1; s += (p.slot===slot?newPctl:p.pctl)*cw; ww+=cw; });
+        return Math.round(ww? s/ww : 0);
+      };
+      const bestUpgradeFor = p => {
+        const pool=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
+             && c.price <= p.price + 0.05 && (c.mins==null||c.mins>=600)
+             && !ownedKeys.has(normName(c.name)));
+        return pool.sort((a,b)=> b.rating - a.rating)[0];   // highest-rated affordable = biggest percentile jump
+      };
+      const raiseAll = xi.map(p=>{
+        const up = bestUpgradeFor(p); if(!up) return null;
+        const upPctl = pct(up.rating, byPos[up.pos]);
+        const newScore = scoreIfSwap(p.slot, upPctl);
+        return {out:p, in:up, upPctl, newScore, gain:newScore-score};
+      }).filter(r=>r && r.gain>0).sort((a,b)=>b.gain-a.gain);
+      const seenIn=new Set(); const raise=[];
+      for(const r of raiseAll){ const k=normName(r.in.name); if(seenIn.has(k)) continue; seenIn.add(k); raise.push(r); if(raise.length>=4) break; }
+      // captain lift: captaining your highest-percentile starter maximises the weighted score
+      const topXi = [...xi].sort((a,b)=>b.pctl-a.pctl)[0];
+      let capTip = null;
+      if(topXi){
+        let s=0, ww=0; xi.forEach(p=>{ const cw=(p.slot===topXi.slot)?1.5:1; s+=p.pctl*cw; ww+=cw; });
+        const withCap = Math.round(ww? s/ww : 0);
+        if(!capKey) capTip = {type:'none', player:topXi, newScore:withCap};
+        else if(capKey!==topXi.slot && withCap>score) capTip = {type:'move', player:topXi, newScore:withCap};
+      }
       // render
       let html = `<div class="card"><h3>⭐ Your team rating</h3>
         <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:10px">
@@ -1347,6 +1378,23 @@
         </div>`;
       if(injured.length) html += `<div class="callout red" style="margin:8px 0"><b>⚠️ Flagged in your squad:</b> ${injured.map(p=>escapeHtml(p.name)+' ('+p.status+')').join(', ')} — not fully available. Consider replacing.</div>`;
       if(unmatched.length) html += `<div class="callout" style="margin:8px 0"><b>Couldn't find:</b> ${unmatched.map(escapeHtml).join(', ')} — check the spelling against the FPL name.</div>`;
+      // How to raise the score — directly answers "why is it stuck and how do I beat it?"
+      html += `<div class="callout blue" style="margin:12px 0"><b>📈 Why it's stuck at ${score} — and how to beat it.</b><br>
+        Your score is the <b>average ranking of your whole starting XI</b> (each player vs everyone else in his position, 0–100). Because it's an <b>average</b>, it's held down by your <b>weakest starters</b>, not lifted by your best — buying one more superstar barely nudges it. To climb you must <b>raise the floor</b>: upgrade the lowest-ranked players in your XI (usually the cheap enablers). A score in the ${score>=90?'90s is already elite':'80s+ is strong'}, so the last few points are the hardest — each one means every single starter is near the top of his position.</div>`;
+      if(raise.length){
+        html += `<h4 style="margin:14px 0 6px">📈 Biggest score boosts <span style="font-weight:400;color:var(--muted);font-size:13px">— each is one move, same price or cheaper</span></h4><div style="overflow-x:auto"><table><thead><tr><th>Swap out (weakest)</th><th></th><th>Bring in</th><th>Your score</th></tr></thead><tbody>`;
+        raise.forEach(r=>{
+          html += `<tr><td>${escapeHtml(r.out.name)} <span class="pill red">${r.out.pctl}%</span> <span style="color:var(--muted);font-size:12px">£${Number(r.out.price).toFixed(1)}m</span></td><td>▸</td>`+
+            `<td><b>${escapeHtml(r.in.name)}</b> <span class="pill green">${r.upPctl}%</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(r.in.team)} · £${Number(r.in.price).toFixed(1)}m</span></td>`+
+            `<td><b style="color:var(--accent);font-size:15px">${score} → ${r.newScore}</b> <span style="color:var(--accent);font-size:12px">(+${r.gain})</span></td></tr>`;
+        });
+        html += `</tbody></table></div><p class="save-note">These are the single transfers that move your rating the <b>most</b> — do the top one first. Each figure is your new score if you made only that swap.</p>`;
+      } else {
+        html += `<p style="color:var(--accent);margin:8px 0">💪 No single same-price move raises your rating — your XI is at the ceiling for its budget. The only gains left come from <b>spending more</b> (sell an enabler to fund a higher-priced premium) or a <b>Wildcard</b> reshuffle. That's an elite team.</p>`;
+      }
+      if(capTip){
+        html += `<div class="callout" style="margin:8px 0"><b>🅒 Captain tip:</b> ${capTip.type==='none'?'Set your captain to':'Move the captaincy to'} <b>${escapeHtml(capTip.player.name)}</b> (your highest-rated starter) — that alone lifts your rating to <b style="color:var(--accent)">${capTip.newScore}</b>. Your captain counts extra in the score, and doubles their points on the pitch.</div>`;
+      }
       if(sugg.length){
         html += `<h4 style="margin:14px 0 6px">🔁 Who to bring in <span style="font-weight:400;color:var(--muted);font-size:13px">— better players at the same price or cheaper</span></h4><div style="overflow-x:auto"><table><thead><tr><th>Weak spot</th><th></th><th>Upgrade to</th><th>Price</th></tr></thead><tbody>`;
         sugg.forEach(s=>{

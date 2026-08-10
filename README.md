@@ -198,6 +198,12 @@ The web tool now also includes:
   team out of 100 with a grade, flags injured/unavailable players, and suggests
   who to bring in for your weakest spots. Powered by `players-data.json` (every
   player with a tactic-based rating), matched to the names you type.
+- **📈 How to raise your score** — the rating is the *average* ranking of your XI,
+  so it's held down by your weakest starters, not lifted by your best (which is why
+  it feels "stuck"). The tool now explains this and shows a **Biggest score boosts**
+  table: the single same-price transfers that lift your rating the most, each with
+  the exact before → after number (e.g. `86 → 90`), plus a captain tip when
+  captaining your top-rated starter would nudge it higher. Do the top move first.
 
 All of these save in your browser, and the data-driven ones refresh automatically
 via the twice-daily GitHub Action.
