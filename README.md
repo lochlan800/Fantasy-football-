@@ -149,8 +149,9 @@ The web tool now also includes:
   the next 10 gameweeks with a week-by-week "play this team" grid. Great for £4.0–4.5m
   keepers and defenders. Also includes a **🎯 Find the best partner** picker — choose
   one club and it auto-finds its top 3 rotation partners with the side-by-side grids —
-  and a **⚖️ Compare two teams** picker to check any two clubs yourself, each showing
-  fixtures, averages and which team to play every week.
+  a **⚖️ Compare two teams** picker to check any two clubs yourself, and a **📋 Fixture
+  ticker** where you tick up to 6 teams to show/hide their fixtures side by side
+  (sorted easiest run first). Each showing fixtures, averages and which team to play.
 - **▶ "Assume he starts" override** — for players you expect to play more than the
   data shows (a new signing, or a backup covering an injury), tap ▶ on their shirt
   and their projection uses full minutes instead of their historical minutes. Your

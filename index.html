@@ -2039,6 +2039,39 @@
 
   // ---------- Rotation Pairs ----------
   function avgDiffOf(games){ return games.length ? games.reduce((s,g)=>s+g.diff,0)/games.length : null; }
+  function fixtureCellHtml(games){
+    if(!games || !games.length) return `<td style="text-align:center;background:#0d1117;color:#3d4b5f;border-radius:6px">–</td>`;
+    const d = Math.round(games.reduce((s,g)=>s+g.diff,0)/games.length);
+    const inner = games.map(g=>escapeHtml(g.opp)+' ('+g.venue+')').join('<br>');
+    return `<td style="text-align:center;background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'};border-radius:6px;font-weight:700;font-size:11px">${inner}<br><small>${d}${games.length>1?' •':''}</small></td>`;
+  }
+  // Multi-team fixture ticker — tick up to 6 teams to show/hide their fixtures.
+  let _rotTicker = store.get('fpl_rotticker', []);
+  function toggleTicker(short, el){
+    if(el.checked){
+      if(_rotTicker.length >= 6){ el.checked = false; flash('Pick up to 6 teams'); return; }
+      if(!_rotTicker.includes(short)) _rotTicker.push(short);
+    } else {
+      _rotTicker = _rotTicker.filter(s=>s!==short);
+    }
+    store.set('fpl_rotticker', _rotTicker); renderTicker();
+  }
+  function renderTicker(){
+    const el = document.getElementById('rotTickerResult'); if(!el) return;
+    if(!_rotTicker.length){ el.innerHTML = '<p style="color:var(--muted);font-size:13px;margin:6px 0 0">Tick up to 6 teams above to line up their fixtures.</p>'; return; }
+    ensureSeason(season => {
+      const gws = rotWindow(season);
+      const rows = _rotTicker.map(sh => season.teams.find(t=>t.short===sh)).filter(Boolean).map(t => {
+        let s=0,n=0; gws.forEach(g => (t.gws[g]||[]).forEach(x=>{s+=x.diff;n++;}));
+        return {t, avg: n?s/n:99};
+      }).sort((a,b)=> a.avg - b.avg);
+      const head = `<th>Team</th><th>Avg</th>${gws.map(g=>`<th style="font-size:11px;color:var(--muted)">GW${g}</th>`).join('')}`;
+      const body = rows.map(r => `<tr><td style="font-weight:700">${r.t.short}</td>`
+        + `<td style="text-align:center;font-weight:700;color:${r.avg<2.6?'var(--accent)':r.avg>3.4?'var(--red)':'var(--gold)'}">${r.avg.toFixed(1)}</td>`
+        + gws.map(g=>fixtureCellHtml(r.t.gws[g]||[])).join('') + '</tr>').join('');
+      el.innerHTML = `<div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:4px"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+    });
+  }
   let _rotA = '', _rotB = '';
   function setRotTeam(which, val){ if(which==='A') _rotA = val; else _rotB = val; renderRotCompare(); }
   function rotWindow(season){
@@ -2127,6 +2160,13 @@
         </div>
         <div id="rotCompareResult"></div>
       </div>`;
+      const tickerCard = `<div class="card"><h3>📋 Fixture ticker — pick up to 6 teams</h3>
+        <p style="margin-top:0;color:var(--muted);font-size:13.5px">Tick teams to <b>show</b> their fixtures side by side; untick to <b>hide</b>. Sorted easiest run first.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:6px">
+          ${[...season.teams].sort((a,b)=>a.short.localeCompare(b.short)).map(t=>`<label style="font-size:13px;display:inline-flex;gap:5px;align-items:center;cursor:pointer"><input type="checkbox" ${_rotTicker.includes(t.short)?'checked':''} onchange="toggleTicker('${t.short}',this)" style="width:16px;height:16px;accent-color:var(--accent)"> ${t.short}</label>`).join('')}
+        </div>
+        <div id="rotTickerResult"></div>
+      </div>`;
       const teams = season.teams;
       // per team per GW: average difficulty that week (null if blank)
       const diff = {};
@@ -2166,14 +2206,14 @@
           <tbody><tr><td style="font-size:11px;color:var(--muted);white-space:nowrap">play →</td>${cells}</tr></tbody></table></div>
         </div>`;
       }).join('');
-      box.innerHTML = compareCard
+      box.innerHTML = compareCard + tickerCard
         + `<h3 style="margin:18px 0 8px">🏆 Best rotation pairs</h3>`
         + `<div class="callout blue" style="margin-top:0">Each row is a <b>pair of teams</b>. The grid shows <b>which team to play each week</b> (the one with the easier fixture), colour-coded green (easy) to red (hard), <b>✕</b> = both blank. Lower avg difficulty = a better rotation. Own a cheap player from each and start whichever is green that week.</div>${rows}`;
       // restore the picker selections and render
       if(_rotSolo){ const s=document.getElementById('rotSelSolo'); if(s) s.value=_rotSolo; }
       if(_rotA){ const s=document.getElementById('rotSelA'); if(s) s.value=_rotA; }
       if(_rotB){ const s=document.getElementById('rotSelB'); if(s) s.value=_rotB; }
-      renderRotSolo(); renderRotCompare();
+      renderRotSolo(); renderRotCompare(); renderTicker();
     }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Season fixtures not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>'; });
   }
   document.querySelector('[data-tab="rotations"]').addEventListener('click', () => renderRotations());
