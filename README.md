@@ -154,6 +154,12 @@ The web tool now also includes:
   data shows (a new signing, or a backup covering an injury), tap ▶ on their shirt
   and their projection uses full minutes instead of their historical minutes. Your
   own read, applied to the numbers — without faking the official data.
+- **💾 Per-gameweek lineups** — each gameweek keeps its own saved lineup, captain and
+  chip, so changes on one week don't overwrite another. A "Save this lineup" button
+  confirms it, and a "saved" tag shows which weeks you've set.
+- **⚡ Optimise for GW** — one tap picks your highest-projected legal XI for the shown
+  gameweek from your 15 (reshaping the formation as needed) and benches the rest,
+  ordered for auto-subs — it makes the close bench decisions for you.
 - **⏭ Gameweek stepper on the pitch** (Squad Builder → My Team) — ◀ / ▶ buttons
   step your team through every gameweek. Each week the shirts show that GW's
   projected points ("blank" if no game), you set the captain (tap C) and a chip

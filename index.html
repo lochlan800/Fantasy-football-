@@ -815,6 +815,52 @@
   // Gameweek-by-gameweek planning state (shared with the Season Planner tab)
   let _teamGw = null, _seasonGws = null;
   let _gwCaptain = store.get('fpl_gwcaptain', {});   // {gw: slotId} — captain per gameweek
+  let _gwLineup = store.get('fpl_gwlineup', {});     // {gw: benchArray} — lineup per gameweek
+  // The bench (and therefore XI) shown for the current view: the gameweek's own
+  // saved lineup if it has one, otherwise the default team arrangement.
+  function activeBench(){
+    if(!Array.isArray(squad.bench) || squad.bench.length!==4) squad.bench = ['GK-1','DEF-3','DEF-4','MID-4'];
+    if(_season && _teamGw!=null && Array.isArray(_gwLineup[_teamGw]) && _gwLineup[_teamGw].length===4) return _gwLineup[_teamGw];
+    return squad.bench;
+  }
+  function benchTarget(){   // the bench array to write changes into for the current view
+    if(_season && _teamGw!=null){
+      if(!Array.isArray(_gwLineup[_teamGw]) || _gwLineup[_teamGw].length!==4) _gwLineup[_teamGw] = activeBench().slice();
+      return _gwLineup[_teamGw];
+    }
+    if(!Array.isArray(squad.bench) || squad.bench.length!==4) squad.bench = ['GK-1','DEF-3','DEF-4','MID-4'];
+    return squad.bench;
+  }
+  function persistLineup(){ store.set('fpl_squad', squad); store.set('fpl_gwlineup', _gwLineup); }
+  function saveGwLineup(){
+    if(_season && _teamGw!=null){ _gwLineup[_teamGw] = activeBench().slice(); persistLineup(); flash('Saved your GW'+_teamGw+' team ✓'); }
+    else { store.set('fpl_squad', squad); flash('Team saved ✓'); }
+  }
+  // pick the highest-projected legal XI for the gameweek; bench the rest
+  function optimizeGw(){
+    if(!(_season && _teamGw!=null)){ flash('Open a gameweek first (needs fixture data)'); return; }
+    const filled = POSITIONS.reduce((n,p)=>n+squad[p.key].filter(x=>x.name&&x.name.trim()).length,0);
+    if(filled < 15){ flash('Add your full 15 players first'); return; }
+    const proj = teamGwProjection(_teamGw);
+    const allIds = []; POSITIONS.forEach(p=>squad[p.key].forEach((pl,i)=>allIds.push(p.key+'-'+i)));
+    const benchIds = allIds.filter(id => !proj.xiSlots.has(id));
+    benchIds.sort((a,b)=>{ const ag=a.startsWith('GK'), bg=b.startsWith('GK'); if(ag!==bg) return ag?-1:1; return (proj.perSlot[b]||0)-(proj.perSlot[a]||0); });
+    _gwLineup[_teamGw] = benchIds.slice(0,4);
+    persistLineup(); renderSquad(); flash('Optimised your XI for GW'+_teamGw+' ✓');
+  }
+  // projected points of the user's ACTUAL chosen XI this gameweek (captain/chip applied)
+  function userXiTotal(gw){
+    const benchSet = new Set(activeBench());
+    const capSlot = gwCaptainSlot(gw), chip = _plannerChips[gw] || '';
+    let total = 0;
+    POSITIONS.forEach(p => squad[p.key].forEach((pl,i)=>{
+      if(!pl.name || !pl.name.trim()) return;
+      const id = p.key+'-'+i, pts = projectSlotPts({name:pl.name, team:pl.team}, gw);
+      if(!benchSet.has(id)){ total += pts; if(id===capSlot) total += pts*(chip==='tc'?2:1); }
+      else if(chip==='bb'){ total += pts; }
+    }));
+    return Math.round(total);
+  }
   // "Assume he starts" overrides — for players you expect to play more than the
   // data shows (new signings, backups covering an injury). Boosts their projection.
   let _starters = store.get('fpl_starters', {});
@@ -831,19 +877,19 @@
   // (1 GK, 3-5 DEF, 2-5 MID, 1-3 FWD) — so you can bench a forward for a midfielder.
   let _swapSel = null;
   function xiOutfieldCounts(){
-    const benchSet = new Set(squad.bench || []);
+    const benchSet = new Set(activeBench());
     const c = {DEF:0, MID:0, FWD:0};
     ['DEF','MID','FWD'].forEach(pos => squad[pos].forEach((pl,i) => { if(!benchSet.has(pos+'-'+i)) c[pos]++; }));
     return c;
   }
   function doSub(idA, idB){
-    if(!Array.isArray(squad.bench) || squad.bench.length!==4) squad.bench = ['GK-1','DEF-3','DEF-4','MID-4'];
-    const benchSet = new Set(squad.bench);
+    const bench = benchTarget();
+    const benchSet = new Set(bench);
     const aBench = benchSet.has(idA), bBench = benchSet.has(idB);
     if(aBench && bBench){                                   // both benched → reorder bench priority
-      const ia=squad.bench.indexOf(idA), ib=squad.bench.indexOf(idB);
-      [squad.bench[ia], squad.bench[ib]] = [squad.bench[ib], squad.bench[ia]];
-      store.set('fpl_squad', squad); flash('Bench order updated'); return;
+      const ia=bench.indexOf(idA), ib=bench.indexOf(idB);
+      [bench[ia], bench[ib]] = [bench[ib], bench[ia]];
+      persistLineup(); flash('Bench order updated'); return;
     }
     if(aBench === bBench){ flash('Tap a starter, then a bench player, to substitute'); return; }
     const starterId = aBench ? idB : idA, benchId = aBench ? idA : idB;
@@ -855,8 +901,8 @@
         flash('That would break the formation (need 3-5 DEF, 2-5 MID, 1-3 FWD)'); return;
       }
     }
-    squad.bench[squad.bench.indexOf(benchId)] = starterId;  // starter goes to bench, bench player starts
-    store.set('fpl_squad', squad); flash('Substituted ✓');
+    bench[bench.indexOf(benchId)] = starterId;              // starter goes to bench, bench player starts
+    persistLineup(); flash('Substituted ✓');
   }
   function shirtTap(pos, i, ev){
     if(ev && ev.target.closest('button')) return;   // let ✕ / C / ▶ do their own thing
@@ -960,10 +1006,12 @@
     const hasTeam = POSITIONS.some(p => squad[p.key].some(x => x.name && x.name.trim()));
     let nav = '';
     if(_season && _teamGw != null && hasTeam){
-      const proj = teamGwProjection(_teamGw);
+      const chip = _plannerChips[_teamGw] || '';
+      const xiTotal = userXiTotal(_teamGw);
       const minGw = _season.current_gw || 1, maxGw = _season.max_gw || 38;
       const atStart = _teamGw <= minGw, atEnd = _teamGw >= maxGw;
       const isNow = _teamGw === minGw;
+      const savedTag = (Array.isArray(_gwLineup[_teamGw])) ? ' <span class="pill green" style="font-size:10px">saved</span>' : '';
       nav = `<div class="budget-bar" style="justify-content:space-between;gap:10px">
         <div class="row-actions" style="margin:0;align-items:center">
           <button class="btn ghost" onclick="shiftTeamGw(-1)" ${atStart?'disabled':''} style="${atStart?'opacity:.4':''}">◀</button>
@@ -971,15 +1019,19 @@
           <button class="btn ghost" onclick="shiftTeamGw(1)" ${atEnd?'disabled':''} style="${atEnd?'opacity:.4':''}">▶</button>
         </div>
         <div class="row-actions" style="margin:0;align-items:center">
-          <span style="color:var(--muted);font-size:12px">Chip:</span> ${chipSelectHtml(_teamGw, proj.chip)}
+          <span style="color:var(--muted);font-size:12px">Chip:</span> ${chipSelectHtml(_teamGw, chip)}
         </div>
-        <div class="stat"><b style="color:var(--accent)">${proj.total}</b><span>proj pts · GW${_teamGw}</span></div>
+        <div class="stat"><b style="color:var(--accent)">${xiTotal}</b><span>your XI · GW${_teamGw}${savedTag}</span></div>
       </div>
-      <p class="save-note" style="margin:-6px 0 10px">Use ◀ ▶ to plan future weeks — projected points, opponent (H/A), captain (tap <b>C</b>) and chip all apply to the shown gameweek. Tap <b>▶</b> on a player to "assume he starts" (e.g. a new signing or injury cover) so his projection uses full minutes. "blank" = no game that week.</p>`;
+      <div class="row-actions" style="margin:0 0 8px">
+        <button class="btn" onclick="optimizeGw()">⚡ Optimise for GW${_teamGw}</button>
+        <button class="btn ghost" onclick="saveGwLineup()">💾 Save this lineup</button>
+      </div>
+      <p class="save-note" style="margin:0 0 10px">Each gameweek keeps its <b>own</b> lineup, captain and chip — changes on one week don't affect another. <b>⚡ Optimise</b> picks your highest-projected legal XI for the week and benches the rest. Tap <b>▶</b> on a player to "assume he starts". "blank" = no game that week.</p>`;
     }
-    // bench = 4 slot ids; the other 11 slots are the starting XI (formation flexes)
-    if(!Array.isArray(squad.bench) || squad.bench.length !== 4) squad.bench = ['GK-1','DEF-3','DEF-4','MID-4'];
-    const benchSet = new Set(squad.bench);
+    // bench = 4 slot ids for the current view; the other 11 slots are the XI (formation flexes)
+    const benchArr = activeBench();
+    const benchSet = new Set(benchArr);
     const starterRows = {GK:[], DEF:[], MID:[], FWD:[]};
     POSITIONS.forEach(p => squad[p.key].forEach((pl,i) => { const id=p.key+'-'+i; if(!benchSet.has(id)) starterRows[p.key].push([p.key,i]); }));
     let html = nav + '<div class="pitch">';
@@ -987,7 +1039,7 @@
       if(starterRows[pos].length) html += '<div class="pitch-row">' + starterRows[pos].map(([p,i])=>shirtHtml(p,i)).join('') + '</div>';
     });
     html += '</div><div class="bench"><h4>🪑 Bench (subs come on in this order)</h4><div class="pitch-row">'
-          + squad.bench.map(id => { const a=id.split('-'); return shirtHtml(a[0], +a[1]); }).join('') + '</div></div>';
+          + benchArr.map(id => { const a=id.split('-'); return shirtHtml(a[0], +a[1]); }).join('') + '</div></div>';
     c.innerHTML = html;
     updateBudget();
   }
