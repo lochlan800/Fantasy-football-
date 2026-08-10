@@ -1301,7 +1301,7 @@
       const suggested = new Set();
       const sugg = weak.map(p=>{
         const pool=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
-                     && Math.abs(c.price-p.price)<=0.5                    // same price (±£0.5m), no downgrade
+                     && c.price <= p.price + 0.05                        // their exact price or cheaper
                      && (c.mins==null || c.mins>=600)                     // must actually play (not a fringe/academy player)
                      && !ownedKeys.has(normName(c.name)) && !suggested.has(normName(c.name)));
         // hierarchy: 1) nailed AND good fixtures  2) on pens/free-kicks/corners  then rating
@@ -1327,7 +1327,7 @@
       if(injured.length) html += `<div class="callout red" style="margin:8px 0"><b>⚠️ Flagged in your squad:</b> ${injured.map(p=>escapeHtml(p.name)+' ('+p.status+')').join(', ')} — not fully available. Consider replacing.</div>`;
       if(unmatched.length) html += `<div class="callout" style="margin:8px 0"><b>Couldn't find:</b> ${unmatched.map(escapeHtml).join(', ')} — check the spelling against the FPL name.</div>`;
       if(sugg.length){
-        html += `<h4 style="margin:14px 0 6px">🔁 Who to bring in <span style="font-weight:400;color:var(--muted);font-size:13px">— better players at the same price</span></h4><div style="overflow-x:auto"><table><thead><tr><th>Weak spot</th><th></th><th>Upgrade to (same price)</th><th>Price</th></tr></thead><tbody>`;
+        html += `<h4 style="margin:14px 0 6px">🔁 Who to bring in <span style="font-weight:400;color:var(--muted);font-size:13px">— better players at the same price or cheaper</span></h4><div style="overflow-x:auto"><table><thead><tr><th>Weak spot</th><th></th><th>Upgrade to</th><th>Price</th></tr></thead><tbody>`;
         sugg.forEach(s=>{
           const diff = Number(s.in.price) - Number(s.out.price);
           const diffTxt = Math.abs(diff) < 0.05 ? 'same price' : (diff>0?'+£'+diff.toFixed(1)+'m':'−£'+Math.abs(diff).toFixed(1)+'m');
@@ -1335,9 +1335,9 @@
             `<td><b>${escapeHtml(s.in.name)}</b> <span class="pill green">${pct(s.in.rating,byPos[s.in.pos])}%</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(s.in.team)}</span><br>${candReasons(s.in)||'<span style="color:var(--muted);font-size:11px">higher rated</span>'}</td>`+
             `<td>£${Number(s.in.price).toFixed(1)}m <span style="color:var(--muted);font-size:11px">(${diffTxt})</span></td></tr>`;
         });
-        html += `</tbody></table></div><p class="save-note">Same price, higher quality. Picked in priority order: <b>1)</b> nailed-on with good fixtures, <b>2)</b> on penalties / free-kicks / corners, then overall rating. Always sense-check the latest team news first.</p>`;
+        html += `</tbody></table></div><p class="save-note">Higher quality at the <b>same price or cheaper</b> (never costs extra). Picked in priority order: <b>1)</b> nailed-on with good fixtures, <b>2)</b> on penalties / free-kicks / corners, then overall rating. Always sense-check the latest team news first.</p>`;
       } else {
-        html += `<p style="color:var(--accent)">💪 No better players available at the same prices — strong squad!</p>`;
+        html += `<p style="color:var(--accent)">💪 No better players available at the same price or cheaper — strong squad!</p>`;
       }
       html += `</div>`;
       out.innerHTML = html;
