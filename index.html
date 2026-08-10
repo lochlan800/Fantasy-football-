@@ -2079,10 +2079,33 @@
     for(let g=startGw; g<Math.min(startGw+10, (season.max_gw||38)+1); g++) gws.push(g);
     return gws;
   }
-  // Reusable side-by-side fixture grid + "play this team each week" row + rotation avg.
+  // Rotation quality from the week-by-week picks. LOWER rotScore = a better rotation.
+  // per: [{play:'ARS'|'—', d:bestDifficultyThatWeek}] — d is already the easier of the two teams.
+  // It's not enough to have a low average difficulty: a pair can score low just because both
+  // teams have easy runs at the SAME time (a "cluster"), so you never actually rotate and the
+  // second slot is wasted. A real rotation gives you a good fixture EVERY week by alternating,
+  // so we reward: (a) both teams pulling their weight, (b) no weeks where neither is a good pick,
+  // (c) switching from week to week — on top of the raw playable-difficulty average.
+  function rotComposite(per){
+    const N = per.length || 1;
+    const rotAvg = per.reduce((s,x)=>s+x.d,0)/N;
+    let switches=0; for(let i=1;i<per.length;i++){ if(per[i].play!==per[i-1].play && per[i].play!=='—' && per[i-1].play!=='—') switches++; }
+    const counts={}; let active=0;
+    per.forEach(x=>{ if(x.play!=='—'){ counts[x.play]=(counts[x.play]||0)+1; active++; } });
+    const vals=Object.values(counts);
+    const minUse = vals.length>1 ? Math.min(...vals) : 0;
+    const balance = active ? minUse/active : 0;          // 0..0.5 ; 0.5 = both teams used equally
+    const badWeeks = per.filter(x=>x.d>=4).length;        // weeks with NO good option (cluster of hard fixtures)
+    const rotScore = rotAvg
+       + 1.0*(0.5 - balance)         // punish clusters where one team is barely used
+       + 0.8*(badWeeks/N)            // punish weeks where neither team is a good pick
+       - 0.10*(switches/(N-1||1));   // reward genuine week-to-week rotation
+    return {rotAvg, rotScore, switches, balance, badWeeks, active};
+  }
+  // Reusable side-by-side fixture grid + "play this team each week" row + rotation scores.
   function rotPairTable(season, gws, aShort, bShort){
     const A = season.teams.find(t=>t.short===aShort), B = season.teams.find(t=>t.short===bShort);
-    if(!A || !B) return {html:'', rotAvg:99};
+    if(!A || !B) return {html:'', rotAvg:99, rotScore:99};
     const cell = (t, gw) => {
       const games = t.gws[gw] || [];
       if(!games.length) return `<td style="text-align:center;background:#0d1117;color:#3d4b5f;border-radius:6px">–</td>`;
@@ -2091,20 +2114,26 @@
       return `<td style="text-align:center;background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'};border-radius:6px;font-weight:700;font-size:11px">${inner}<br><small>${d}${games.length>1?' •':''}</small></td>`;
     };
     const teamAvg = t => { let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{s+=x.diff;n++;})); return n?s/n:null; };
-    let rotSum=0;
-    const playRow = gws.map(g => {
+    const perArr = gws.map(g => {
       const da = avgDiffOf(A.gws[g]||[]), db = avgDiffOf(B.gws[g]||[]);
       let pick='—', best=5; if(da==null&&db==null){pick='—';best=5;} else if(da==null){pick=B.short;best=db;} else if(db==null){pick=A.short;best=da;} else { pick = da<=db?A.short:B.short; best=Math.min(da,db); }
-      rotSum += best;
-      const col = pick===A.short?'#0e8a3e':pick===B.short?'#00697a':'#0d1117';
-      return `<td style="text-align:center;background:${col};color:#fff;border-radius:6px;font-weight:700;font-size:11px">${pick==='—'?'✕':pick}</td>`;
+      return {g, play:pick, d:best};
+    });
+    const playRow = perArr.map(x => {
+      const col = x.play===A.short?'#0e8a3e':x.play===B.short?'#00697a':'#0d1117';
+      return `<td style="text-align:center;background:${col};color:#fff;border-radius:6px;font-weight:700;font-size:11px">${x.play==='—'?'✕':x.play}</td>`;
     }).join('');
-    const avgA=teamAvg(A), avgB=teamAvg(B), rotAvg = rotSum/gws.length;
+    const comp = rotComposite(perArr);
+    const rotAvg = comp.rotAvg;
+    const avgA=teamAvg(A), avgB=teamAvg(B);
+    const balPct = Math.round(comp.balance*200);   // 0.5 -> 100% (a perfect 50/50 split)
     const html = `
       <div style="display:flex;gap:16px;flex-wrap:wrap;margin:10px 0;font-size:13px">
         <span><b>${A.short}</b> avg <b style="color:${avgA<2.6?'var(--accent)':avgA>3.4?'var(--red)':'var(--gold)'}">${avgA!=null?avgA.toFixed(2):'—'}</b></span>
         <span><b>${B.short}</b> avg <b style="color:${avgB<2.6?'var(--accent)':avgB>3.4?'var(--red)':'var(--gold)'}">${avgB!=null?avgB.toFixed(2):'—'}</b></span>
-        <span>rotation avg <b style="color:${rotAvg<2.4?'var(--accent)':rotAvg>3?'var(--red)':'var(--gold)'}">${rotAvg.toFixed(2)}</b></span>
+        <span>playable avg <b style="color:${rotAvg<2.4?'var(--accent)':rotAvg>3?'var(--red)':'var(--gold)'}">${rotAvg.toFixed(2)}</b></span>
+        <span>rotates <b>${comp.switches}×</b></span>
+        <span>even use <b style="color:${balPct>=70?'var(--accent)':balPct>=40?'var(--gold)':'var(--red)'}">${balPct}%</b></span>
       </div>
       <div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:4px">
         <thead><tr><th></th>${gws.map(g=>`<th style="font-size:11px;color:var(--muted)">GW${g}</th>`).join('')}</tr></thead>
@@ -2113,7 +2142,7 @@
           <tr><td style="font-weight:700">${B.short}</td>${gws.map(g=>cell(B,g)).join('')}</tr>
           <tr><td style="font-size:11px;color:var(--muted)">play →</td>${playRow}</tr>
         </tbody></table></div>`;
-    return {html, rotAvg};
+    return {html, rotAvg, rotScore:comp.rotScore, switches:comp.switches, balance:comp.balance, badWeeks:comp.badWeeks};
   }
   function renderRotCompare(){
     const el = document.getElementById('rotCompareResult'); if(!el) return;
@@ -2129,9 +2158,9 @@
     ensureSeason(season => {
       const gws = rotWindow(season);
       const partners = season.teams.filter(t=>t.short!==_rotSolo)
-        .map(t => ({short:t.short, rotAvg: rotPairTable(season, gws, _rotSolo, t.short).rotAvg}))
-        .sort((a,b)=> a.rotAvg - b.rotAvg).slice(0, 3);
-      el.innerHTML = `<p style="margin:10px 0 4px;font-size:13px;color:var(--muted)">Best rotation partners for <b style="color:var(--text)">${_rotSolo}</b> (lowest combined difficulty over the next ${gws.length} GWs):</p>`
+        .map(t => { const r = rotPairTable(season, gws, _rotSolo, t.short); return {short:t.short, rotScore:r.rotScore}; })
+        .sort((a,b)=> a.rotScore - b.rotScore).slice(0, 3);
+      el.innerHTML = `<p style="margin:10px 0 4px;font-size:13px;color:var(--muted)">Best rotation partners for <b style="color:var(--text)">${_rotSolo}</b> — the teams that genuinely <b>alternate</b> with it (a good fixture nearly every week), over the next ${gws.length} GWs:</p>`
         + partners.map((p,idx)=>{
           const t = rotPairTable(season, gws, _rotSolo, p.short);
           return `<div class="card" style="padding:12px 14px;margin-bottom:10px"><h3 style="margin:0">${idx===0?'⭐ ':''}${_rotSolo} + ${p.short}</h3>${t.html}</div>`;
@@ -2181,12 +2210,11 @@
           if(db==null) return {g, play:A, d:da};
           return da<=db ? {g, play:A, d:da} : {g, play:B, d:db};           // play the easier one
         });
-        const avg = per.reduce((s,p)=>s+p.d,0)/per.length;
-        // reward genuine rotation: how often the team you play switches
-        let switches = 0; for(let i=1;i<per.length;i++) if(per[i].play!==per[i-1].play && per[i].play!=='—' && per[i-1].play!=='—') switches++;
-        pairs.push({A, B, avg, switches, per});
+        const comp = rotComposite(per);
+        pairs.push({A, B, avg:comp.rotAvg, switches:comp.switches, balance:comp.balance, badWeeks:comp.badWeeks, rotScore:comp.rotScore, per});
       }
-      pairs.sort((x,y)=> x.avg - y.avg || y.switches - x.switches);
+      // rank by the composite so genuine week-to-week rotations beat clustered fixtures
+      pairs.sort((x,y)=> x.rotScore - y.rotScore);
       const DIFF_BG2 = {1:'#0e8a3e',2:'#37d67a',3:'#5a6472',4:'#ff8a5c',5:'#ff5c73'};
       const DIFF_FG2 = {1:'#fff',2:'#06210f',3:'#fff',4:'#3a1400',5:'#3a0009'};
       let head = '<th>Play →</th>' + gws.map(g=>`<th>GW${g}</th>`).join('');
@@ -2200,7 +2228,7 @@
         return `<div class="card" style="padding:12px 14px;margin-bottom:12px">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
             <h3 style="margin:0">${p.A} + ${p.B}</h3>
-            <span style="color:var(--muted);font-size:13px">avg difficulty <b style="color:${p.avg<2.6?'var(--accent)':'var(--gold)'}">${p.avg.toFixed(2)}</b> · rotates ${p.switches}×</span>
+            <span style="color:var(--muted);font-size:13px">playable avg <b style="color:${p.avg<2.6?'var(--accent)':'var(--gold)'}">${p.avg.toFixed(2)}</b> · rotates <b>${p.switches}×</b> · even use <b style="color:${Math.round(p.balance*200)>=70?'var(--accent)':Math.round(p.balance*200)>=40?'var(--gold)':'var(--red)'}">${Math.round(p.balance*200)}%</b></span>
           </div>
           <div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:4px"><thead><tr><th></th>${gws.map(g=>`<th style="font-size:11px;color:var(--muted)">GW${g}</th>`).join('')}</tr></thead>
           <tbody><tr><td style="font-size:11px;color:var(--muted);white-space:nowrap">play →</td>${cells}</tr></tbody></table></div>
@@ -2208,7 +2236,7 @@
       }).join('');
       box.innerHTML = compareCard + tickerCard
         + `<h3 style="margin:18px 0 8px">🏆 Best rotation pairs</h3>`
-        + `<div class="callout blue" style="margin-top:0">Each row is a <b>pair of teams</b>. The grid shows <b>which team to play each week</b> (the one with the easier fixture), colour-coded green (easy) to red (hard), <b>✕</b> = both blank. Lower avg difficulty = a better rotation. Own a cheap player from each and start whichever is green that week.</div>${rows}`;
+        + `<div class="callout blue" style="margin-top:0">Each row is a <b>pair of teams</b>. The grid shows <b>which team to play each week</b> (the one with the easier fixture), colour-coded green (easy) to red (hard), <b>✕</b> = both blank. Ranked so pairs that <b>truly alternate</b> — a good fixture nearly every week, using <b>both</b> teams — beat "clusters" where the easy games bunch up or one team is barely used. <b>Playable avg</b> = how hard the fixture you actually start is; <b>rotates</b> = week-to-week switches; <b>even use</b> = how evenly you'd use both teams (100% = a perfect 50/50 split). Own a cheap player from each and start whichever is green that week.</div>${rows}`;
       // restore the picker selections and render
       if(_rotSolo){ const s=document.getElementById('rotSelSolo'); if(s) s.value=_rotSolo; }
       if(_rotA){ const s=document.getElementById('rotSelA'); if(s) s.value=_rotA; }
