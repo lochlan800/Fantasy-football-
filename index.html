@@ -1405,6 +1405,22 @@
     else if(c.setpiece) r.push('<span class="pill purple" style="font-size:10px">⚽ set-piece</span>');
     return r.join(' ');
   }
+  // Short plain-language reason the incoming player beats the outgoing one.
+  function whyBetter(oldP, newP){
+    const bits = [];
+    if(newP.xpts!=null && oldP.xpts!=null){
+      const d = Number(newP.xpts) - Number(oldP.xpts);
+      if(d >= 0.3) bits.push(`+${d.toFixed(1)} projected pts a week`);
+    }
+    if(isNailed(newP) && !isNailed(oldP)) bits.push('more nailed-on to start');
+    if(goodFix(newP) && !goodFix(oldP)) bits.push('kinder fixtures');
+    if(onSetPiece(newP) && !onSetPiece(oldP)) bits.push(newP.pens ? 'takes penalties' : 'on set-pieces');
+    if(!bits.length && newP.form!=null && oldP.form!=null && (Number(newP.form)-Number(oldP.form)) >= 0.8) bits.push('in hotter form');
+    if(!bits.length && newP.ppg!=null && oldP.ppg!=null && (Number(newP.ppg)-Number(oldP.ppg)) >= 0.5) bits.push('scores more per game');
+    if(!bits.length && newP.mins!=null && oldP.mins!=null && (Number(newP.mins)-Number(oldP.mins)) >= 300) bits.push('plays more minutes');
+    if(!bits.length) bits.push('higher overall rating');
+    return bits.slice(0,2).join(' · ');
+  }
   function rateTeam(){
     const out = document.getElementById('rateResult');
     out.innerHTML = '<div class="card" style="color:var(--muted)">Rating your team…</div>';
@@ -1518,8 +1534,11 @@
       if(raise.length){
         html += `<h4 style="margin:14px 0 6px">📈 Biggest score boosts <span style="font-weight:400;color:var(--muted);font-size:13px">— each is one move, same price or cheaper</span></h4><div style="overflow-x:auto"><table><thead><tr><th>Swap out (weakest)</th><th></th><th>Bring in</th><th>Your score</th></tr></thead><tbody>`;
         raise.forEach(r=>{
+          const reasons = candReasons(r.in);
           html += `<tr><td>${escapeHtml(r.out.name)} <span class="pill red">${r.out.pctl}%</span> <span style="color:var(--muted);font-size:12px">£${Number(r.out.price).toFixed(1)}m</span></td><td>▸</td>`+
-            `<td><b>${escapeHtml(r.in.name)}</b> <span class="pill green">${r.upPctl}%</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(r.in.team)} · £${Number(r.in.price).toFixed(1)}m</span></td>`+
+            `<td><b>${escapeHtml(r.in.name)}</b> <span class="pill green">${r.upPctl}%</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(r.in.team)} · £${Number(r.in.price).toFixed(1)}m</span>`+
+            (reasons?`<br>${reasons}`:'')+
+            `<div style="color:var(--muted);font-size:11px;margin-top:2px">✅ ${escapeHtml(whyBetter(r.out, r.in))}</div></td>`+
             `<td><b style="color:var(--accent);font-size:15px">${score} → ${r.newScore}</b> <span style="color:var(--accent);font-size:12px">(+${r.gain})</span></td></tr>`;
         });
         html += `</tbody></table></div><p class="save-note">These are the single transfers that move your rating the <b>most</b> — do the top one first. Each figure is your new score if you made only that swap.</p>`;

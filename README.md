@@ -211,7 +211,9 @@ The web tool now also includes:
   so it's held down by your weakest starters, not lifted by your best (which is why
   it feels "stuck"). The tool now explains this and shows a **Biggest score boosts**
   table: the single same-price transfers that lift your rating the most, each with
-  the exact before → after number (e.g. `86 → 90`), plus a captain tip when
+  the exact before → after number (e.g. `86 → 90`), a short **why he's better**
+  line (e.g. "+2.1 projected pts a week · more nailed-on to start") and tag pills
+  (🔒 nailed, 🟢 fixtures, 🎯 pens, ⚽ set-piece), plus a captain tip when
   captaining your top-rated starter would nudge it higher. Do the top move first.
 
 All of these save in your browser, and the data-driven ones refresh automatically
