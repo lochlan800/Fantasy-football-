@@ -251,6 +251,9 @@
   .pick-panel{ background:var(--panel); border:1px solid var(--border); border-radius:14px; width:100%; max-width:520px; padding:16px; box-shadow:var(--shadow); }
   .pick-panel h3{ margin:0 0 10px; display:flex; justify-content:space-between; align-items:center; }
   .pick-close{ background:none; border:none; color:var(--muted); font-size:22px; cursor:pointer; }
+  .pick-filters{ margin-top:10px; padding:11px; border:1px solid var(--border); border-radius:10px; background:var(--panel-2); display:flex; flex-wrap:wrap; gap:10px 14px; align-items:flex-end; }
+  .pick-filters label{ display:flex; flex-direction:column; gap:3px; font-size:11px; color:var(--muted); font-weight:600; }
+  .pick-filters select{ background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:7px; padding:6px 8px; font-size:13px; }
 </style>
 </head>
 <body>
@@ -604,7 +607,16 @@
     <div class="pick-overlay" id="pickOverlay" onclick="if(event.target===this)closePicker()">
       <div class="pick-panel">
         <h3><span>Add a <span id="pickPosLabel">player</span></span><button class="pick-close" onclick="closePicker()">✕</button></h3>
-        <input class="textline" id="pickSearch" placeholder="🔎 Search…" oninput="pickerFilter(this.value)" autocomplete="off">
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="textline" id="pickSearch" placeholder="🔎 Search…" oninput="pickerFilter(this.value)" autocomplete="off" style="flex:1">
+          <button class="btn ghost" id="pickFilterBtn" onclick="togglePickFilters()" style="flex:none;white-space:nowrap">⚙ Filter</button>
+        </div>
+        <div class="pick-filters" id="pickFilters" style="display:none">
+          <label>Club<select id="pickClub" onchange="setPickFilter()"><option value="">Any club</option></select></label>
+          <label>Min price<select id="pickMin" onchange="setPickFilter()"><option value="">No min</option></select></label>
+          <label>Max price<select id="pickMax" onchange="setPickFilter()"><option value="">No max</option></select></label>
+          <button class="btn ghost" onclick="clearPickFilters()" style="padding:6px 10px;font-size:12px">Clear</button>
+        </div>
         <div id="pickResults" style="margin-top:10px"></div>
       </div>
     </div>
@@ -1171,12 +1183,48 @@
   // Position-filtered picker
   const POS_FULL = {GK:'Goalkeeper', DEF:'Defender', MID:'Midfielder', FWD:'Forward'};
   let _pickTarget = null, _pickResults = [];
+  // Picker filters — price range + club. Reset each time the picker opens.
+  let _pickFilter = {club:'', min:'', max:''};
+  function populatePickFilters(db){
+    const sel = document.getElementById('pickClub');
+    if(!sel.dataset.filled){
+      const clubs = [...new Set(db.players.map(p=>p.team).filter(Boolean))].sort();
+      sel.innerHTML = '<option value="">Any club</option>' + clubs.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+      const priceOpts = ['4.0','4.5','5.0','5.5','6.0','6.5','7.0','7.5','8.0','8.5','9.0','10.0','11.0','12.0','13.0','14.0','15.0'];
+      document.getElementById('pickMin').innerHTML = '<option value="">No min</option>' + priceOpts.map(v=>`<option value="${v}">£${v}m and up</option>`).join('');
+      document.getElementById('pickMax').innerHTML = '<option value="">No max</option>' + priceOpts.map(v=>`<option value="${v}">£${v}m or less</option>`).join('');
+      sel.dataset.filled = '1';
+    }
+  }
+  function togglePickFilters(){ const el=document.getElementById('pickFilters'); el.style.display = el.style.display==='none' ? 'flex' : 'none'; }
+  function updatePickFilterBtn(){
+    const n = [_pickFilter.club,_pickFilter.min,_pickFilter.max].filter(Boolean).length;
+    const b = document.getElementById('pickFilterBtn');
+    b.innerHTML = n ? `⚙ Filter <span class="pill green" style="padding:0 6px;font-size:11px">${n}</span>` : '⚙ Filter';
+  }
+  function setPickFilter(){
+    _pickFilter = {
+      club: document.getElementById('pickClub').value,
+      min:  document.getElementById('pickMin').value,
+      max:  document.getElementById('pickMax').value,
+    };
+    updatePickFilterBtn();
+    if(_pickTarget) ensureDb(db => pickerRender(db, _pickTarget.pos, document.getElementById('pickSearch').value || ''));
+  }
+  function clearPickFilters(){
+    document.getElementById('pickClub').value = '';
+    document.getElementById('pickMin').value = '';
+    document.getElementById('pickMax').value = '';
+    setPickFilter();
+  }
   function openPicker(pos, i){
     _pickTarget = {pos, i};
     document.getElementById('pickPosLabel').textContent = POS_FULL[pos] || 'player';
     document.getElementById('pickSearch').value = '';
+    document.getElementById('pickFilters').style.display = 'none';
+    _pickFilter = {club:'', min:'', max:''};
     document.getElementById('pickOverlay').classList.add('on');
-    ensureDb(db => pickerRender(db, pos, ''), () => {
+    ensureDb(db => { populatePickFilters(db); clearPickFilters(); pickerRender(db, pos, ''); }, () => {
       document.getElementById('pickResults').innerHTML = '<div style="color:var(--muted);padding:8px">Player list not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>';
     });
     setTimeout(()=>{ const s=document.getElementById('pickSearch'); if(s) s.focus(); }, 60);
@@ -1188,11 +1236,18 @@
     const ownedKeys = new Set();
     POSITIONS.forEach(P => squad[P.key].forEach(x => { if(x.name && x.name.trim()) ownedKeys.add(normName(x.name)); }));
     let list = db.players.filter(p => p.pos === pos && !ownedKeys.has(normName(p.name)));
+    if(_pickFilter.club) list = list.filter(p => p.team === _pickFilter.club);
+    if(_pickFilter.min)  list = list.filter(p => Number(p.price) >= Number(_pickFilter.min) - 0.001);
+    if(_pickFilter.max)  list = list.filter(p => Number(p.price) <= Number(_pickFilter.max) + 0.001);
     if(lq.length >= 1) list = list.filter(p => normName(p.name).includes(nq) || normName(p.full||'').includes(nq));
     list = list.sort((a,b)=> b.rating - a.rating).slice(0, 40);
     _pickResults = list;
     const box = document.getElementById('pickResults');
-    if(!list.length){ box.innerHTML = '<div style="color:var(--muted);padding:8px">No '+pos+' found — try another search.</div>'; return; }
+    if(!list.length){
+      const filtered = _pickFilter.club || _pickFilter.min || _pickFilter.max;
+      box.innerHTML = '<div style="color:var(--muted);padding:8px">No '+pos+' found'+(filtered?' with these filters — <a href="#" onclick="clearPickFilters();return false" style="color:var(--accent)">clear the filter</a> or widen it.':' — try another search.')+'</div>';
+      return;
+    }
     box.innerHTML = list.map((p,idx)=>{
       const flag = p.avail ? '' : ' <span class="pill red">'+p.status+'</span>';
       const proj = p.xpts!=null ? `<span class="pill green" title="Projected points per gameweek">≈${Number(p.xpts).toFixed(1)}</span>` : '';

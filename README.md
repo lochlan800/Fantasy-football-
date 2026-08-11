@@ -186,7 +186,10 @@ The web tool now also includes:
   empty shirt to open a search that's locked to that position (a defender slot
   only shows defenders), pick a player and they drop into the shirt. Tap **C** to
   captain, **✕** to remove. Searches by first name or surname (accents ignored),
-  blocks duplicates, and tracks your budget live.
+  blocks duplicates, and tracks your budget live. A **⚙ Filter** button adds
+  **club** and **price** (min / max) filters so you can, say, show only Arsenal
+  midfielders under £6.0m — combine them with the search box, and a badge shows how
+  many filters are active.
 - **📋 Stats table** — a sortable table of every player, like the paid sites' main
   stats page: tap any column to sort (points, PPG, form, ownership, minutes, goals,
   assists, clean sheets, saves, xGI/90, ICT index, bonus, BPS, value, projected
