@@ -1406,20 +1406,41 @@
     return r.join(' ');
   }
   // Short plain-language reason the incoming player beats the outgoing one.
+  // Grounds the "why" in the real stats the rating is built from (points per game,
+  // form, xGI, goals/assists, bonus, clean sheets…) so you can judge it yourself.
   function whyBetter(oldP, newP){
-    const bits = [];
-    if(newP.xpts!=null && oldP.xpts!=null){
-      const d = Number(newP.xpts) - Number(oldP.xpts);
-      if(d >= 0.3) bits.push(`+${d.toFixed(1)} projected pts a week`);
+    const num = v => (v==null ? null : Number(v));
+    const tactical = [];
+    const nx=num(newP.xpts), ox=num(oldP.xpts);
+    if(nx!=null && ox!=null && nx-ox>=0.3) tactical.push(`+${(nx-ox).toFixed(1)} projected pts a week`);
+    if(isNailed(newP) && !isNailed(oldP)) tactical.push('more nailed-on to start');
+    if(goodFix(newP) && !goodFix(oldP)) tactical.push('kinder fixtures');
+    if(onSetPiece(newP) && !onSetPiece(oldP)) tactical.push(newP.pens ? 'takes penalties' : 'on set-pieces');
+    // concrete underlying-rating stats — the justification for a higher rating
+    const stats = [];
+    const nppg=num(newP.ppg), oppg=num(oldP.ppg);
+    if(nppg!=null && oppg!=null && nppg-oppg>=0.4) stats.push(`${nppg.toFixed(1)} vs ${oppg.toFixed(1)} pts per game`);
+    const nxg=num(newP.xgi90), oxg=num(oldP.xgi90);
+    if(nxg!=null && oxg!=null && nxg-oxg>=0.15) stats.push(`more goal threat (xGI/90 ${nxg.toFixed(2)} vs ${oxg.toFixed(2)})`);
+    const nga=(num(newP.goals)||0)+(num(newP.assists)||0), oga=(num(oldP.goals)||0)+(num(oldP.assists)||0);
+    if(nga-oga>=2) stats.push(`${nga} goals+assists vs ${oga}`);
+    const ncs=num(newP.cs), ocs=num(oldP.cs);
+    if((newP.pos==='DEF'||newP.pos==='GK') && ncs!=null && ocs!=null && ncs-ocs>=8) stats.push(`better clean-sheet odds (${ncs}% vs ${ocs}%)`);
+    const nb=num(newP.bonus), ob=num(oldP.bonus);
+    if(nb!=null && ob!=null && nb-ob>=4) stats.push(`more bonus points (${nb} vs ${ob})`);
+    const npt=num(newP.points), opt=num(oldP.points);
+    if(npt!=null && opt!=null && npt-opt>=15) stats.push(`${npt} vs ${opt} total points`);
+    const nf=num(newP.form), of=num(oldP.form);
+    if(nf!=null && of!=null && nf-of>=0.8) stats.push('in hotter form');
+    let out = tactical.concat(stats);
+    if(!out.length){
+      // nothing cleared a threshold — still show the numbers so the call is transparent
+      const nr=num(newP.rating), or_=num(oldP.rating);
+      if(nppg!=null && oppg!=null && nppg>oppg) out.push(`edges it on scoring rate (${nppg.toFixed(1)} vs ${oppg.toFixed(1)} pts/game)`);
+      else if(nr!=null && or_!=null) out.push(`just edges it on overall rating (${nr.toFixed(2)} vs ${or_.toFixed(2)})`);
+      else out.push('marginally higher rated on the same stats');
     }
-    if(isNailed(newP) && !isNailed(oldP)) bits.push('more nailed-on to start');
-    if(goodFix(newP) && !goodFix(oldP)) bits.push('kinder fixtures');
-    if(onSetPiece(newP) && !onSetPiece(oldP)) bits.push(newP.pens ? 'takes penalties' : 'on set-pieces');
-    if(!bits.length && newP.form!=null && oldP.form!=null && (Number(newP.form)-Number(oldP.form)) >= 0.8) bits.push('in hotter form');
-    if(!bits.length && newP.ppg!=null && oldP.ppg!=null && (Number(newP.ppg)-Number(oldP.ppg)) >= 0.5) bits.push('scores more per game');
-    if(!bits.length && newP.mins!=null && oldP.mins!=null && (Number(newP.mins)-Number(oldP.mins)) >= 300) bits.push('plays more minutes');
-    if(!bits.length) bits.push('higher overall rating');
-    return bits.slice(0,2).join(' · ');
+    return out.slice(0,3).join(' · ');
   }
   function rateTeam(){
     const out = document.getElementById('rateResult');
@@ -1541,7 +1562,7 @@
             `<div style="color:var(--muted);font-size:11px;margin-top:2px">✅ ${escapeHtml(whyBetter(r.out, r.in))}</div></td>`+
             `<td><b style="color:var(--accent);font-size:15px">${score} → ${r.newScore}</b> <span style="color:var(--accent);font-size:12px">(+${r.gain})</span></td></tr>`;
         });
-        html += `</tbody></table></div><p class="save-note">These are the single transfers that move your rating the <b>most</b> — do the top one first. Each figure is your new score if you made only that swap.</p>`;
+        html += `</tbody></table></div><p class="save-note">These are the single transfers that move your rating the <b>most</b> — do the top one first. Each figure is your new score if you made only that swap. The <b>✅ reason</b> shows why the incoming player rates higher; a player's rating is built from <b>points per game, form, expected goal involvement (xGI), defensive contribution and penalty/set-piece duty</b>, adjusted for fixtures and minutes played — so you can judge each call yourself.</p>`;
       } else {
         html += `<p style="color:var(--accent);margin:8px 0">💪 No single same-price move raises your rating — your XI is at the ceiling for its budget. The only gains left come from <b>spending more</b> (sell an enabler to fund a higher-priced premium) or a <b>Wildcard</b> reshuffle. That's an elite team.</p>`;
       }

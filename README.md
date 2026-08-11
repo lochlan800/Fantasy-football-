@@ -212,9 +212,13 @@ The web tool now also includes:
   it feels "stuck"). The tool now explains this and shows a **Biggest score boosts**
   table: the single same-price transfers that lift your rating the most, each with
   the exact before → after number (e.g. `86 → 90`), a short **why he's better**
-  line (e.g. "+2.1 projected pts a week · more nailed-on to start") and tag pills
-  (🔒 nailed, 🟢 fixtures, 🎯 pens, ⚽ set-piece), plus a captain tip when
-  captaining your top-rated starter would nudge it higher. Do the top move first.
+  line and tag pills (🔒 nailed, 🟢 fixtures, 🎯 pens, ⚽ set-piece), plus a captain
+  tip when captaining your top-rated starter would nudge it higher. The "why"
+  line is always **grounded in real numbers** — e.g. "+2.1 projected pts a week ·
+  3.5 vs 1.7 pts per game", "more goal threat (xGI/90 0.55 vs 0.30)", "better
+  clean-sheet odds (61% vs 44%)" — and even a near-tie shows the actual ratings
+  ("just edges it on overall rating 1.90 vs 1.50"), so you can judge (or overrule)
+  every call yourself rather than trusting a black-box number. Do the top move first.
 
 All of these save in your browser, and the data-driven ones refresh automatically
 via the twice-daily GitHub Action.
