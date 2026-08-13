@@ -469,7 +469,7 @@
     <div class="callout blue" style="margin-top:0;font-size:13px">⚠️ <b>"Per 90" stats (xGI90) mislead for players with few minutes</b> — one moment in a short cameo looks elite. The minutes filter (default 500+) hides those flukes so the list reflects players who actually play. Lower it only if you want to see everyone.</div>
     <input class="textline" id="statsSearch" placeholder="🔎 Search a player or club…" oninput="renderStats()" autocomplete="off" style="margin-bottom:12px">
     <div id="statsTable"></div>
-    <p class="save-note"><b>Tap any player row</b> to see their price, full stats, every fixture's difficulty and a bar chart of their projected points across the whole season. Pts = total points · PPG = points per match · CS = clean sheets · xGI90 = expected goals+assists per 90 · ICT = Influence/Creativity/Threat index · Bns = bonus · BPS = bonus points system · Val = value (points per £m) · xPts = projected points next GW · <b>xTot = projected total points for the rest of the season</b>. Showing the top 150 for the filter.</p>
+    <p class="save-note"><b>Tap any player row</b> to see their price, full stats, every fixture's difficulty and a bar chart of their projected points across the whole season. Pts = total points · PPG = points per match · CS = clean sheets · xGI90 = expected goals+assists per 90 · ICT = Influence/Creativity/Threat index · Bns = bonus · BPS = bonus points system · Val = value (points per £m) · xPts = projected points next GW · <b>xTot = projected total points for the rest of the season</b>. <b>Penalty (🎯) and set-piece (⚽) takers get a projection boost</b> for their extra route to points, so they rank higher. Showing the top 150 for the filter.</p>
   </section>
 
   <!-- ============ STATS GUIDE ============ -->
@@ -2487,9 +2487,11 @@
     if(!games.length) return 0;                        // blank gameweek → no points
     // "assume starts" → treat as a full-minutes nailed starter regardless of past minutes
     const mconf = assumeStart ? 1.0 : (0.2 + 0.8 * Math.min(info.mins||0, 1800) / 1800);
+    // set-piece & penalty takers have an extra, reliable route to points — reward it
+    const spBoost = (info.pens ? 1.12 : 1) * (info.setpiece ? 1.06 : 1);
     let pts = 0;
     // fixture swing: easy games (diff 1-2) lift points, hard games (4-5) cut them
-    games.forEach(g => { pts += (info.ppg||0) * (1 + 0.16*(3 - g.diff)) * mconf; });   // sums doubles
+    games.forEach(g => { pts += (info.ppg||0) * (1 + 0.16*(3 - g.diff)) * mconf * spBoost; });   // sums doubles
     return pts;
   }
   function setPlannerChip(gw, val){ planChip(gw, val); syncChipViews(); }

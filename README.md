@@ -266,6 +266,10 @@ The web tool now also includes:
   points), filter by position, minutes, **teams (tick any number of clubs — none ticked
   shows all) and a price cap ("£X.Xm & below")** with the controls at the top, and
   search by name.
+- **🎯 Set-piece & penalty boost** — penalty takers and corner/free-kick takers get a
+  lift in their projected points (penalties ×1.12, set-pieces ×1.06), reflecting their
+  extra, reliable route to returns. It flows through every projection — the pitch, the
+  Stats table's xPts/xTot (so they rank higher), best-XI totals and the detail card.
 - **📈 Points projections** — an "expected FPL points per gameweek" figure for every
   player (from season points-per-game, fixture difficulty, availability and an
   xG over/under-performance nudge). Shown on each pitch shirt, in the position
