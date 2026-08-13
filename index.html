@@ -254,6 +254,17 @@
   .pick-filters{ margin-top:10px; padding:11px; border:1px solid var(--border); border-radius:10px; background:var(--panel-2); display:flex; flex-wrap:wrap; gap:10px 14px; align-items:flex-end; }
   .pick-filters label{ display:flex; flex-direction:column; gap:3px; font-size:11px; color:var(--muted); font-weight:600; }
   .pick-filters select{ background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:7px; padding:6px 8px; font-size:13px; }
+  /* ---- Planner Board (wide / laptop) ---- */
+  .board-toolbar{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-bottom:14px; }
+  .board-split{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+  .board-pane{ min-width:0; }
+  .board-pane > select{ background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:7px; padding:6px 9px; font-size:13px; margin-bottom:8px; font-weight:600; }
+  .fixgrid{ border-collapse:separate; border-spacing:3px; }
+  .fixgrid th{ font-size:11px; color:var(--muted); font-weight:700; padding:2px 4px; text-align:center; }
+  .fixgrid td.team{ position:sticky; left:0; background:var(--panel); font-weight:800; z-index:1; white-space:nowrap; padding-right:8px; }
+  .fixgrid td.fx{ text-align:center; border-radius:6px; font-weight:700; font-size:11px; line-height:1.25; padding:4px 5px; min-width:58px; }
+  .fixgrid td.blank{ background:#0d1117; color:#3d4b5f; text-align:center; border-radius:6px; }
+  @media (max-width:900px){ .board-split{ grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
@@ -272,6 +283,7 @@
     </div>
   <nav class="tabs" id="tabs">
     <button data-tab="strategy" class="active">📋 Core Strategy</button>
+    <button data-tab="board">🗺 Planner Board</button>
     <button data-tab="fixtures">📅 Fixture Ranking</button>
     <button data-tab="insights">📊 Player Insights</button>
     <button data-tab="stats">📋 Stats</button>
@@ -620,6 +632,27 @@
         <div id="pickResults" style="margin-top:10px"></div>
       </div>
     </div>
+  </section>
+
+  <!-- ============ PLANNER BOARD (wide) ============ -->
+  <section class="tab" id="board">
+    <h2><span class="em">🗺</span>Planner Board <span class="tag">Laptop view</span></h2>
+    <p class="lede">A wide, fixtures-first planning board — every team's run and difficulty at a glance, plus advice on which gameweek to play each chip. Built for a laptop or big screen; use <b>Split view</b> to see two panels side by side.</p>
+    <div id="boardSmallNote" class="callout" style="display:none;margin-top:0">💻 <b>This board is built for a laptop or a wider screen.</b> It shows a lot at once. On a phone you can still swipe the grid sideways, but <b>Split view</b> is turned off here — rotate to landscape or open it on a bigger screen for the full picture.</div>
+    <div class="board-toolbar">
+      <div class="row-actions" style="margin:0">
+        <button class="btn board-sub" data-sub="fixtures" onclick="setBoardSub('fixtures')">📅 Fixtures grid</button>
+        <button class="btn ghost board-sub" data-sub="chips" onclick="setBoardSub('chips')">🎴 Chip advisor</button>
+      </div>
+      <div class="row-actions" style="margin:0;align-items:center;gap:12px">
+        <label style="font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:5px">Weeks
+          <select id="boardWin" onchange="renderBoard()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:5px 8px;font-size:13px">
+            <option value="6">6</option><option value="8" selected>8</option><option value="10">10</option><option value="12">12</option><option value="38">Whole season</option>
+          </select></label>
+        <button class="btn ghost" id="boardSplitBtn" onclick="toggleBoardSplit()">⬌ Split view</button>
+      </div>
+    </div>
+    <div id="boardBody"></div>
   </section>
 
   <!-- ============ SEASON PLANNER ============ -->
@@ -2488,6 +2521,124 @@
     }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Season fixtures not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>'; });
   }
   document.querySelector('[data-tab="rotations"]').addEventListener('click', () => renderRotations());
+
+  // ---------- Planner Board (wide / laptop) ----------
+  let _boardSub = 'fixtures', _boardSplit = false, _boardLeft = 'fixtures', _boardRight = 'chips';
+  const boardWin = () => parseInt(document.getElementById('boardWin').value, 10) || 8;
+  function setBoardSub(which){
+    _boardSub = which;
+    document.querySelectorAll('.board-sub').forEach(b=>{ const on=b.dataset.sub===which; b.classList.toggle('active',on); b.classList.toggle('ghost',!on); });
+    renderBoard();
+  }
+  function toggleBoardSplit(){
+    _boardSplit = !_boardSplit;
+    const b = document.getElementById('boardSplitBtn');
+    b.classList.toggle('active', _boardSplit); b.classList.toggle('ghost', !_boardSplit);
+    renderBoard();
+  }
+  function setBoardPane(side, val){ if(side==='left') _boardLeft=val; else _boardRight=val; renderBoard(); }
+  // one gameweek window shared by both board views
+  function boardGws(season){
+    const win = boardWin(), startGw = season.current_gw || 1, maxGw = season.max_gw || 38;
+    const end = win>=38 ? maxGw : Math.min(startGw+win-1, maxGw);
+    const gws=[]; for(let g=startGw; g<=end; g++) gws.push(g); return gws;
+  }
+  // ── Fixtures grid: all 20 teams × the window, easiest run first ──
+  function renderFixturesGrid(season){
+    const gws = boardGws(season);
+    const rows = season.teams.map(t=>{
+      let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{ s+=x.diff; n++; }));
+      return { t, avg: n? s/n : 99, played:n };
+    }).sort((a,b)=> a.avg - b.avg);
+    const head = `<th class="team" style="text-align:left">Team</th><th>Avg</th>` + gws.map(g=>`<th>GW${g}</th>`).join('');
+    const body = rows.map(({t,avg,played})=>{
+      const avgCol = avg<2.6?'var(--accent)':avg>3.4?'var(--red)':'var(--gold)';
+      let cells = `<td class="team">${escapeHtml(t.short)}</td><td style="text-align:center;font-weight:800;color:${avgCol}">${played?avg.toFixed(2):'—'}</td>`;
+      gws.forEach(g=>{
+        const games = t.gws[g] || [];
+        if(!games.length){ cells += `<td class="blank">–</td>`; return; }
+        const d = Math.round(games.reduce((a,x)=>a+x.diff,0)/games.length);
+        const inner = games.map(x=>`${escapeHtml(x.opp)} (${x.venue})`).join('<br>');
+        cells += `<td class="fx" style="background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'}">${inner}<br><small>${d}${games.length>1?' • DGW':''}</small></td>`;
+      });
+      return `<tr>${cells}</tr>`;
+    }).join('');
+    return `<div class="card"><h3>📅 Every team's fixtures <span class="tag">Next ${gws.length} GWs</span></h3>
+      <div class="callout blue" style="margin-top:0">All 20 teams, <b>easiest run at the top</b>. Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. <b>Avg</b> is the mean difficulty over the window. <b>DGW</b> = double gameweek (two games), <b>–</b> = blank. Load up on players from teams with a long green run.</div>
+      <div style="overflow-x:auto"><table class="fixgrid"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
+  }
+  // ── Chip advisor: when to play each chip, from doubles/blanks + your team's swings ──
+  function renderChipAdvisor(season){
+    const startGw = season.current_gw || 1, maxGw = season.max_gw || 38;
+    const dgw=[], bgw=[];
+    for(let g=startGw; g<=maxGw; g++){
+      let doubles=0, blanks=0;
+      season.teams.forEach(t=>{ const n=(t.gws[g]||[]).length; if(n>=2) doubles++; if(n===0) blanks++; });
+      if(doubles>0) dgw.push({g, doubles});
+      if(blanks>=4) bgw.push({g, blanks});
+    }
+    dgw.sort((a,b)=> b.doubles-a.doubles); bgw.sort((a,b)=> b.blanks-a.blanks);
+    // easiest upcoming 5-GW run across the league → a good Wildcard spot to reshape into
+    let bestRun=null;
+    for(let g=startGw; g<=maxGw-4; g++){
+      let s=0,n=0; for(let k=g; k<g+5; k++) season.teams.forEach(t=>(t.gws[k]||[]).forEach(x=>{s+=x.diff;n++;}));
+      const avg = n? s/n : 99; if(!bestRun || avg<bestRun.avg) bestRun={g, avg};
+    }
+    // your team's best / toughest projected weeks (if a squad + player data are loaded)
+    let teamBest=null, teamWorst=null;
+    const filled = POSITIONS.reduce((a,p)=>a+squad[p.key].filter(x=>x.name&&x.name.trim()).length,0);
+    if(filled>=11 && _dbIndex){
+      const gws = boardGws(season); let vals=[];
+      gws.forEach(g=>{ const tot = teamGwProjection(g).total; if(tot>0) vals.push({g, tot}); });
+      if(vals.length){ teamBest = vals.reduce((a,b)=>b.tot>a.tot?b:a); teamWorst = vals.reduce((a,b)=>b.tot<a.tot?b:a); }
+    }
+    const chip = (icon,name,advice) => `<div class="card" style="padding:13px 15px;margin-bottom:10px"><h3 style="margin:0 0 4px">${icon} ${name}</h3>${advice}</div>`;
+    const dgwTxt = dgw.length
+      ? `Best doubles in the data: ${dgw.slice(0,3).map(d=>`<b>GW${d.g}</b> (${d.doubles} teams)`).join(', ')}.`
+      : `<span style="color:var(--muted)">No double gameweeks are in the fixture data yet — they're usually confirmed later in the season once games are postponed. Re-check after the data updates.</span>`;
+    const bgwTxt = bgw.length
+      ? `Biggest blanks in the data: ${bgw.slice(0,3).map(d=>`<b>GW${d.g}</b> (${d.blanks} teams blank)`).join(', ')}.`
+      : `<span style="color:var(--muted)">No blank gameweeks are in the fixture data yet — they appear later once fixtures are postponed for cup ties. Re-check after the data updates.</span>`;
+    let html = `<div class="callout blue" style="margin-top:0"><b>When to play each chip.</b> Advice below blends the real fixture data (double & blank gameweeks, fixture swings) with your own team's projected best and worst weeks. Doubles/blanks are only confirmed later in the season, so this sharpens as the year goes on.</div>`;
+    html += chip('🚀','Bench Boost',
+      `Play it in a <b>Double Gameweek</b> so all 15 players play twice. ${dgwTxt}`
+      + (teamBest?` Your squad's highest-projected week in this window is <b>GW${teamBest.g}</b> (~${teamBest.tot} pts) — a strong Bench Boost target if your bench also plays.`:''));
+    html += chip('👑','Triple Captain',
+      `Save it for a <b>premium with a Double Gameweek</b> (two games = two hauls) or a home game vs a weak side. ${dgw.length?`Top double: <b>GW${dgw[0].g}</b>.`:''}`
+      + (teamBest?` Your best projected week is <b>GW${teamBest.g}</b> — captain your highest scorer then.`:''));
+    html += chip('🎯','Free Hit',
+      `Best in a <b>Blank Gameweek</b> when many of your players have no game — field a one-week team that all plays. ${bgwTxt}`
+      + (teamWorst?` Your squad's weakest projected week in this window is <b>GW${teamWorst.g}</b> (~${teamWorst.tot} pts) — a Free Hit candidate if that dip is caused by blanks/hard games.`:''));
+    html += chip('♻️','Wildcard',
+      `Use it to <b>reshape before a good run</b>, not to chase one bad week. Across the league the easiest 5-GW stretch coming up starts around <b>GW${bestRun?bestRun.g:'—'}</b> — wildcarding just before it lets you load up on teams with the best fixtures.`
+      + (teamWorst?` If your team hits a rough patch around <b>GW${teamWorst.g}</b>, that's your natural Wildcard window.`:'')
+      + ` The classic spots are ~GW8–9 (after early prices settle) and a second Wildcard in the back half.`);
+    html += `<p class="save-note">Tip: line these up against the <b>Fixtures grid</b> (open it in Split view) so you can see the exact opponents behind each recommended week.</p>`;
+    return `<div>${html}</div>`;
+  }
+  function boardContent(season, which){
+    return which==='chips' ? renderChipAdvisor(season) : renderFixturesGrid(season);
+  }
+  function renderBoard(){
+    const body = document.getElementById('boardBody'); if(!body) return;
+    const narrow = window.innerWidth <= 900;
+    const note = document.getElementById('boardSmallNote'); if(note) note.style.display = narrow ? '' : 'none';
+    const splitBtn = document.getElementById('boardSplitBtn');
+    if(splitBtn) splitBtn.style.display = narrow ? 'none' : '';
+    ensureSeason(season => {
+      if(_boardSplit && !narrow){
+        const paneSel = (side,val) => `<select onchange="setBoardPane('${side}',this.value)"><option value="fixtures"${val==='fixtures'?' selected':''}>📅 Fixtures grid</option><option value="chips"${val==='chips'?' selected':''}>🎴 Chip advisor</option></select>`;
+        body.innerHTML = `<div class="board-split">
+          <div class="board-pane">${paneSel('left',_boardLeft)}${boardContent(season,_boardLeft)}</div>
+          <div class="board-pane">${paneSel('right',_boardRight)}${boardContent(season,_boardRight)}</div>
+        </div>`;
+      } else {
+        body.innerHTML = boardContent(season, _boardSub);
+      }
+    }, () => { body.innerHTML = '<div class="card" style="color:var(--muted)">Season fixtures not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>'; });
+  }
+  document.querySelector('[data-tab="board"]').addEventListener('click', () => renderBoard());
+  window.addEventListener('resize', () => { const b=document.getElementById('board'); if(b && b.classList.contains('active')) renderBoard(); });
 
   // ---------- Init ----------
   renderSquad(); renderChips(); loadCaptain(); renderChecklist();
