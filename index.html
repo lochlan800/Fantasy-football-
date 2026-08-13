@@ -1467,6 +1467,37 @@
     else if(c.setpiece) r.push('<span class="pill purple" style="font-size:10px">⚽ set-piece</span>');
     return r.join(' ');
   }
+  // Tailor the transfer advice to the chips you've planned (and their order).
+  function chipTransferAdvice(owned){
+    const planned = Object.keys(_plannerChips).filter(g=>_plannerChips[g])
+      .map(g=>({gw:+g, chip:_plannerChips[g]})).sort((a,b)=>a.gw-b.gw);
+    if(!planned.length) return '';
+    const chipName = {wc:'Wildcard', fh:'Free Hit', bb:'Bench Boost', tc:'Triple Captain'};
+    const benchIds = new Set(activeBench());
+    const benchOwned = owned.filter(p=>benchIds.has(p.slot)).sort((a,b)=>a.pctl-b.pctl);
+    const nameList = arr => arr.map(p=>escapeHtml(p.name)).join(', ');
+    const items = planned.map(({gw,chip})=>{
+      if(chip==='bb'){
+        const weak = benchOwned.slice(0,2);
+        return `<b>🚀 Bench Boost — GW${gw}:</b> all 15 players score, so your <b>bench matters as much as your XI</b>. Aim transfers at turning bench fodder into <b>nailed starters with a good GW${gw} fixture</b>${weak.length?` — your weakest bench right now: <b>${nameList(weak)}</b>`:''}. Don't leave non-playing £4.0m enablers in for this week.`;
+      }
+      if(chip==='fh') return `<b>🎯 Free Hit — GW${gw}:</b> it's a <b>one-week team that reverts</b>, so <b>don't burn transfers building for it</b> — you pick a fresh best-fixtures XI just for GW${gw} and your real squad returns after. Spend your transfers on your permanent team instead.`;
+      if(chip==='tc') return `<b>👑 Triple Captain — GW${gw}:</b> point a transfer at owning a <b>premium with a great GW${gw} fixture</b> (home game, or a double) so your ×3 captain has the biggest ceiling that week.`;
+      if(chip==='wc') return `<b>♻️ Wildcard — GW${gw}:</b> unlimited free transfers — <b>stop taking hits beforehand</b>, bank your problems and fix several spots at once here, reshaping toward the best upcoming fixtures.`;
+      return '';
+    }).filter(Boolean);
+    // sequence smarts: a Bench Boost followed soon by a Wildcard / Free Hit
+    const bb = planned.find(p=>p.chip==='bb');
+    const resetAfter = bb && planned.find(p=>(p.chip==='wc'||p.chip==='fh') && p.gw>bb.gw);
+    let seq='';
+    if(bb && resetAfter){
+      seq = `<div class="callout" style="margin:8px 0;border:1px solid var(--gold)"><b>🔗 Chip combo spotted:</b> Bench Boost in <b>GW${bb.gw}</b>, then ${chipName[resetAfter.chip]} in <b>GW${resetAfter.gw}</b>. Because the ${chipName[resetAfter.chip]} rebuilds your team right after, you can <b>throw everything at GW${bb.gw}</b> — it's worth <b>taking a hit or two</b> to get all 15 starting with good fixtures that week, since you reshape for free straight after.</div>`;
+    }
+    return `<h4 style="margin:16px 0 6px">🎴 Transfers for your chips</h4>`
+      + `<div class="callout blue" style="margin-top:0;font-size:13px">Tailored to the chips you've planned (set them on the <b>Chip Planner</b> or <b>Planner Board</b>).</div>`
+      + seq
+      + items.map(t=>`<div style="font-size:13.5px;line-height:1.5;margin:6px 0">${t}</div>`).join('');
+  }
   // Short plain-language reason the incoming player beats the outgoing one.
   // Grounds the "why" in the real stats the rating is built from (points per game,
   // form, xGI, goals/assists, bonus, clean sheets…) so you can judge it yourself.
@@ -1611,6 +1642,7 @@
         </div>`;
       if(injured.length) html += `<div class="callout red" style="margin:8px 0"><b>⚠️ Flagged in your squad:</b> ${injured.map(p=>escapeHtml(p.name)+' ('+p.status+')').join(', ')} — not fully available. Consider replacing.</div>`;
       if(unmatched.length) html += `<div class="callout" style="margin:8px 0"><b>Couldn't find:</b> ${unmatched.map(escapeHtml).join(', ')} — check the spelling against the FPL name.</div>`;
+      html += chipTransferAdvice(owned);
       // How to raise the score — directly answers "why is it stuck and how do I beat it?"
       html += `<div class="callout blue" style="margin:12px 0"><b>📈 Why it's stuck at ${score} — and how to beat it.</b><br>
         Your score is the <b>average ranking of your whole starting XI</b> (each player vs everyone else in his position, 0–100). Because it's an <b>average</b>, it's held down by your <b>weakest starters</b>, not lifted by your best — buying one more superstar barely nudges it. To climb you must <b>raise the floor</b>: upgrade the lowest-ranked players in your XI (usually the cheap enablers). A score in the ${score>=90?'90s is already elite':'80s+ is strong'}, so the last few points are the hardest — each one means every single starter is near the top of his position.</div>`;

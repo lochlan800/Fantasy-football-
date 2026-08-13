@@ -283,6 +283,14 @@ The web tool now also includes:
   team out of 100 with a grade, flags injured/unavailable players, and suggests
   who to bring in for your weakest spots. Powered by `players-data.json` (every
   player with a tactic-based rating), matched to the names you type.
+- **🎴 Chip-aware transfer advice** (Rate My Team) — when you've planned chips, the
+  transfer advice adapts to them: **Bench Boost** shifts focus to strengthening your
+  *bench* for that week (it names your weakest bench players, since all 15 score);
+  **Free Hit** tells you *not* to transfer for it (it's a one-week team); **Triple
+  Captain** points you at a premium with a great fixture that week; **Wildcard** says
+  to bank your problems and batch-fix at the reset. It also reads the **sequence** —
+  e.g. a Bench Boost followed by a Wildcard means you can pour everything (even hits)
+  into the Bench Boost week, because the Wildcard rebuilds your team for free right after.
 - **📈 How to raise your score** — the rating is the *average* ranking of your XI,
   so it's held down by your weakest starters, not lifted by your best (which is why
   it feels "stuck"). The tool now explains this and shows a **Biggest score boosts**
