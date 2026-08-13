@@ -708,8 +708,8 @@
     </div>
 
     <div class="card">
-      <h3>🗓 Your chip plan <span class="tag">Editable</span></h3>
-      <p style="margin-top:0; color:var(--muted)">Jot the gameweek you're targeting for each chip. Saves automatically.</p>
+      <h3>🗓 Your chip plan <span class="tag">Synced</span></h3>
+      <p style="margin-top:0; color:var(--muted)">Type the gameweek for each chip (one per half). This is the <b>same plan</b> used on the Squad Builder pitch, the Season Planner and the Planner Board — set it here or there and it updates everywhere.</p>
       <div class="timeline" id="chipPlan"></div>
     </div>
 
@@ -1097,7 +1097,7 @@
     _teamGw = Math.min(Math.max(_season.current_gw||1, _teamGw + d), _season.max_gw||38);
     renderSquad();
   }
-  function setTeamChip(gw, val){ planChip(gw, val); renderSquad(); }
+  function setTeamChip(gw, val){ planChip(gw, val); syncChipViews(); }
   function chipSelectHtml(gw, cur){
     return `<select onchange="setTeamChip(${gw},this.value)" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:4px 6px;font-size:12px">`
       + Object.keys(CHIP_LABEL).map(k=>`<option value="${k}" ${k===cur?'selected':''}>${CHIP_LABEL[k]}</option>`).join('') + '</select>';
@@ -1750,21 +1750,46 @@
     {key:'bb2', name:'Bench Boost 2', hint:'Best DGW of the run-in'},
     {key:'tc2', name:'Triple Captain 2', hint:'Best captain fixture of the season'},
   ];
-  let chipPlan = store.get('fpl_chips', {});
+  // The Chip Planner now shares the SAME per-gameweek store (_plannerChips) as the
+  // Squad Builder pitch, Season Planner and Planner Board — set a chip's gameweek
+  // in any of them and it updates everywhere.
+  const chipBaseHalf = key => ({ base: key.replace(/[12]$/,''), half: key.endsWith('2') ? 2 : 1 });
+  function gwForChip(base, half){
+    const g = Object.keys(_plannerChips).find(g => _plannerChips[g]===base && chipHalf(g)===half);
+    return g!=null ? g : '';
+  }
+  function setChipGw(base, half, val){
+    // clear this chip's existing use in this half
+    Object.keys(_plannerChips).forEach(g => { if(_plannerChips[g]===base && chipHalf(g)===half) delete _plannerChips[g]; });
+    const gw = parseInt(val, 10);
+    if(val!=='' && !isNaN(gw)){
+      if(gw<1 || gw>38){ flash('Enter a gameweek 1–38'); }
+      else if(chipHalf(gw)!==half){ flash(`GW${gw} is in the ${chipHalf(gw)===1?'first':'second'} half — use that box`); }
+      else {
+        if(_plannerChips[gw] && _plannerChips[gw]!==base) flash(`GW${gw} already had ${CHIP_SHORT[_plannerChips[gw]]} — replaced it`);
+        _plannerChips[gw] = base;
+      }
+    }
+    store.set('fpl_planner_chips', _plannerChips);
+    syncChipViews();
+  }
   function renderChips(){
-    const c = document.getElementById('chipPlan'); c.innerHTML='';
+    const c = document.getElementById('chipPlan'); if(!c) return; c.innerHTML='';
     CHIPS.forEach(ch => {
+      const {base, half} = chipBaseHalf(ch.key);
+      const curGw = gwForChip(base, half);
+      const range = half===1 ? '1–19' : '20–38';
       const item = document.createElement('div');
       item.className = 'tl-item';
       item.innerHTML = `
         <div class="tl-when">
-          <input class="textline" style="padding:6px 8px" placeholder="GW?" value="${escapeHtml(chipPlan[ch.key]||'')}" data-chip="${ch.key}">
+          <input class="textline" style="padding:6px 8px;width:76px" type="number" min="${half===1?1:20}" max="${half===1?19:38}" placeholder="GW" value="${curGw}" data-chip="${ch.key}">
         </div>
-        <div class="tl-body"><b>${ch.name}</b><span>${ch.hint}</span></div>`;
+        <div class="tl-body"><b>${ch.name}</b><span>${ch.hint} · GW ${range}</span></div>`;
       c.appendChild(item);
     });
     c.querySelectorAll('[data-chip]').forEach(inp=>{
-      inp.addEventListener('input', ()=>{ chipPlan[inp.dataset.chip]=inp.value; store.set('fpl_chips', chipPlan); });
+      inp.addEventListener('change', ()=>{ const {base,half}=chipBaseHalf(inp.dataset.chip); setChipGw(base, half, inp.value.trim()); });
     });
   }
 
@@ -2282,6 +2307,16 @@
     store.set('fpl_planner_chips', _plannerChips);
     if(moved && typeof flash==='function') flash(`Only one ${CHIP_SHORT[val]||val} per half — moved it to GW${gw}`);
   }
+  // Re-render whichever chip view is on screen so a chip set anywhere shows up
+  // everywhere. Only the active tab is re-rendered; the others refresh from the
+  // shared store when you switch to them (via their tab-click listeners).
+  function syncChipViews(){
+    const isActive = id => { const s=document.getElementById(id); return s && s.classList.contains('active'); };
+    if(isActive('squad'))   renderSquad();
+    if(isActive('planner')) renderPlanner();
+    if(isActive('board'))   renderBoard();
+    if(isActive('chips'))   renderChips();
+  }
   function ensureSeason(cb, onFail){
     if(_season){ cb(_season); return; }
     fetch('fixtures-season.json', {cache:'no-store'})
@@ -2305,7 +2340,7 @@
     games.forEach(g => { pts += (info.ppg||0) * (1 + 0.16*(3 - g.diff)) * mconf; });   // sums doubles
     return pts;
   }
-  function setPlannerChip(gw, val){ planChip(gw, val); renderPlanner(); }
+  function setPlannerChip(gw, val){ planChip(gw, val); syncChipViews(); }
   // Per-gameweek pinned notes (your own reminders: "buy Salah", "WC here", etc.)
   let _gwNotes = store.get('fpl_gwnotes', {});
   function editGwNote(gw, after){
@@ -2373,6 +2408,8 @@
     }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Player data not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>'; });
   }
   document.querySelector('[data-tab="planner"]').addEventListener('click', () => renderPlanner());
+  document.querySelector('[data-tab="squad"]').addEventListener('click', () => renderSquad());
+  document.querySelector('[data-tab="chips"]').addEventListener('click', () => renderChips());
 
   // ---------- Rotation Pairs ----------
   function avgDiffOf(games){ return games.length ? games.reduce((s,g)=>s+g.diff,0)/games.length : null; }
@@ -2637,7 +2674,7 @@
   // chip badges shown on the grid / GW headers
   const CHIP_SHORT = {wc:'WC', fh:'FH', bb:'BB', tc:'TC'};
   const CHIP_COL   = {wc:'#b28dff', fh:'#00c2ff', bb:'#37d67a', tc:'#ffd23f'};
-  function setBoardChip(gw, val){ planChip(gw, val); renderBoard(); }
+  function setBoardChip(gw, val){ planChip(gw, val); syncChipViews(); }
   // Two-halves chip status: which chip is used (and where) in each half, what's free.
   function chipHalfSummaryHtml(){
     const chips = ['wc','fh','bb','tc'];

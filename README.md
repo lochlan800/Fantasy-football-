@@ -140,6 +140,12 @@ The web tool now also includes:
     in **your** emptiest (most-blanked) week, and Wildcard just before **your** toughest
     projected run. It falls back to the league-wide picture (and a prompt to enter your
     team) until you've built a squad.
+- **🔗 One shared chip plan everywhere** — the chip you set is now the **same plan**
+  across the whole app: the Squad Builder pitch, the Season Planner, the Planner Board
+  grid/advisor, and the standalone Chip Planner tab all read and write one store. Set
+  "Bench Boost in GW10" in any of them and it shows up in all the others (and still
+  obeys the one-per-half rule). The Chip Planner tab now takes a gameweek number for
+  each chip instead of a separate free-text note.
 - **🔁 Two chips per half (chip reset)** — FPL gives you **one of each chip in the first
   half (GW1–19) and a fresh set after they reset at GW20**. The app now enforces and
   tracks this: the chip advisor recommends a **first-half** and a **second-half** play
