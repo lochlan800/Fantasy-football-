@@ -254,6 +254,9 @@
   .pick-filters{ margin-top:10px; padding:11px; border:1px solid var(--border); border-radius:10px; background:var(--panel-2); display:flex; flex-wrap:wrap; gap:10px 14px; align-items:flex-end; }
   .pick-filters label{ display:flex; flex-direction:column; gap:3px; font-size:11px; color:var(--muted); font-weight:600; }
   .pick-filters select{ background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:7px; padding:6px 8px; font-size:13px; }
+  .stats-team-panel{ position:absolute; z-index:30; top:100%; left:0; margin-top:5px; background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:11px; box-shadow:var(--shadow); width:min(360px,88vw); max-height:320px; overflow-y:auto; }
+  .stats-team-panel label{ display:inline-flex; align-items:center; gap:5px; font-size:13px; color:var(--text); font-weight:600; margin:3px 10px 3px 0; cursor:pointer; }
+  .stats-team-panel input{ width:15px; height:15px; accent-color:var(--accent); }
   /* ---- Planner Board (wide / laptop) ---- */
   .board-toolbar{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-bottom:14px; }
   .board-split{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
@@ -446,12 +449,22 @@
       <button class="btn sm-btn active" data-sm="500" onclick="setStatsMins(500)">500+</button>
       <button class="btn ghost sm-btn" data-sm="1000" onclick="setStatsMins(1000)">1000+</button>
     </div>
-    <div class="row-actions" id="statsMoreFilter" style="margin-bottom:8px;align-items:center;gap:10px 14px;flex-wrap:wrap">
-      <label style="font-size:12px;color:var(--muted);display:inline-flex;flex-direction:column;gap:3px;font-weight:600">Club
-        <select id="statsClub" onchange="renderStats()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:6px 8px;font-size:13px"><option value="">Any club</option></select></label>
+    <div class="row-actions" id="statsMoreFilter" style="margin-bottom:8px;align-items:flex-end;gap:10px 14px;flex-wrap:wrap">
+      <div style="position:relative;display:inline-flex;flex-direction:column;gap:3px">
+        <span style="font-size:12px;color:var(--muted);font-weight:600">Teams</span>
+        <button class="btn ghost" id="statsTeamBtn" onclick="toggleStatsTeams(event)" style="padding:6px 10px;font-size:13px;white-space:nowrap">All teams ▾</button>
+        <div class="stats-team-panel" id="statsTeamPanel" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <b style="font-size:12px">Tick teams to show</b>
+            <button class="btn ghost" onclick="clearStatsTeams()" style="padding:3px 8px;font-size:11px">Clear (show all)</button>
+          </div>
+          <div id="statsTeamChecks"></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">Tick one or more teams to show only those. <b>None ticked = all teams.</b></div>
+        </div>
+      </div>
       <label style="font-size:12px;color:var(--muted);display:inline-flex;flex-direction:column;gap:3px;font-weight:600">Max price
         <select id="statsMax" onchange="renderStats()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:6px 8px;font-size:13px"><option value="">Any price</option></select></label>
-      <button class="btn ghost" onclick="clearStatsFilters()" style="padding:6px 10px;font-size:12px;align-self:flex-end">Clear</button>
+      <button class="btn ghost" onclick="clearStatsFilters()" style="padding:6px 10px;font-size:12px">Clear</button>
     </div>
     <div class="callout blue" style="margin-top:0;font-size:13px">⚠️ <b>"Per 90" stats (xGI90) mislead for players with few minutes</b> — one moment in a short cameo looks elite. The minutes filter (default 500+) hides those flukes so the list reflects players who actually play. Lower it only if you want to see everyone.</div>
     <input class="textline" id="statsSearch" placeholder="🔎 Search a player or club…" oninput="renderStats()" autocomplete="off" style="margin-bottom:12px">
@@ -1694,20 +1707,31 @@
     if(_statsSort.key===key) _statsSort.dir *= -1; else _statsSort = {key, dir: key==='name'?1:-1};
     renderStats();
   }
+  let _statsFiltersFilled = false;
+  let _statsTeams = new Set();   // empty = show all teams
   function populateStatsFilters(db){
-    const sel = document.getElementById('statsClub');
-    if(sel.dataset.filled) return;
+    if(_statsFiltersFilled) return;
     const clubs = [...new Set(db.players.map(p=>p.team).filter(Boolean))].sort();
-    sel.innerHTML = '<option value="">Any club</option>' + clubs.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    document.getElementById('statsTeamChecks').innerHTML = clubs.map(c=>
+      `<label><input type="checkbox" onchange="onStatsTeamToggle('${escapeHtml(c)}',this.checked)"> ${escapeHtml(c)}</label>`).join('');
     const priceOpts = ['4.0','4.5','5.0','5.5','6.0','6.5','7.0','7.5','8.0','8.5','9.0','10.0','11.0','12.0','13.0','14.0','15.0'];
     document.getElementById('statsMax').innerHTML = '<option value="">Any price</option>' + priceOpts.map(v=>`<option value="${v}">£${v}m &amp; below</option>`).join('');
-    sel.dataset.filled = '1';
+    _statsFiltersFilled = true;
   }
+  function toggleStatsTeams(ev){ if(ev) ev.stopPropagation(); const el=document.getElementById('statsTeamPanel'); el.style.display = el.style.display==='none' ? 'block' : 'none'; }
+  function updateStatsTeamBtn(){ const b=document.getElementById('statsTeamBtn'); if(b) b.textContent = _statsTeams.size ? `${_statsTeams.size} team${_statsTeams.size>1?'s':''} ▾` : 'All teams ▾'; }
+  function onStatsTeamToggle(team, checked){ if(checked) _statsTeams.add(team); else _statsTeams.delete(team); updateStatsTeamBtn(); renderStats(); }
+  function clearStatsTeams(){ _statsTeams.clear(); document.querySelectorAll('#statsTeamChecks input').forEach(i=>i.checked=false); updateStatsTeamBtn(); renderStats(); }
   function clearStatsFilters(){
-    document.getElementById('statsClub').value = '';
+    clearStatsTeams();
     document.getElementById('statsMax').value = '';
     renderStats();
   }
+  // close the team panel when clicking elsewhere
+  document.addEventListener('click', e => {
+    const panel=document.getElementById('statsTeamPanel'), btn=document.getElementById('statsTeamBtn');
+    if(panel && panel.style.display!=='none' && !panel.contains(e.target) && e.target!==btn) panel.style.display='none';
+  });
   // Per-player projections that MATCH the Squad Builder pitch (same model & fixtures):
   //  xnext = projected points for the next/current gameweek's actual fixture
   //  xtot  = projected total for the rest of the season (sum over real fixtures)
@@ -1738,9 +1762,8 @@
       let list = db.players.slice();
       if(_statsPos!=='ALL') list = list.filter(p=>p.pos===_statsPos);
       if(_statsMins>0) list = list.filter(p=> (p.mins!=null?p.mins:9999) >= _statsMins);
-      const club = document.getElementById('statsClub').value;
       const maxP = document.getElementById('statsMax').value;
-      if(club) list = list.filter(p=> p.team === club);
+      if(_statsTeams.size) list = list.filter(p=> _statsTeams.has(p.team));
       if(maxP) list = list.filter(p=> Number(p.price) <= Number(maxP) + 0.001);
       const q = normName(document.getElementById('statsSearch').value);
       const lq = (document.getElementById('statsSearch').value||'').trim().toLowerCase();
