@@ -224,15 +224,15 @@ The web tool now also includes:
   empty shirt to open a search that's locked to that position (a defender slot
   only shows defenders), pick a player and they drop into the shirt. Tap **C** to
   captain, **✕** to remove. Searches by first name or surname (accents ignored),
-  blocks duplicates, and tracks your budget live. A **⚙ Filter** button adds
-  **club** and **price** (min / max) filters so you can, say, show only Arsenal
-  midfielders under £6.0m — combine them with the search box, and a badge shows how
-  many filters are active.
+  blocks duplicates, and tracks your budget live. A **⚙ Filter** button adds a
+  **club** filter and a **price cap** ("£X.Xm & below") so you can, say, show only
+  Arsenal midfielders £6.0m and below — combine them with the search box, and a badge
+  shows how many filters are active.
 - **📋 Stats table** — a sortable table of every player, like the paid sites' main
   stats page: tap any column to sort (points, PPG, form, ownership, minutes, goals,
   assists, clean sheets, saves, xGI/90, ICT index, bonus, BPS, value, projected
-  points), filter by position, minutes, **club and price (min/max)** with the
-  dropdowns at the top, and search by name.
+  points), filter by position, minutes, **club and a price cap ("£X.Xm & below")**
+  with the dropdowns at the top, and search by name.
 - **📈 Points projections** — an "expected FPL points per gameweek" figure for every
   player (from season points-per-game, fixture difficulty, availability and an
   xG over/under-performance nudge). Shown on each pitch shirt, in the position

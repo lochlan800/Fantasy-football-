@@ -449,10 +449,8 @@
     <div class="row-actions" id="statsMoreFilter" style="margin-bottom:8px;align-items:center;gap:10px 14px;flex-wrap:wrap">
       <label style="font-size:12px;color:var(--muted);display:inline-flex;flex-direction:column;gap:3px;font-weight:600">Club
         <select id="statsClub" onchange="renderStats()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:6px 8px;font-size:13px"><option value="">Any club</option></select></label>
-      <label style="font-size:12px;color:var(--muted);display:inline-flex;flex-direction:column;gap:3px;font-weight:600">Min price
-        <select id="statsMin" onchange="renderStats()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:6px 8px;font-size:13px"><option value="">No min</option></select></label>
       <label style="font-size:12px;color:var(--muted);display:inline-flex;flex-direction:column;gap:3px;font-weight:600">Max price
-        <select id="statsMax" onchange="renderStats()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:6px 8px;font-size:13px"><option value="">No max</option></select></label>
+        <select id="statsMax" onchange="renderStats()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:6px 8px;font-size:13px"><option value="">Any price</option></select></label>
       <button class="btn ghost" onclick="clearStatsFilters()" style="padding:6px 10px;font-size:12px;align-self:flex-end">Clear</button>
     </div>
     <div class="callout blue" style="margin-top:0;font-size:13px">⚠️ <b>"Per 90" stats (xGI90) mislead for players with few minutes</b> — one moment in a short cameo looks elite. The minutes filter (default 500+) hides those flukes so the list reflects players who actually play. Lower it only if you want to see everyone.</div>
@@ -638,8 +636,7 @@
         </div>
         <div class="pick-filters" id="pickFilters" style="display:none">
           <label>Club<select id="pickClub" onchange="setPickFilter()"><option value="">Any club</option></select></label>
-          <label>Min price<select id="pickMin" onchange="setPickFilter()"><option value="">No min</option></select></label>
-          <label>Max price<select id="pickMax" onchange="setPickFilter()"><option value="">No max</option></select></label>
+          <label>Max price<select id="pickMax" onchange="setPickFilter()"><option value="">Any price</option></select></label>
           <button class="btn ghost" onclick="clearPickFilters()" style="padding:6px 10px;font-size:12px">Clear</button>
         </div>
         <div id="pickResults" style="margin-top:10px"></div>
@@ -1231,29 +1228,27 @@
   // Position-filtered picker
   const POS_FULL = {GK:'Goalkeeper', DEF:'Defender', MID:'Midfielder', FWD:'Forward'};
   let _pickTarget = null, _pickResults = [];
-  // Picker filters — price range + club. Reset each time the picker opens.
-  let _pickFilter = {club:'', min:'', max:''};
+  // Picker filters — club + a "this price & below" cap. Reset each time it opens.
+  let _pickFilter = {club:'', max:''};
   function populatePickFilters(db){
     const sel = document.getElementById('pickClub');
     if(!sel.dataset.filled){
       const clubs = [...new Set(db.players.map(p=>p.team).filter(Boolean))].sort();
       sel.innerHTML = '<option value="">Any club</option>' + clubs.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
       const priceOpts = ['4.0','4.5','5.0','5.5','6.0','6.5','7.0','7.5','8.0','8.5','9.0','10.0','11.0','12.0','13.0','14.0','15.0'];
-      document.getElementById('pickMin').innerHTML = '<option value="">No min</option>' + priceOpts.map(v=>`<option value="${v}">£${v}m and up</option>`).join('');
-      document.getElementById('pickMax').innerHTML = '<option value="">No max</option>' + priceOpts.map(v=>`<option value="${v}">£${v}m or less</option>`).join('');
+      document.getElementById('pickMax').innerHTML = '<option value="">Any price</option>' + priceOpts.map(v=>`<option value="${v}">£${v}m &amp; below</option>`).join('');
       sel.dataset.filled = '1';
     }
   }
   function togglePickFilters(){ const el=document.getElementById('pickFilters'); el.style.display = el.style.display==='none' ? 'flex' : 'none'; }
   function updatePickFilterBtn(){
-    const n = [_pickFilter.club,_pickFilter.min,_pickFilter.max].filter(Boolean).length;
+    const n = [_pickFilter.club,_pickFilter.max].filter(Boolean).length;
     const b = document.getElementById('pickFilterBtn');
     b.innerHTML = n ? `⚙ Filter <span class="pill green" style="padding:0 6px;font-size:11px">${n}</span>` : '⚙ Filter';
   }
   function setPickFilter(){
     _pickFilter = {
       club: document.getElementById('pickClub').value,
-      min:  document.getElementById('pickMin').value,
       max:  document.getElementById('pickMax').value,
     };
     updatePickFilterBtn();
@@ -1261,7 +1256,6 @@
   }
   function clearPickFilters(){
     document.getElementById('pickClub').value = '';
-    document.getElementById('pickMin').value = '';
     document.getElementById('pickMax').value = '';
     setPickFilter();
   }
@@ -1270,7 +1264,7 @@
     document.getElementById('pickPosLabel').textContent = POS_FULL[pos] || 'player';
     document.getElementById('pickSearch').value = '';
     document.getElementById('pickFilters').style.display = 'none';
-    _pickFilter = {club:'', min:'', max:''};
+    _pickFilter = {club:'', max:''};
     document.getElementById('pickOverlay').classList.add('on');
     ensureDb(db => { populatePickFilters(db); clearPickFilters(); pickerRender(db, pos, ''); }, () => {
       document.getElementById('pickResults').innerHTML = '<div style="color:var(--muted);padding:8px">Player list not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>';
@@ -1285,14 +1279,13 @@
     POSITIONS.forEach(P => squad[P.key].forEach(x => { if(x.name && x.name.trim()) ownedKeys.add(normName(x.name)); }));
     let list = db.players.filter(p => p.pos === pos && !ownedKeys.has(normName(p.name)));
     if(_pickFilter.club) list = list.filter(p => p.team === _pickFilter.club);
-    if(_pickFilter.min)  list = list.filter(p => Number(p.price) >= Number(_pickFilter.min) - 0.001);
     if(_pickFilter.max)  list = list.filter(p => Number(p.price) <= Number(_pickFilter.max) + 0.001);
     if(lq.length >= 1) list = list.filter(p => normName(p.name).includes(nq) || normName(p.full||'').includes(nq));
     list = list.sort((a,b)=> b.rating - a.rating).slice(0, 40);
     _pickResults = list;
     const box = document.getElementById('pickResults');
     if(!list.length){
-      const filtered = _pickFilter.club || _pickFilter.min || _pickFilter.max;
+      const filtered = _pickFilter.club || _pickFilter.max;
       box.innerHTML = '<div style="color:var(--muted);padding:8px">No '+pos+' found'+(filtered?' with these filters — <a href="#" onclick="clearPickFilters();return false" style="color:var(--accent)">clear the filter</a> or widen it.':' — try another search.')+'</div>';
       return;
     }
@@ -1698,13 +1691,11 @@
     const clubs = [...new Set(db.players.map(p=>p.team).filter(Boolean))].sort();
     sel.innerHTML = '<option value="">Any club</option>' + clubs.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
     const priceOpts = ['4.0','4.5','5.0','5.5','6.0','6.5','7.0','7.5','8.0','8.5','9.0','10.0','11.0','12.0','13.0','14.0','15.0'];
-    document.getElementById('statsMin').innerHTML = '<option value="">No min</option>' + priceOpts.map(v=>`<option value="${v}">£${v}m and up</option>`).join('');
-    document.getElementById('statsMax').innerHTML = '<option value="">No max</option>' + priceOpts.map(v=>`<option value="${v}">£${v}m or less</option>`).join('');
+    document.getElementById('statsMax').innerHTML = '<option value="">Any price</option>' + priceOpts.map(v=>`<option value="${v}">£${v}m &amp; below</option>`).join('');
     sel.dataset.filled = '1';
   }
   function clearStatsFilters(){
     document.getElementById('statsClub').value = '';
-    document.getElementById('statsMin').value = '';
     document.getElementById('statsMax').value = '';
     renderStats();
   }
@@ -1716,10 +1707,8 @@
       if(_statsPos!=='ALL') list = list.filter(p=>p.pos===_statsPos);
       if(_statsMins>0) list = list.filter(p=> (p.mins!=null?p.mins:9999) >= _statsMins);
       const club = document.getElementById('statsClub').value;
-      const minP = document.getElementById('statsMin').value;
       const maxP = document.getElementById('statsMax').value;
       if(club) list = list.filter(p=> p.team === club);
-      if(minP) list = list.filter(p=> Number(p.price) >= Number(minP) - 0.001);
       if(maxP) list = list.filter(p=> Number(p.price) <= Number(maxP) + 0.001);
       const q = normName(document.getElementById('statsSearch').value);
       const lq = (document.getElementById('statsSearch').value||'').trim().toLowerCase();
