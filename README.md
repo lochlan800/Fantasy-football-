@@ -134,6 +134,10 @@ The web tool now also includes:
 - **⭐ "Yours" marker** — players in your Squad Builder team are flagged with a green
   **⭐ Yours** badge and a highlighted row on the Stats table, so you can instantly see
   which of the listed players you already own.
+- **🚑 Injury / availability flags** — any player who's injured, suspended, doubtful or
+  otherwise unavailable is flagged on the Stats table with a red badge (🚑 injured,
+  🟥 suspended, ❓ doubt, ⛔ out) and a red-tinted row, so you can avoid picking someone
+  who won't play — and spot when one of your own players is a doubt.
 - **Rank (#) column** — a 1, 2, 3, 4 … number down the left of the Stats table showing
   each player's position in the current sort, so the leaders for whatever column you've
   sorted by are numbered at the top.

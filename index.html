@@ -1758,6 +1758,14 @@
       ensureSeason(season => { computeXtot(db, season); renderStatsRows(db, box); }, () => renderStatsRows(db, box));
     }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Stats not loaded yet — run the <b>Update FPL data</b> workflow on GitHub (Actions tab), then reload.</div>'; });
   }
+  // Availability flag from the FPL status code (a=available, i=injured, s=suspended,
+  // d=doubtful, u/n=unavailable). Includes chance-of-playing % when present.
+  const STATUS_LABEL = {i:'🚑 injured', s:'🟥 suspended', d:'❓ doubt', u:'⛔ out', n:'❌ unavailable'};
+  function statusFlag(p){
+    let txt = STATUS_LABEL[p.status] || '⚠️ doubt';
+    if(p.chance!=null && p.chance>0 && p.chance<100) txt += ' '+p.chance+'%';
+    return txt;
+  }
   function renderStatsRows(db, box){
       let list = db.players.slice();
       if(_statsPos!=='ALL') list = list.filter(p=>p.pos===_statsPos);
@@ -1786,12 +1794,17 @@
       }).join('');
       const body = list.map((p,idx)=>{
         const mine = isOwned(p);
+        const injured = p.avail === false || (p.status && p.status !== 'a');
         const cells = STAT_COLS.map(c=>{
           let val = c.get(p);
-          if(c.key==='name' && mine) val = '<span class="pill green" style="font-size:10px;padding:1px 6px">⭐ Yours</span> ' + val;
+          if(c.key==='name'){
+            if(mine) val = '<span class="pill green" style="font-size:10px;padding:1px 6px">⭐ Yours</span> ' + val;
+            if(injured) val += ' <span class="pill red" style="font-size:10px;padding:1px 6px">' + statusFlag(p) + '</span>';
+          }
           return `<td style="white-space:nowrap${c.num?';text-align:center':''}">${val}</td>`;
         }).join('');
-        return `<tr data-name="${escapeHtml(p.name)}" data-team="${escapeHtml(p.team)}" style="cursor:pointer${mine?';background:rgba(55,214,122,.08)':''}">`
+        const bg = injured ? ';background:rgba(255,92,115,.09)' : (mine ? ';background:rgba(55,214,122,.08)' : '');
+        return `<tr data-name="${escapeHtml(p.name)}" data-team="${escapeHtml(p.team)}" style="cursor:pointer${bg}">`
           + `<td style="text-align:right;color:var(--muted);font-weight:700;white-space:nowrap">${idx+1}</td>` + cells + '</tr>';
       }).join('');
       box.innerHTML = `<div style="overflow-x:auto"><table style="font-size:13px"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
