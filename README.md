@@ -124,13 +124,18 @@ The web tool now also includes:
   board with two sub-tabs:
   - **📅 Fixtures grid** — every one of the 20 teams with their upcoming run and the
     official difficulty of each game (opponent, home/away, 1 green → 5 red), sorted
-    easiest run first, with a per-team average. Pick a window of 6/8/10/12 gameweeks
-    or the whole season; double gameweeks (DGW) and blanks are marked.
-  - **🎴 Chip advisor** — tells you which gameweek to play each chip: Bench Boost &
-    Triple Captain in the best **double gameweeks**, Free Hit in the biggest **blank
-    gameweeks**, and Wildcard just before the **easiest upcoming run** — all read
-    from the real fixture data, and cross-referenced with your own squad's highest-
-    and lowest-projected weeks when you've entered a team.
+    easiest run first, with a per-team average. **Your own teams are starred (⭐) and
+    pulled to the top**, and a **🎴 Chip plan row** lets you mark which gameweek you'll
+    play each chip right on the grid — it saves and syncs with the Season Planner and
+    your pitch, and the planned chip shows as a badge on that gameweek's column. Pick
+    a window of 6/8/10/12 gameweeks or the whole season; DGW and blanks are marked.
+  - **🎴 Chip advisor (built around your team)** — reads **your squad's** real fixtures
+    and projected points across the season and tells you the best gameweek for each
+    chip *for your team*: Bench Boost in **your** biggest double gameweek, Triple
+    Captain on your highest-projected single-week haul (naming the player), Free Hit
+    in **your** emptiest (most-blanked) week, and Wildcard just before **your** toughest
+    projected run. It also pins any chips you've already planned, and falls back to the
+    league-wide picture (and a prompt to enter your team) until you've built a squad.
   - **⬌ Split view** — on a wide screen, splits the page in half so you can show two
     panels side by side (e.g. the fixtures grid next to the chip advice). A notice
     appears on phones, where split is turned off but the grid still scrolls sideways.

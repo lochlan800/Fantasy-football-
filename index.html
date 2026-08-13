@@ -2543,17 +2543,35 @@
     const end = win>=38 ? maxGw : Math.min(startGw+win-1, maxGw);
     const gws=[]; for(let g=startGw; g<=end; g++) gws.push(g); return gws;
   }
+  // chip badges shown on the grid / GW headers
+  const CHIP_SHORT = {wc:'WC', fh:'FH', bb:'BB', tc:'TC'};
+  const CHIP_COL   = {wc:'#b28dff', fh:'#00c2ff', bb:'#37d67a', tc:'#ffd23f'};
+  function setBoardChip(gw, val){ _plannerChips[gw] = val; store.set('fpl_planner_chips', _plannerChips); renderBoard(); }
+  const boardChipOpts = cur => Object.keys(CHIP_LABEL).map(k=>`<option value="${k}"${k===cur?' selected':''}>${k?CHIP_SHORT[k]:'—'}</option>`).join('');
+  function ownedShorts(){
+    const s = new Set();
+    POSITIONS.forEach(p => squad[p.key].forEach(pl => { if(pl.name && pl.name.trim()){ const sh=(resolveTeam(pl)||pl.team||'').toUpperCase(); if(sh) s.add(sh); } }));
+    return s;
+  }
   // ── Fixtures grid: all 20 teams × the window, easiest run first ──
+  // Your own teams are starred/highlighted, and a "Chip plan" row lets you mark
+  // which gameweek you'll play each chip right on the grid.
   function renderFixturesGrid(season){
     const gws = boardGws(season);
+    const mine = ownedShorts();
     const rows = season.teams.map(t=>{
       let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{ s+=x.diff; n++; }));
-      return { t, avg: n? s/n : 99, played:n };
-    }).sort((a,b)=> a.avg - b.avg);
-    const head = `<th class="team" style="text-align:left">Team</th><th>Avg</th>` + gws.map(g=>`<th>GW${g}</th>`).join('');
-    const body = rows.map(({t,avg,played})=>{
+      return { t, avg: n? s/n : 99, played:n, mine: mine.has((t.short||'').toUpperCase()) };
+    }).sort((a,b)=> (b.mine-a.mine) || (a.avg - b.avg));   // your teams first, then easiest run
+    const head = `<th class="team" style="text-align:left">Team</th><th>Avg</th>`
+      + gws.map(g=>{ const c=_plannerChips[g]; const badge = c ? `<br><span style="background:${CHIP_COL[c]};color:#06210f;border-radius:4px;padding:0 4px;font-size:9px;font-weight:800">${CHIP_SHORT[c]}</span>` : ''; return `<th>GW${g}${badge}</th>`; }).join('');
+    // editable chip-plan row
+    const chipRow = `<tr><td class="team" style="color:var(--muted);font-weight:700">🎴 Chip plan</td><td></td>`
+      + gws.map(g=>`<td style="text-align:center;padding:2px"><select onchange="setBoardChip(${g},this.value)" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:2px;font-size:11px">${boardChipOpts(_plannerChips[g]||'')}</select></td>`).join('') + `</tr>`;
+    const body = chipRow + rows.map(({t,avg,played,mine})=>{
       const avgCol = avg<2.6?'var(--accent)':avg>3.4?'var(--red)':'var(--gold)';
-      let cells = `<td class="team">${escapeHtml(t.short)}</td><td style="text-align:center;font-weight:800;color:${avgCol}">${played?avg.toFixed(2):'—'}</td>`;
+      const rowStyle = mine ? ' style="background:rgba(255,210,63,.07)"' : '';
+      let cells = `<td class="team"${mine?' style="color:var(--gold)"':''}>${mine?'⭐ ':''}${escapeHtml(t.short)}</td><td style="text-align:center;font-weight:800;color:${avgCol}">${played?avg.toFixed(2):'—'}</td>`;
       gws.forEach(g=>{
         const games = t.gws[g] || [];
         if(!games.length){ cells += `<td class="blank">–</td>`; return; }
@@ -2561,59 +2579,83 @@
         const inner = games.map(x=>`${escapeHtml(x.opp)} (${x.venue})`).join('<br>');
         cells += `<td class="fx" style="background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'}">${inner}<br><small>${d}${games.length>1?' • DGW':''}</small></td>`;
       });
-      return `<tr>${cells}</tr>`;
+      return `<tr${rowStyle}>${cells}</tr>`;
     }).join('');
+    const yourNote = mine.size ? `<b>⭐ Your teams</b> (${[...mine].join(', ')}) are pulled to the top and highlighted. ` : `Add players in the <b>Squad Builder</b> and your teams get starred here. `;
     return `<div class="card"><h3>📅 Every team's fixtures <span class="tag">Next ${gws.length} GWs</span></h3>
-      <div class="callout blue" style="margin-top:0">All 20 teams, <b>easiest run at the top</b>. Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. <b>Avg</b> is the mean difficulty over the window. <b>DGW</b> = double gameweek (two games), <b>–</b> = blank. Load up on players from teams with a long green run.</div>
+      <div class="callout blue" style="margin-top:0">${yourNote}All 20 teams, <b>easiest run at the top</b>. Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. Use the <b>🎴 Chip plan</b> row to mark which gameweek you'll play each chip — it saves and syncs with the Season Planner and your pitch. <b>DGW</b> = double, <b>–</b> = blank.</div>
       <div style="overflow-x:auto"><table class="fixgrid"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
   }
-  // ── Chip advisor: when to play each chip, from doubles/blanks + your team's swings ──
+  // ── Chip advisor: built around YOUR squad, using its real fixtures & projections ──
   function renderChipAdvisor(season){
     const startGw = season.current_gw || 1, maxGw = season.max_gw || 38;
-    const dgw=[], bgw=[];
+    const tmap = {}; season.teams.forEach(t=> tmap[t.short.toUpperCase()] = t);
+    const clubGames = (short,gw) => { const t = tmap[(short||'').toUpperCase()]; return t ? (t.gws[gw]||[]).length : 0; };
+    // your squad
+    const mine = [];
+    POSITIONS.forEach(p => squad[p.key].forEach(pl => { const nm=(pl.name||'').trim(); if(nm) mine.push({name:nm, team:pl.team, short:(resolveTeam(pl)||pl.team||'').toUpperCase()}); }));
+    const hasTeam = mine.length >= 11;
+    const canProject = hasTeam && !!_dbIndex;
+    // per-GW stats for YOUR team
+    const stats = [];
     for(let g=startGw; g<=maxGw; g++){
-      let doubles=0, blanks=0;
-      season.teams.forEach(t=>{ const n=(t.gws[g]||[]).length; if(n>=2) doubles++; if(n===0) blanks++; });
-      if(doubles>0) dgw.push({g, doubles});
-      if(blanks>=4) bgw.push({g, blanks});
+      let dbl=0, blank=0;
+      mine.forEach(m=>{ const n=clubGames(m.short,g); if(n>=2) dbl++; if(n===0 && m.short) blank++; });
+      let proj=null, top=null;
+      if(canProject){
+        proj = teamGwProjection(g).total;
+        let best=0, bn=null; mine.forEach(m=>{ const pts=projectSlotPts({name:m.name,team:m.team}, g); if(pts>best){ best=pts; bn=m.name; } });
+        top = {pts:best, name:bn};
+      }
+      stats.push({g, dbl, blank, proj, top});
     }
-    dgw.sort((a,b)=> b.doubles-a.doubles); bgw.sort((a,b)=> b.blanks-a.blanks);
-    // easiest upcoming 5-GW run across the league → a good Wildcard spot to reshape into
-    let bestRun=null;
-    for(let g=startGw; g<=maxGw-4; g++){
-      let s=0,n=0; for(let k=g; k<g+5; k++) season.teams.forEach(t=>(t.gws[k]||[]).forEach(x=>{s+=x.diff;n++;}));
-      const avg = n? s/n : 99; if(!bestRun || avg<bestRun.avg) bestRun={g, avg};
+    const byDbl   = [...stats].filter(s=>s.dbl>0).sort((a,b)=> b.dbl-a.dbl || (b.proj||0)-(a.proj||0));
+    const byBlank = [...stats].filter(s=>s.blank>0).sort((a,b)=> b.blank-a.blank);
+    const byTop   = [...stats].filter(s=>s.top && s.top.pts>0).sort((a,b)=> b.top.pts-a.top.pts);
+    // your toughest 3-GW run (lowest projected) → natural Wildcard window
+    let wcAt=null;
+    if(canProject){ for(let i=0;i<=stats.length-3;i++){ const w=stats.slice(i,i+3); if(w.some(s=>s.proj==null)) continue; const sum=w.reduce((a,s)=>a+s.proj,0); if(!wcAt||sum<wcAt.sum) wcAt={g:w[0].g, sum}; } }
+    // league doubles/blanks as supporting context
+    const lDgw=[], lBgw=[];
+    for(let g=startGw; g<=maxGw; g++){ let d=0,b=0; season.teams.forEach(t=>{ const n=(t.gws[g]||[]).length; if(n>=2)d++; if(n===0)b++; }); if(d>0)lDgw.push({g,d}); if(b>=4)lBgw.push({g,b}); }
+    lDgw.sort((a,b)=>b.d-a.d); lBgw.sort((a,b)=>b.b-a.b);
+
+    const chip = (icon,name,advice) => `<div class="card" style="padding:13px 15px;margin-bottom:10px"><h3 style="margin:0 0 4px">${icon} ${name}</h3><div style="font-size:13.5px;line-height:1.5">${advice}</div></div>`;
+    let html = '';
+    if(!hasTeam){
+      html += `<div class="callout" style="margin-top:0">⚠️ <b>Add your 15 players in the Squad Builder</b> to get chip advice tailored to your exact team. Until then, here's the league-wide picture.</div>`;
+    } else {
+      html += `<div class="callout blue" style="margin-top:0"><b>Your chip plan.</b> These recommendations read <b>your squad's</b> real fixtures and projected points across the season — the best gameweeks for each chip <b>for your team</b>, not a generic answer. Doubles & blanks are confirmed later in the season, so this sharpens through the year.</div>`;
+      if(!canProject) html += `<div class="callout" style="margin:8px 0">Projected-points advice needs the player database — open the <b>Squad Builder</b> once (or run the data update) and it'll fill in.</div>`;
     }
-    // your team's best / toughest projected weeks (if a squad + player data are loaded)
-    let teamBest=null, teamWorst=null;
-    const filled = POSITIONS.reduce((a,p)=>a+squad[p.key].filter(x=>x.name&&x.name.trim()).length,0);
-    if(filled>=11 && _dbIndex){
-      const gws = boardGws(season); let vals=[];
-      gws.forEach(g=>{ const tot = teamGwProjection(g).total; if(tot>0) vals.push({g, tot}); });
-      if(vals.length){ teamBest = vals.reduce((a,b)=>b.tot>a.tot?b:a); teamWorst = vals.reduce((a,b)=>b.tot<a.tot?b:a); }
-    }
-    const chip = (icon,name,advice) => `<div class="card" style="padding:13px 15px;margin-bottom:10px"><h3 style="margin:0 0 4px">${icon} ${name}</h3>${advice}</div>`;
-    const dgwTxt = dgw.length
-      ? `Best doubles in the data: ${dgw.slice(0,3).map(d=>`<b>GW${d.g}</b> (${d.doubles} teams)`).join(', ')}.`
-      : `<span style="color:var(--muted)">No double gameweeks are in the fixture data yet — they're usually confirmed later in the season once games are postponed. Re-check after the data updates.</span>`;
-    const bgwTxt = bgw.length
-      ? `Biggest blanks in the data: ${bgw.slice(0,3).map(d=>`<b>GW${d.g}</b> (${d.blanks} teams blank)`).join(', ')}.`
-      : `<span style="color:var(--muted)">No blank gameweeks are in the fixture data yet — they appear later once fixtures are postponed for cup ties. Re-check after the data updates.</span>`;
-    let html = `<div class="callout blue" style="margin-top:0"><b>When to play each chip.</b> Advice below blends the real fixture data (double & blank gameweeks, fixture swings) with your own team's projected best and worst weeks. Doubles/blanks are only confirmed later in the season, so this sharpens as the year goes on.</div>`;
-    html += chip('🚀','Bench Boost',
-      `Play it in a <b>Double Gameweek</b> so all 15 players play twice. ${dgwTxt}`
-      + (teamBest?` Your squad's highest-projected week in this window is <b>GW${teamBest.g}</b> (~${teamBest.tot} pts) — a strong Bench Boost target if your bench also plays.`:''));
-    html += chip('👑','Triple Captain',
-      `Save it for a <b>premium with a Double Gameweek</b> (two games = two hauls) or a home game vs a weak side. ${dgw.length?`Top double: <b>GW${dgw[0].g}</b>.`:''}`
-      + (teamBest?` Your best projected week is <b>GW${teamBest.g}</b> — captain your highest scorer then.`:''));
-    html += chip('🎯','Free Hit',
-      `Best in a <b>Blank Gameweek</b> when many of your players have no game — field a one-week team that all plays. ${bgwTxt}`
-      + (teamWorst?` Your squad's weakest projected week in this window is <b>GW${teamWorst.g}</b> (~${teamWorst.tot} pts) — a Free Hit candidate if that dip is caused by blanks/hard games.`:''));
-    html += chip('♻️','Wildcard',
-      `Use it to <b>reshape before a good run</b>, not to chase one bad week. Across the league the easiest 5-GW stretch coming up starts around <b>GW${bestRun?bestRun.g:'—'}</b> — wildcarding just before it lets you load up on teams with the best fixtures.`
-      + (teamWorst?` If your team hits a rough patch around <b>GW${teamWorst.g}</b>, that's your natural Wildcard window.`:'')
-      + ` The classic spots are ~GW8–9 (after early prices settle) and a second Wildcard in the back half.`);
-    html += `<p class="save-note">Tip: line these up against the <b>Fixtures grid</b> (open it in Split view) so you can see the exact opponents behind each recommended week.</p>`;
+    // already-planned chips
+    const planned = Object.keys(_plannerChips).filter(g=>_plannerChips[g]).sort((a,b)=>a-b);
+    if(planned.length) html += `<p style="margin:6px 0;color:var(--muted);font-size:13px">📌 You've planned: ${planned.map(g=>`<b style="color:${CHIP_COL[_plannerChips[g]]}">${CHIP_SHORT[_plannerChips[g]]} in GW${g}</b>`).join(' · ')}. Set or change these in the Fixtures grid's chip-plan row.</p>`;
+
+    // Bench Boost — your best double
+    html += chip('🚀','Bench Boost', hasTeam
+      ? (byDbl.length
+          ? `Your strongest double is <b>GW${byDbl[0].g}</b> — <b>${byDbl[0].dbl} of your players</b> play twice${byDbl[0].proj!=null?` (your XI projects ~${byDbl[0].proj} pts)`:''}. Play it here so all 15 count.`
+          : `None of <b>your</b> players have a confirmed double gameweek yet.${lDgw.length?` Leaguewide the biggest is GW${lDgw[0].g}.`:''} Doubles get announced later in the season — re-check then.`)
+      : `Play it in a Double Gameweek so all 15 play twice.${lDgw.length?` Biggest league double: <b>GW${lDgw[0].g}</b>.`:''}`);
+    // Triple Captain — your best single week
+    html += chip('👑','Triple Captain', canProject && byTop.length
+      ? `Your biggest single-week haul looks like <b>${escapeHtml(byTop[0].top.name)}</b> in <b>GW${byTop[0].g}</b> (projected ~${byTop[0].top.pts.toFixed(1)} pts${clubGames(mine.find(m=>m.name===byTop[0].top.name)?.short, byTop[0].g)>=2?', a double!':''}). Triple-Captain him there.`
+      : (hasTeam
+          ? `Save it for your best premium in a Double Gameweek or a home game vs a weak side.${byDbl.length?` Your top double is <b>GW${byDbl[0].g}</b>.`:''}`
+          : `Save it for a premium with a Double Gameweek, or a home game vs a weak side.`));
+    // Free Hit — your emptiest week
+    html += chip('🎯','Free Hit', hasTeam
+      ? (byBlank.length
+          ? `Your emptiest week is <b>GW${byBlank[0].g}</b> — <b>${byBlank[0].blank} of your players</b> have no game. Free Hit here to field a one-week XI that all plays.`
+          : `None of <b>your</b> players blank in the data yet.${lBgw.length?` Leaguewide the biggest blank is GW${lBgw[0].g}.`:''} Blanks appear later once games are postponed — re-check then.`)
+      : `Best in a Blank Gameweek when many of your players have no game.${lBgw.length?` Biggest league blank: <b>GW${lBgw[0].g}</b>.`:''}`);
+    // Wildcard — before your toughest run
+    html += chip('♻️','Wildcard', canProject && wcAt
+      ? `Your team's toughest 3-week stretch is around <b>GW${wcAt.g}</b> (your lowest projected run). Wildcard just before it to move onto teams with kinder fixtures. The classic spots are ~GW8–9 (after early prices settle) and a second Wildcard in the back half.`
+      : `Use it to reshape <b>before a good run</b>, not to chase one bad week. Build your team so this can read your own fixture swings. Classic spots: ~GW8–9 and a second Wildcard in the back half.`);
+
+    html += `<p class="save-note">Tip: open the <b>Fixtures grid</b> alongside this in <b>Split view</b> and use its <b>🎴 Chip plan</b> row to lock in the gameweeks — they save and show up here and in the Season Planner.</p>`;
     return `<div>${html}</div>`;
   }
   function boardContent(season, which){
