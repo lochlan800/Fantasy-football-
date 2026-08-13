@@ -1676,7 +1676,7 @@
     {key:'bonus', label:'Bns',   num:true, get:p=>p.bonus},
     {key:'bps',   label:'BPS',   num:true, get:p=>p.bps},
     {key:'vseason',label:'Val',  num:true, get:p=>fmt(p.vseason)},
-    {key:'xpts',  label:'xPts',  num:true, get:p=>p.xpts!=null?fmt(p.xpts):'—'},
+    {key:'xnext', label:'xPts',  num:true, get:p=> p.xnext!=null?fmt(p.xnext):(p.xpts!=null?fmt(p.xpts):'—')},
     {key:'xtot',  label:'xTot',  num:true, get:p=>p.xtot!=null?p.xtot:'—'},
   ];
   function fmt(v){ return (v==null||v==='')?'—':(typeof v==='number'?(Number.isInteger(v)?v:v.toFixed(1)):v); }
@@ -1708,17 +1708,22 @@
     document.getElementById('statsMax').value = '';
     renderStats();
   }
-  // Expected TOTAL points for the rest of the season: sum each player's per-gameweek
-  // projection over their real fixtures. Computed once when season data is available.
+  // Per-player projections that MATCH the Squad Builder pitch (same model & fixtures):
+  //  xnext = projected points for the next/current gameweek's actual fixture
+  //  xtot  = projected total for the rest of the season (sum over real fixtures)
+  // Computed once when season data is available so the Stats table, the pitch and the
+  // detail card all agree (the data file's own xpts uses a 5-GW-average fixture, which
+  // reads differently for one specific week — hence the small mismatch we're fixing).
   let _xtotReady = false;
   function computeXtot(db, season){
     if(_xtotReady || !_seasonGws) return;
     const lo = season.current_gw||1, hi = season.max_gw||38;
     db.players.forEach(p=>{
       const tg = _seasonGws[p.team];
-      if(!tg){ p.xtot = null; return; }
+      if(!tg){ p.xtot = null; p.xnext = null; return; }
       let s=0; for(let gw=lo; gw<=hi; gw++) s += playerGwPoints(p, tg, gw, false);
       p.xtot = Math.round(s);
+      p.xnext = Math.round(playerGwPoints(p, tg, lo, false) * 10) / 10;   // next GW, same as the pitch
     });
     _xtotReady = true;
   }
@@ -1747,12 +1752,14 @@
         return dir * (av>bv?1:av<bv?-1:0);
       });
       list = list.slice(0, 150);
-      const head = STAT_COLS.map(c=>{
+      const head = `<th style="color:var(--muted)">#</th>` + STAT_COLS.map(c=>{
         const arrow = _statsSort.key===c.key ? (_statsSort.dir<0?' ▼':' ▲') : '';
         const hl = _statsSort.key===c.key ? 'color:var(--accent)' : '';
         return `<th onclick="sortStats('${c.key}')" style="cursor:pointer;white-space:nowrap;${hl}">${c.label}${arrow}</th>`;
       }).join('');
-      const body = list.map(p=>`<tr data-name="${escapeHtml(p.name)}" data-team="${escapeHtml(p.team)}" style="cursor:pointer">`+STAT_COLS.map(c=>`<td style="white-space:nowrap${c.num?';text-align:center':''}">${c.get(p)}</td>`).join('')+'</tr>').join('');
+      const body = list.map((p,idx)=>`<tr data-name="${escapeHtml(p.name)}" data-team="${escapeHtml(p.team)}" style="cursor:pointer">`
+        + `<td style="text-align:right;color:var(--muted);font-weight:700;white-space:nowrap">${idx+1}</td>`
+        + STAT_COLS.map(c=>`<td style="white-space:nowrap${c.num?';text-align:center':''}">${c.get(p)}</td>`).join('')+'</tr>').join('');
       box.innerHTML = `<div style="overflow-x:auto"><table style="font-size:13px"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
   }
   document.querySelector('[data-tab="stats"]').addEventListener('click', () => renderStats());
@@ -1791,10 +1798,11 @@
       <b style="font-size:16px;color:var(--gold)">£${Number(info.price||0).toFixed(1)}m</b>
       ${avail?'':'<span class="pill red">'+escapeHtml(info.status||'out')+'</span>'}
     </div>`;
+    const xNextGw = per.length ? per[0].pts.toFixed(1) : (info.xpts!=null?fmt(info.xpts):'—');   // next GW, matches the pitch
     const stats=[
       ['Pts', info.points], ['Per match', fmt(info.ppg)], ['Form', fmt(info.form)], ['Own%', fmt(info.owned)],
       ['Mins', info.mins], ['Goals', info.goals], ['Assists', info.assists], ['CS', info.clean_sheets],
-      ['xGI90', fmt(info.xgi90)], ['ICT', fmt(info.ict)], ['Bonus', info.bonus], ['xPts/GW', info.xpts!=null?fmt(info.xpts):'—'],
+      ['xGI90', fmt(info.xgi90)], ['ICT', fmt(info.ict)], ['Bonus', info.bonus], ['xPts/GW', xNextGw],
     ];
     html += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:6px;margin-bottom:14px">`
       + stats.map(s=>pill(s[0], s[1])).join('')

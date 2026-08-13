@@ -129,6 +129,14 @@ The web tool now also includes:
 - **xTot column on the Stats table** — the **projected total points for the rest of the
   season** (sum of each player's per-gameweek projection over their real fixtures),
   sortable like every other column, alongside PPG (points per match) and xPts (next GW).
+- **Rank (#) column** — a 1, 2, 3, 4 … number down the left of the Stats table showing
+  each player's position in the current sort, so the leaders for whatever column you've
+  sorted by are numbered at the top.
+- **Consistent xPts everywhere** — the Stats table's xPts now uses the **same
+  per-gameweek model and real fixture as the Squad Builder pitch and the detail card**,
+  so a player reads the same number in all three (they previously differed because the
+  data file's xPts averages the next five gameweeks' difficulty, while the pitch uses
+  that specific gameweek's fixture).
 - **🗺 Planner Board** (built for a laptop / wide screen) — a fixtures-first planning
   board with two sub-tabs:
   - **📅 Fixtures grid** — every one of the 20 teams with their upcoming run and the
