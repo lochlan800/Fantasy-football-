@@ -446,6 +446,15 @@
       <button class="btn sm-btn active" data-sm="500" onclick="setStatsMins(500)">500+</button>
       <button class="btn ghost sm-btn" data-sm="1000" onclick="setStatsMins(1000)">1000+</button>
     </div>
+    <div class="row-actions" id="statsMoreFilter" style="margin-bottom:8px;align-items:center;gap:10px 14px;flex-wrap:wrap">
+      <label style="font-size:12px;color:var(--muted);display:inline-flex;flex-direction:column;gap:3px;font-weight:600">Club
+        <select id="statsClub" onchange="renderStats()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:6px 8px;font-size:13px"><option value="">Any club</option></select></label>
+      <label style="font-size:12px;color:var(--muted);display:inline-flex;flex-direction:column;gap:3px;font-weight:600">Min price
+        <select id="statsMin" onchange="renderStats()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:6px 8px;font-size:13px"><option value="">No min</option></select></label>
+      <label style="font-size:12px;color:var(--muted);display:inline-flex;flex-direction:column;gap:3px;font-weight:600">Max price
+        <select id="statsMax" onchange="renderStats()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:6px 8px;font-size:13px"><option value="">No max</option></select></label>
+      <button class="btn ghost" onclick="clearStatsFilters()" style="padding:6px 10px;font-size:12px;align-self:flex-end">Clear</button>
+    </div>
     <div class="callout blue" style="margin-top:0;font-size:13px">⚠️ <b>"Per 90" stats (xGI90) mislead for players with few minutes</b> — one moment in a short cameo looks elite. The minutes filter (default 500+) hides those flukes so the list reflects players who actually play. Lower it only if you want to see everyone.</div>
     <input class="textline" id="statsSearch" placeholder="🔎 Search a player or club…" oninput="renderStats()" autocomplete="off" style="margin-bottom:12px">
     <div id="statsTable"></div>
@@ -1683,12 +1692,35 @@
     if(_statsSort.key===key) _statsSort.dir *= -1; else _statsSort = {key, dir: key==='name'?1:-1};
     renderStats();
   }
+  function populateStatsFilters(db){
+    const sel = document.getElementById('statsClub');
+    if(sel.dataset.filled) return;
+    const clubs = [...new Set(db.players.map(p=>p.team).filter(Boolean))].sort();
+    sel.innerHTML = '<option value="">Any club</option>' + clubs.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    const priceOpts = ['4.0','4.5','5.0','5.5','6.0','6.5','7.0','7.5','8.0','8.5','9.0','10.0','11.0','12.0','13.0','14.0','15.0'];
+    document.getElementById('statsMin').innerHTML = '<option value="">No min</option>' + priceOpts.map(v=>`<option value="${v}">£${v}m and up</option>`).join('');
+    document.getElementById('statsMax').innerHTML = '<option value="">No max</option>' + priceOpts.map(v=>`<option value="${v}">£${v}m or less</option>`).join('');
+    sel.dataset.filled = '1';
+  }
+  function clearStatsFilters(){
+    document.getElementById('statsClub').value = '';
+    document.getElementById('statsMin').value = '';
+    document.getElementById('statsMax').value = '';
+    renderStats();
+  }
   function renderStats(){
     const box = document.getElementById('statsTable');
     ensureDb(db => {
+      populateStatsFilters(db);
       let list = db.players.slice();
       if(_statsPos!=='ALL') list = list.filter(p=>p.pos===_statsPos);
       if(_statsMins>0) list = list.filter(p=> (p.mins!=null?p.mins:9999) >= _statsMins);
+      const club = document.getElementById('statsClub').value;
+      const minP = document.getElementById('statsMin').value;
+      const maxP = document.getElementById('statsMax').value;
+      if(club) list = list.filter(p=> p.team === club);
+      if(minP) list = list.filter(p=> Number(p.price) >= Number(minP) - 0.001);
+      if(maxP) list = list.filter(p=> Number(p.price) <= Number(maxP) + 0.001);
       const q = normName(document.getElementById('statsSearch').value);
       const lq = (document.getElementById('statsSearch').value||'').trim().toLowerCase();
       if(lq) list = list.filter(p=> normName(p.name).includes(q) || normName(p.full||'').includes(q) || (p.team||'').toLowerCase().includes(lq));

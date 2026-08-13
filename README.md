@@ -231,7 +231,8 @@ The web tool now also includes:
 - **📋 Stats table** — a sortable table of every player, like the paid sites' main
   stats page: tap any column to sort (points, PPG, form, ownership, minutes, goals,
   assists, clean sheets, saves, xGI/90, ICT index, bonus, BPS, value, projected
-  points), filter by position, and search by name.
+  points), filter by position, minutes, **club and price (min/max)** with the
+  dropdowns at the top, and search by name.
 - **📈 Points projections** — an "expected FPL points per gameweek" figure for every
   player (from season points-per-game, fixture difficulty, availability and an
   xG over/under-performance nudge). Shown on each pitch shirt, in the position
