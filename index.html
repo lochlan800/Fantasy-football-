@@ -1032,17 +1032,22 @@
   }
   // World Cup returnees — players who went deep at the summer World Cup come back
   // late with almost no pre-season, so they're a fatigue/rotation risk in the
-  // opening weeks. Hit hardest in GW1, easing in GW2, back to full from GW3.
+  // opening weeks. Hit hardest in GW1, easing through GW2–3, back to full from GW4.
   let _worldcup = store.get('fpl_worldcup', {});
   const isWorldCup = pl => !!_worldcup[starterKey(pl)];
-  const WC_FACTOR = {1:0.55, 2:0.80};                 // GW → projection multiplier
+  const WC_RESET = 4;                                 // fully recovered from this gameweek
+  const WC_FACTOR = {1:0.55, 2:0.72, 3:0.87};         // GW → projection/rating multiplier
   const wcGwFactor = gw => (WC_FACTOR[gw] != null ? WC_FACTOR[gw] : 1);
   const wcMultiplier = (pl, gw) => (isWorldCup(pl) ? wcGwFactor(gw) : 1);
+  // rating downgrade (rating isn't per-GW, so use the CURRENT gameweek's factor)
+  const wcRatingFactor = pl => (isWorldCup(pl) ? wcGwFactor((_season && _season.current_gw) || 1) : 1);
   function toggleWorldCup(pos, i){
     const pl = squad[pos][i]; if(!pl || !pl.name) return;
     const k = starterKey(pl);
     if(_worldcup[k]) delete _worldcup[k]; else _worldcup[k] = true;
-    store.set('fpl_worldcup', _worldcup); renderSquad();
+    store.set('fpl_worldcup', _worldcup);
+    _xtotReady = false;               // recompute stats projections with the new flag
+    renderSquad();
   }
   // Tap-to-substitute: tap a starter then a bench player (or two bench players to
   // reorder). Any position swap is allowed as long as the formation stays legal
@@ -1165,7 +1170,7 @@
     const starterBtn = planning
       ? `<button class="capbtn ${isStarter(pl)?'on':''}" onclick="toggleStarter('${pos}',${i})" title="Assume he starts every week (full minutes) — for new signings or injury cover">▶</button>`
       : '';
-    const wcBtn = `<button class="capbtn ${wcOn?'wc':''}" onclick="toggleWorldCup('${pos}',${i})" title="Played deep at the World Cup — late return, weaker for the first 2 gameweeks (fine from GW3)">🌍</button>`;
+    const wcBtn = `<button class="capbtn ${wcOn?'wc':''}" onclick="toggleWorldCup('${pos}',${i})" title="Played deep at the World Cup — late return, weaker for the first 3 gameweeks (fine from GW4). Downgrades points AND rating.">🌍</button>`;
     const shownTeam = (_dbIndex ? resolveTeam(pl) : pl.team) || pl.team || '';
     const sel = _swapSel === id;
     return `<div class="shirt" onclick="shirtTap('${pos}',${i},event)" style="cursor:pointer${sel?';outline:2px solid var(--gold);outline-offset:1px':''}">
@@ -1205,7 +1210,7 @@
         <button class="btn" onclick="optimizeGw()">⚡ Optimise for GW${_teamGw}</button>
         <button class="btn ghost" onclick="saveGwLineup()">💾 Save this lineup</button>
       </div>
-      <p class="save-note" style="margin:0 0 10px">Each gameweek keeps its <b>own</b> lineup, captain and chip — changes on one week don't affect another. <b>⚡ Optimise</b> picks your highest-projected legal XI for the week and benches the rest. Tap <b>▶</b> on a player to "assume he starts", or <b style="color:var(--red)">🌍</b> to mark a <b>World Cup returnee</b> — they're weaker in GW1–2 (tired, late back) and fine from GW3. "blank" = no game that week.</p>`;
+      <p class="save-note" style="margin:0 0 10px">Each gameweek keeps its <b>own</b> lineup, captain and chip — changes on one week don't affect another. <b>⚡ Optimise</b> picks your highest-projected legal XI for the week and benches the rest. Tap <b>▶</b> on a player to "assume he starts", or <b style="color:var(--red)">🌍</b> to mark a <b>World Cup returnee</b> — they're weaker in GW1–3 (tired, late back) and fine from GW4, and it downgrades their points <b>and</b> rating. "blank" = no game that week.</p>`;
     }
     // bench = 4 slot ids for the current view; the other 11 slots are the XI (formation flexes)
     const benchArr = activeBench();
@@ -1557,8 +1562,8 @@
         out.innerHTML = `<div class="card"><h3>⭐ Rate my team</h3><p style="color:var(--muted)">Enter your players' names in the squad above first (I matched ${owned.length}). Spelling should match the FPL name, e.g. "Saka", "B.Fernandes".</p></div>`;
         return;
       }
-      // percentile score per owned player
-      owned.forEach(p => p.pctl = pct(p.rating, byPos[p.pos]||[]));
+      // percentile score per owned player (World Cup returnees are downgraded)
+      owned.forEach(p => p.pctl = pct(p.rating * wcRatingFactor(p), byPos[p.pos]||[]));
       // best XI from owned (simple: 1 GK + best 10 outfield respecting min 3DEF/2MID/1FWD)
       const gk=[...owned.filter(p=>p.pos==='GK')].sort((a,b)=>b.rating-a.rating);
       const def=[...owned.filter(p=>p.pos==='DEF')].sort((a,b)=>b.rating-a.rating);
@@ -1578,7 +1583,7 @@
       const gcol = score>=80?'#0e8a3e':score>=60?'#b8860b':'#c9314b';
       // projected points for the best XI next gameweek (captain doubled)
       let projTotal = 0, haveProj = false;
-      xi.forEach(p=>{ if(p.xpts!=null){ haveProj=true; projTotal += Number(p.xpts) * ((capKey && p.slot===capKey)?2:1); } });
+      xi.forEach(p=>{ if(p.xpts!=null){ haveProj=true; projTotal += Number(p.xpts) * wcRatingFactor(p) * ((capKey && p.slot===capKey)?2:1); } });
       projTotal = Math.round(projTotal);
       // transfer suggestions: genuinely weak owned players (<60th pctl) → a BETTER
       // player at (roughly) the SAME price. Never a cheaper downgrade.
@@ -1777,9 +1782,9 @@
     db.players.forEach(p=>{
       const tg = _seasonGws[p.team];
       if(!tg){ p.xtot = null; p.xnext = null; return; }
-      let s=0; for(let gw=lo; gw<=hi; gw++) s += playerGwPoints(p, tg, gw, false);
+      let s=0; for(let gw=lo; gw<=hi; gw++) s += playerGwPoints(p, tg, gw, false) * wcMultiplier(p, gw);
       p.xtot = Math.round(s);
-      p.xnext = Math.round(playerGwPoints(p, tg, lo, false) * 10) / 10;   // next GW, same as the pitch
+      p.xnext = Math.round(playerGwPoints(p, tg, lo, false) * wcMultiplier(p, lo) * 10) / 10;   // next GW, same as the pitch
     });
     _xtotReady = true;
   }
@@ -1868,7 +1873,7 @@
     let per=[], total=null;
     if(season && _seasonGws){
       const tg=_seasonGws[info.team]; const lo=season.current_gw||1, hi=season.max_gw||38; let s=0;
-      for(let gw=lo; gw<=hi; gw++){ const games=(tg&&tg[gw])||[]; const pts=playerGwPoints(info, tg, gw, false); s+=pts; per.push({gw,pts,games}); }
+      for(let gw=lo; gw<=hi; gw++){ const games=(tg&&tg[gw])||[]; const pts=playerGwPoints(info, tg, gw, false) * wcMultiplier(info, gw); s+=pts; per.push({gw,pts,games}); }
       total=Math.round(s);
     }
     let html = `<div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:12px">
