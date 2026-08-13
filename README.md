@@ -161,7 +161,9 @@ The web tool now also includes:
   a reminder like "transfer Salah in", "Wildcard here", or "Triple Captain vs the
   bottom side". Tap **📌 add note** in the Notes column, type it, and it saves
   automatically; pinned weeks are highlighted and marked with a 📌, and blanking a
-  note removes it.
+  note removes it. The same notes also appear on the **Planner Board fixtures grid**
+  — a 📌 Notes row you can edit, plus a 📌 marker (with the note on hover) on each
+  gameweek's column header — so your reminders sit right next to the fixtures.
 - **📆 Season Planner** — projects your team across all 38 gameweeks: each week's
   best-XI projected points (green = big week, red = a dip), using every player's
   scoring rate × their real fixture that week (doubles counted, blanks = 0). Slot

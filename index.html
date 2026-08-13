@@ -2287,14 +2287,14 @@
   function setPlannerChip(gw, val){ planChip(gw, val); renderPlanner(); }
   // Per-gameweek pinned notes (your own reminders: "buy Salah", "WC here", etc.)
   let _gwNotes = store.get('fpl_gwnotes', {});
-  function editGwNote(gw){
+  function editGwNote(gw, after){
     const cur = _gwNotes[gw] || '';
     const val = prompt('📌 Note for GW'+gw+' (leave blank to remove):', cur);
     if(val===null) return;                 // cancelled
     const t = val.trim();
     if(t) _gwNotes[gw] = t; else delete _gwNotes[gw];
     store.set('fpl_gwnotes', _gwNotes);
-    renderPlanner();
+    if(typeof after==='function') after(); else renderPlanner();
   }
   function renderPlanner(){
     const box = document.getElementById('plannerBody'); if(!box) return;
@@ -2655,11 +2655,19 @@
     }
     const rb = g => (g===CHIP_RESET_GW ? 'border-left:2px solid var(--gold);' : '');   // reset boundary marker
     const head = `<th class="team" style="text-align:left">Team</th><th>Avg</th>`
-      + gws.map(g=>{ const c=_plannerChips[g]; const badge = c ? `<br><span style="background:${CHIP_COL[c]};color:#06210f;border-radius:4px;padding:0 4px;font-size:9px;font-weight:800">${CHIP_SHORT[c]}</span>` : ''; return `<th style="${rb(g)}">GW${g}${g===CHIP_RESET_GW?' 🔁':''}${badge}</th>`; }).join('');
+      + gws.map(g=>{ const c=_plannerChips[g]; const nt=_gwNotes[g]; const badge = c ? `<br><span style="background:${CHIP_COL[c]};color:#06210f;border-radius:4px;padding:0 4px;font-size:9px;font-weight:800">${CHIP_SHORT[c]}</span>` : ''; return `<th style="${rb(g)}"${nt?` title="${escapeHtml(nt)}"`:''}>GW${g}${g===CHIP_RESET_GW?' 🔁':''}${nt?' 📌':''}${badge}</th>`; }).join('');
     // editable chip-plan row
     const chipRow = `<tr><td class="team" style="color:var(--muted);font-weight:700">🎴 Chip plan</td><td></td>`
       + gws.map(g=>`<td style="text-align:center;padding:2px;${rb(g)}"><select onchange="setBoardChip(${g},this.value)" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:2px;font-size:11px">${boardChipOpts(_plannerChips[g]||'')}</select></td>`).join('') + `</tr>`;
-    const body = chipRow + rows.map(({t,avg,played,mine})=>{
+    // editable notes row (mirrors the Season Planner's pinned notes)
+    const noteRow = `<tr><td class="team" style="color:var(--muted);font-weight:700">📌 Notes</td><td></td>`
+      + gws.map(g=>{ const nt=_gwNotes[g];
+          return `<td style="text-align:center;padding:2px;vertical-align:top;${rb(g)}">`
+            + (nt
+               ? `<button class="btn ghost" onclick="editGwNote(${g}, renderBoard)" title="Edit note" style="padding:1px 5px;font-size:11px">📌</button><div style="font-size:9px;line-height:1.15;color:var(--gold);margin-top:1px;white-space:normal;word-break:break-word">${escapeHtml(nt)}</div>`
+               : `<button class="btn ghost" onclick="editGwNote(${g}, renderBoard)" title="Add a note" style="padding:1px 5px;font-size:11px;opacity:.45">📌</button>`)
+            + `</td>`; }).join('') + `</tr>`;
+    const body = chipRow + noteRow + rows.map(({t,avg,played,mine})=>{
       const avgCol = avg<2.6?'var(--accent)':avg>3.4?'var(--red)':'var(--gold)';
       const rowStyle = mine ? ' style="background:rgba(255,210,63,.07)"' : '';
       const dragAttrs = ` data-short="${t.short}" draggable="true" ondragstart="boardDragStart(event,'${t.short}')" ondragover="boardDragOver(event)" ondragleave="boardDragLeave(event)" ondrop="boardDrop(event,'${t.short}')" ondragend="boardDragEnd(event)"`;
@@ -2679,7 +2687,7 @@
     const yourNote = mine.size ? `<b>⭐ Your teams</b> (${[...mine].join(', ')}) are highlighted. ` : `Add players in the <b>Squad Builder</b> and your teams get starred here. `;
     const resetNote = gws.includes(CHIP_RESET_GW) ? ` The <b>🔁 gold line at GW${CHIP_RESET_GW}</b> is where your chips reset for the second half.` : '';
     return `<div class="card"><h3>📅 Every team's fixtures <span class="tag">${boardWinLabel()}</span></h3>
-      <div class="callout blue" style="margin-top:0">${orderNote}${yourNote}${_boardOrder&&_boardOrder.length?'':'All 20 teams, <b>easiest run at the top</b>. '}Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. Use the <b>🎴 Chip plan</b> row to mark which gameweek you'll play each chip — it saves and syncs with the Season Planner and your pitch, and only lets you use each chip once per half.${resetNote} <b>DGW</b> = double, <b>–</b> = blank.</div>
+      <div class="callout blue" style="margin-top:0">${orderNote}${yourNote}${_boardOrder&&_boardOrder.length?'':'All 20 teams, <b>easiest run at the top</b>. '}Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. Use the <b>🎴 Chip plan</b> row to mark which gameweek you'll play each chip, and the <b>📌 Notes</b> row to pin a reminder to any gameweek — both save and sync with the Season Planner and your pitch. Each chip can only be used once per half.${resetNote} <b>DGW</b> = double, <b>–</b> = blank.</div>
       ${chipHalfSummaryHtml()}
       <div style="overflow-x:auto"><table class="fixgrid"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
   }
