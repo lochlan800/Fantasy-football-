@@ -124,8 +124,10 @@ The web tool now also includes:
   **📊** button), or **any row in the Stats table**, to open a card showing their price,
   full stats (points, points-per-match, form, ownership, minutes, goals, assists, clean
   sheets, xGI/90, ICT, bonus, projected points), a **projected season total**, and a
-  **bar chart of their expected points for every gameweek of the season** with each
-  fixture's opponent and difficulty (FDR 1 green → 5 red, blanks marked) underneath.
+  **bar chart of their expected points for every gameweek of the season** — the
+  projected points **number sits on top of each bar** (so you can read GW21, GW34, any
+  week directly), with each fixture's opponent and difficulty (FDR 1 green → 5 red,
+  blanks marked) underneath.
 - **xTot column on the Stats table** — the **projected total points for the rest of the
   season** (sum of each player's per-gameweek projection over their real fixtures),
   sortable like every other column, alongside PPG (points per match) and xPts (next GW).

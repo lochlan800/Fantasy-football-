@@ -1811,21 +1811,25 @@
     if(per.length){
       const maxP=Math.max(...per.map(p=>p.pts),1);
       const cells=per.map(p=>{
-        const h=Math.max(2, Math.round(p.pts/maxP*70));
+        const h=Math.max(2, Math.round(p.pts/maxP*64));
         const d=p.games.length?Math.round(p.games.reduce((a,g)=>a+g.diff,0)/p.games.length):0;
         const bcol=p.games.length?(DIFF_BG[d]||'#5a6472'):'#161b22';
         const opp=p.games.length?p.games.map(g=>escapeHtml(g.opp)+' ('+g.venue+')').join(', '):'blank';
+        const ptsLabel=p.games.length
+          ? `<div style="font-size:9px;font-weight:800;color:var(--accent);height:12px;line-height:12px">${p.pts.toFixed(1)}</div>`
+          : `<div style="font-size:9px;color:#3d4b5f;height:12px;line-height:12px">0</div>`;
         const fdr=p.games.length
           ? `<div style="font-size:8px;line-height:1.05;background:${DIFF_BG[d]};color:${DIFF_FG[d]};border-radius:3px;padding:1px 1px;margin-top:1px;width:100%">${escapeHtml(p.games.map(g=>g.opp).join('/'))}<br>${d}</div>`
           : `<div style="font-size:9px;color:#3d4b5f;margin-top:1px">–</div>`;
-        return `<div title="GW${p.gw}: ${opp} — ${p.pts.toFixed(1)} pts" style="flex:0 0 auto;width:30px;display:flex;flex-direction:column;align-items:center">
-          <div style="height:72px;display:flex;flex-direction:column;justify-content:flex-end;width:100%"><div style="width:68%;margin:0 auto;height:${h}px;background:${bcol};border-radius:2px 2px 0 0"></div></div>
-          <div style="font-size:8px;color:var(--muted)">${p.gw}</div>${fdr}
+        return `<div title="GW${p.gw}: ${opp} — ${p.pts.toFixed(1)} pts" style="flex:0 0 auto;width:34px;display:flex;flex-direction:column;align-items:center">
+          ${ptsLabel}
+          <div style="height:66px;display:flex;flex-direction:column;justify-content:flex-end;width:100%"><div style="width:70%;margin:0 auto;height:${h}px;background:${bcol};border-radius:2px 2px 0 0"></div></div>
+          <div style="font-size:8px;color:var(--muted)">GW${p.gw}</div>${fdr}
         </div>`;
       }).join('');
       html += `<h4 style="margin:6px 0 4px">📊 Expected points &amp; fixtures — whole season</h4>
-        <div class="callout blue" style="margin-top:0;font-size:12px">Each bar is that gameweek's projected points; the coloured cell below is the fixture (opponent + difficulty <b>1 green → 5 red</b>). Blank = no game. <b>Projected season total ≈ ${total} pts.</b></div>
-        <div style="overflow-x:auto;border:1px solid var(--border);border-radius:10px;padding:8px"><div style="display:flex;gap:2px;align-items:flex-start">${cells}</div></div>`;
+        <div class="callout blue" style="margin-top:0;font-size:12px">The <b>number on top of each bar is that gameweek's projected points</b>; the coloured cell below is the fixture (opponent + difficulty <b>1 green → 5 red</b>). Blank = no game (0). <b>Projected season total ≈ ${total} pts.</b></div>
+        <div style="overflow-x:auto;border:1px solid var(--border);border-radius:10px;padding:8px"><div style="display:flex;gap:3px;align-items:flex-start">${cells}</div></div>`;
     } else {
       html += '<div style="color:var(--muted);font-size:13px">Season fixtures not loaded yet — run the data update to see the per-gameweek chart.</div>';
     }
