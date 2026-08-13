@@ -128,7 +128,9 @@ The web tool now also includes:
     pulled to the top**, and a **🎴 Chip plan row** lets you mark which gameweek you'll
     play each chip right on the grid — it saves and syncs with the Season Planner and
     your pitch, and the planned chip shows as a badge on that gameweek's column. Pick
-    a window of 6/8/10/12 gameweeks or the whole season; DGW and blanks are marked.
+    a window of the next 6/8/10/12 gameweeks, the whole season, or a **whole half** —
+    **First half (GW1–19)** or **Second half (GW20–38)** — to plan each half of the
+    chip cycle at once; DGW and blanks are marked.
   - **🎴 Chip advisor (built around your team)** — reads **your squad's** real fixtures
     and projected points across the season and tells you the best gameweek for each
     chip *for your team*: Bench Boost in **your** biggest double gameweek, Triple

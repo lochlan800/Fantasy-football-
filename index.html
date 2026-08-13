@@ -647,7 +647,9 @@
       <div class="row-actions" style="margin:0;align-items:center;gap:12px">
         <label style="font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:5px">Weeks
           <select id="boardWin" onchange="renderBoard()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:5px 8px;font-size:13px">
-            <option value="6">6</option><option value="8" selected>8</option><option value="10">10</option><option value="12">12</option><option value="38">Whole season</option>
+            <option value="6">Next 6</option><option value="8" selected>Next 8</option><option value="10">Next 10</option><option value="12">Next 12</option>
+            <option value="h1">First half (→GW19)</option><option value="h2">Second half (GW20–38)</option>
+            <option value="38">Whole season</option>
           </select></label>
         <button class="btn ghost" id="boardSplitBtn" onclick="toggleBoardSplit()">⬌ Split view</button>
       </div>
@@ -2542,7 +2544,14 @@
 
   // ---------- Planner Board (wide / laptop) ----------
   let _boardSub = 'fixtures', _boardSplit = false, _boardLeft = 'fixtures', _boardRight = 'chips';
-  const boardWin = () => parseInt(document.getElementById('boardWin').value, 10) || 8;
+  const boardWinVal = () => document.getElementById('boardWin').value;
+  function boardWinLabel(){
+    const v = boardWinVal();
+    if(v==='h1') return `First half · GW1–${CHIP_RESET_GW-1}`;
+    if(v==='h2') return `Second half · GW${CHIP_RESET_GW}–38`;
+    if(v==='38') return 'Whole season';
+    return `Next ${v} GWs`;
+  }
   function setBoardSub(which){
     _boardSub = which;
     document.querySelectorAll('.board-sub').forEach(b=>{ const on=b.dataset.sub===which; b.classList.toggle('active',on); b.classList.toggle('ghost',!on); });
@@ -2557,9 +2566,13 @@
   function setBoardPane(side, val){ if(side==='left') _boardLeft=val; else _boardRight=val; renderBoard(); }
   // one gameweek window shared by both board views
   function boardGws(season){
-    const win = boardWin(), startGw = season.current_gw || 1, maxGw = season.max_gw || 38;
-    const end = win>=38 ? maxGw : Math.min(startGw+win-1, maxGw);
-    const gws=[]; for(let g=startGw; g<=end; g++) gws.push(g); return gws;
+    const v = boardWinVal(), startGw = season.current_gw || 1, maxGw = season.max_gw || 38;
+    let lo, hi;
+    if(v==='h1'){ lo = 1; hi = Math.min(CHIP_RESET_GW-1, maxGw); }            // first half → GW19
+    else if(v==='h2'){ lo = CHIP_RESET_GW; hi = maxGw; }                       // second half GW20–38
+    else if(v==='38'){ lo = startGw; hi = maxGw; }                             // rest of the season
+    else { const n = parseInt(v,10)||8; lo = startGw; hi = Math.min(startGw+n-1, maxGw); }
+    const gws=[]; for(let g=lo; g<=hi; g++) gws.push(g); return gws;
   }
   // chip badges shown on the grid / GW headers
   const CHIP_SHORT = {wc:'WC', fh:'FH', bb:'BB', tc:'TC'};
@@ -2616,7 +2629,7 @@
     }).join('');
     const yourNote = mine.size ? `<b>⭐ Your teams</b> (${[...mine].join(', ')}) are pulled to the top and highlighted. ` : `Add players in the <b>Squad Builder</b> and your teams get starred here. `;
     const resetNote = gws.includes(CHIP_RESET_GW) ? ` The <b>🔁 gold line at GW${CHIP_RESET_GW}</b> is where your chips reset for the second half.` : '';
-    return `<div class="card"><h3>📅 Every team's fixtures <span class="tag">Next ${gws.length} GWs</span></h3>
+    return `<div class="card"><h3>📅 Every team's fixtures <span class="tag">${boardWinLabel()}</span></h3>
       <div class="callout blue" style="margin-top:0">${yourNote}All 20 teams, <b>easiest run at the top</b>. Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. Use the <b>🎴 Chip plan</b> row to mark which gameweek you'll play each chip — it saves and syncs with the Season Planner and your pitch, and only lets you use each chip once per half.${resetNote} <b>DGW</b> = double, <b>–</b> = blank.</div>
       ${chipHalfSummaryHtml()}
       <div style="overflow-x:auto"><table class="fixgrid"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
