@@ -1628,6 +1628,25 @@
       }).filter(r=>r && r.gain>0).sort((a,b)=>b.gain-a.gain);
       const seenIn=new Set(); const raise=[];
       for(const r of raiseAll){ const k=normName(r.in.name); if(seenIn.has(k)) continue; seenIn.add(k); raise.push(r); if(raise.length>=4) break; }
+      // money in the bank → best pricier upgrade you can actually afford
+      let spent=0; POSITIONS.forEach(P=>squad[P.key].forEach(pl=>{ const v=parseFloat(pl.price); if(!isNaN(v)&&v>0) spent+=v; }));
+      const bank = Math.max(0, Math.round((BUDGET - spent)*10)/10);
+      let bankRaise = [];
+      if(bank >= 0.3){
+        const affordUpgradeFor = p => {
+          const pool=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
+               && c.price <= p.price + bank + 0.05 && (c.mins==null||c.mins>=600)
+               && !ownedKeys.has(normName(c.name)));
+          return pool.sort((a,b)=> b.rating - a.rating)[0];   // best player you can afford for this spot
+        };
+        const all = xi.map(p=>{
+          const up = affordUpgradeFor(p); if(!up) return null;
+          const upPctl = pct(up.rating, byPos[up.pos]);
+          return {out:p, in:up, upPctl, newScore:scoreIfSwap(p.slot, upPctl), gain:scoreIfSwap(p.slot, upPctl)-score, cost:Math.round((up.price-p.price)*10)/10};
+        }).filter(r=>r && r.gain>0 && r.cost>0.05).sort((a,b)=> b.gain-a.gain || b.upPctl-a.upPctl);
+        const seen=new Set();
+        for(const r of all){ const k=normName(r.in.name); if(seen.has(k)) continue; seen.add(k); bankRaise.push(r); if(bankRaise.length>=3) break; }
+      }
       // captain lift: captaining your highest-percentile starter maximises the weighted score
       const topXi = [...xi].sort((a,b)=>b.pctl-a.pctl)[0];
       let capTip = null;
@@ -1664,6 +1683,22 @@
         html += `</tbody></table></div><p class="save-note">These are the single transfers that move your rating the <b>most</b> — do the top one first. Each figure is your new score if you made only that swap. The <b>✅ reason</b> shows why the incoming player rates higher; a player's rating is built from <b>points per game, form, expected goal involvement (xGI), defensive contribution and penalty/set-piece duty</b>, adjusted for fixtures and minutes played — so you can judge each call yourself.</p>`;
       } else {
         html += `<p style="color:var(--accent);margin:8px 0">💪 No single same-price move raises your rating — your XI is at the ceiling for its budget. The only gains left come from <b>spending more</b> (sell an enabler to fund a higher-priced premium) or a <b>Wildcard</b> reshuffle. That's an elite team.</p>`;
+      }
+      // Budget-aware upgrades: spend the money in the bank on a pricier, better player
+      if(bank >= 0.3){
+        html += `<h4 style="margin:14px 0 6px">💰 Best upgrade with your bank <span style="font-weight:400;color:var(--muted);font-size:13px">— you have <b style="color:var(--gold)">£${bank.toFixed(1)}m</b> spare to spend</span></h4>`;
+        if(bankRaise.length){
+          html += `<div style="overflow-x:auto"><table><thead><tr><th>Swap out</th><th></th><th>Bring in (affordable)</th><th>Extra cost</th><th>Your score</th></tr></thead><tbody>`;
+          bankRaise.forEach(r=>{
+            html += `<tr><td>${escapeHtml(r.out.name)} <span class="pill red">${r.out.pctl}%</span> <span style="color:var(--muted);font-size:12px">£${Number(r.out.price).toFixed(1)}m</span></td><td>▸</td>`+
+              `<td><b>${escapeHtml(r.in.name)}</b> <span class="pill green">${r.upPctl}%</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(r.in.team)} · £${Number(r.in.price).toFixed(1)}m</span>${candReasons(r.in)?'<br>'+candReasons(r.in):''}</td>`+
+              `<td style="color:var(--gold);font-weight:700;white-space:nowrap">+£${r.cost.toFixed(1)}m</td>`+
+              `<td><b style="color:var(--accent);font-size:15px">${score} → ${r.newScore}</b> <span style="color:var(--accent);font-size:12px">(+${r.gain})</span></td></tr>`;
+          });
+          html += `</tbody></table></div><p class="save-note">These put your <b>£${bank.toFixed(1)}m</b> in the bank to work on a <b>better, pricier player</b> than a same-price swap could get — the most you can afford for a spot is its price + your bank. Extra cost is what comes out of the bank. Do the top one first.</p>`;
+        } else {
+          html += `<p style="color:var(--muted);margin:6px 0">Even with £${bank.toFixed(1)}m spare, no pricier upgrade beats what you already have in your XI — bank it, or save toward a bigger single move.</p>`;
+        }
       }
       if(capTip){
         html += `<div class="callout" style="margin:8px 0"><b>🅒 Captain tip:</b> ${capTip.type==='none'?'Set your captain to':'Move the captaincy to'} <b>${escapeHtml(capTip.player.name)}</b> (your highest-rated starter) — that alone lifts your rating to <b style="color:var(--accent)">${capTip.newScore}</b>. Your captain counts extra in the score, and doubles their points on the pitch.</div>`;

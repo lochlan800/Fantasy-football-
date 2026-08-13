@@ -284,6 +284,12 @@ The web tool now also includes:
   team out of 100 with a grade, flags injured/unavailable players, and suggests
   who to bring in for your weakest spots. Powered by `players-data.json` (every
   player with a tactic-based rating), matched to the names you type.
+- **💰 Best upgrade with your bank** (Rate My Team) — if you have money spare, it reads
+  how much is in your bank and suggests the best **pricier** upgrades you can actually
+  afford (the most you can spend on a spot is its price + your bank), each with the
+  extra cost and the score impact — so your leftover funds don't sit idle. It sits
+  alongside the same-price "Biggest score boosts" and only appears when you have money
+  to spend.
 - **🎴 Chip-aware transfer advice** (Rate My Team) — when you've planned chips, the
   transfer advice adapts to them: **Bench Boost** shifts focus to strengthening your
   *bench* for that week (it names your weakest bench players, since all 15 score);
