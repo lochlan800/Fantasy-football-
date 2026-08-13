@@ -134,8 +134,16 @@ The web tool now also includes:
     chip *for your team*: Bench Boost in **your** biggest double gameweek, Triple
     Captain on your highest-projected single-week haul (naming the player), Free Hit
     in **your** emptiest (most-blanked) week, and Wildcard just before **your** toughest
-    projected run. It also pins any chips you've already planned, and falls back to the
-    league-wide picture (and a prompt to enter your team) until you've built a squad.
+    projected run. It falls back to the league-wide picture (and a prompt to enter your
+    team) until you've built a squad.
+- **🔁 Two chips per half (chip reset)** — FPL gives you **one of each chip in the first
+  half (GW1–19) and a fresh set after they reset at GW20**. The app now enforces and
+  tracks this: the chip advisor recommends a **first-half** and a **second-half** play
+  for every chip, a usage tracker shows which chip is used (and where) in each half and
+  what's still free, and the Fixtures grid marks the **🔁 reset line at GW20**. Setting a
+  chip only clears the *same* chip in the *same* half (your other half's use is safe), so
+  you can't accidentally plan two Wildcards in one half. This applies everywhere chips are
+  set — the grid, the Season Planner and the pitch stepper all share it.
   - **⬌ Split view** — on a wide screen, splits the page in half so you can show two
     panels side by side (e.g. the fixtures grid next to the chip advice). A notice
     appears on phones, where split is turned off but the grid still scrolls sideways.

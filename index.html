@@ -1085,7 +1085,7 @@
     _teamGw = Math.min(Math.max(_season.current_gw||1, _teamGw + d), _season.max_gw||38);
     renderSquad();
   }
-  function setTeamChip(gw, val){ _plannerChips[gw] = val; store.set('fpl_planner_chips', _plannerChips); renderSquad(); }
+  function setTeamChip(gw, val){ planChip(gw, val); renderSquad(); }
   function chipSelectHtml(gw, cur){
     return `<select onchange="setTeamChip(${gw},this.value)" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:4px 6px;font-size:12px">`
       + Object.keys(CHIP_LABEL).map(k=>`<option value="${k}" ${k===cur?'selected':''}>${CHIP_LABEL[k]}</option>`).join('') + '</select>';
@@ -2237,6 +2237,24 @@
   // ---------- Season Planner ----------
   let _plannerChips = store.get('fpl_planner_chips', {});   // {gw: chipKey}
   const CHIP_LABEL = {'':'—', wc:'🃏 Wildcard', fh:'🆓 Free Hit', bb:'🪑 Bench Boost', tc:'©️×3 Triple Cap'};
+  // FPL splits the season: each chip can be used ONCE in the first half and again,
+  // fresh, in the second half. The chips reset at GW20 (first half = GW1–19).
+  const CHIP_RESET_GW = 20;
+  const chipHalf = gw => (Number(gw) < CHIP_RESET_GW ? 1 : 2);
+  // Central chip planner: setting a chip clears the same chip elsewhere in the SAME
+  // half (you only have one per half), leaving the other half's use untouched.
+  function planChip(gw, val){
+    gw = Number(gw); let moved = false;
+    if(val){
+      const h = chipHalf(gw);
+      Object.keys(_plannerChips).forEach(g => { if(Number(g)!==gw && _plannerChips[g]===val && chipHalf(g)===h){ delete _plannerChips[g]; moved = true; } });
+      _plannerChips[gw] = val;
+    } else {
+      delete _plannerChips[gw];
+    }
+    store.set('fpl_planner_chips', _plannerChips);
+    if(moved && typeof flash==='function') flash(`Only one ${CHIP_SHORT[val]||val} per half — moved it to GW${gw}`);
+  }
   function ensureSeason(cb, onFail){
     if(_season){ cb(_season); return; }
     fetch('fixtures-season.json', {cache:'no-store'})
@@ -2260,7 +2278,7 @@
     games.forEach(g => { pts += (info.ppg||0) * (1 + 0.16*(3 - g.diff)) * mconf; });   // sums doubles
     return pts;
   }
-  function setPlannerChip(gw, val){ _plannerChips[gw] = val; store.set('fpl_planner_chips', _plannerChips); renderPlanner(); }
+  function setPlannerChip(gw, val){ planChip(gw, val); renderPlanner(); }
   function renderPlanner(){
     const box = document.getElementById('plannerBody'); if(!box) return;
     const entered = POSITIONS.flatMap(p => squad[p.key].map((x,slot)=>({name:(x.name||'').trim(), team:x.team, price:x.price, pos:p.key, slot:p.key+'-'+slot}))).filter(x=>x.name);
@@ -2546,7 +2564,21 @@
   // chip badges shown on the grid / GW headers
   const CHIP_SHORT = {wc:'WC', fh:'FH', bb:'BB', tc:'TC'};
   const CHIP_COL   = {wc:'#b28dff', fh:'#00c2ff', bb:'#37d67a', tc:'#ffd23f'};
-  function setBoardChip(gw, val){ _plannerChips[gw] = val; store.set('fpl_planner_chips', _plannerChips); renderBoard(); }
+  function setBoardChip(gw, val){ planChip(gw, val); renderBoard(); }
+  // Two-halves chip status: which chip is used (and where) in each half, what's free.
+  function chipHalfSummaryHtml(){
+    const chips = ['wc','fh','bb','tc'];
+    const halfRow = h => chips.map(c=>{
+      const gw = Object.keys(_plannerChips).find(g=>_plannerChips[g]===c && chipHalf(g)===h);
+      const used = gw!=null;
+      return `<span style="display:inline-flex;align-items:center;gap:4px;margin:2px 10px 2px 0">`
+        + `<span style="background:${used?CHIP_COL[c]:'transparent'};color:${used?'#06210f':'var(--muted)'};border:1px solid ${used?CHIP_COL[c]:'var(--border)'};border-radius:5px;padding:1px 6px;font-size:11px;font-weight:800">${CHIP_SHORT[c]}</span>`
+        + `${used?`GW${gw}`:'<span style="color:var(--muted)">free</span>'}</span>`;
+    }).join('');
+    return `<div class="callout" style="margin:8px 0"><b>🔁 Chips reset at GW${CHIP_RESET_GW}.</b> You get <b>one of each chip per half</b> — plan one before the reset and a fresh one after.
+      <div style="margin-top:6px;font-size:12.5px"><b>First half (GW1–${CHIP_RESET_GW-1}):</b> ${halfRow(1)}</div>
+      <div style="margin-top:3px;font-size:12.5px"><b>Second half (GW${CHIP_RESET_GW}–38):</b> ${halfRow(2)}</div></div>`;
+  }
   const boardChipOpts = cur => Object.keys(CHIP_LABEL).map(k=>`<option value="${k}"${k===cur?' selected':''}>${k?CHIP_SHORT[k]:'—'}</option>`).join('');
   function ownedShorts(){
     const s = new Set();
@@ -2563,27 +2595,30 @@
       let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{ s+=x.diff; n++; }));
       return { t, avg: n? s/n : 99, played:n, mine: mine.has((t.short||'').toUpperCase()) };
     }).sort((a,b)=> (b.mine-a.mine) || (a.avg - b.avg));   // your teams first, then easiest run
+    const rb = g => (g===CHIP_RESET_GW ? 'border-left:2px solid var(--gold);' : '');   // reset boundary marker
     const head = `<th class="team" style="text-align:left">Team</th><th>Avg</th>`
-      + gws.map(g=>{ const c=_plannerChips[g]; const badge = c ? `<br><span style="background:${CHIP_COL[c]};color:#06210f;border-radius:4px;padding:0 4px;font-size:9px;font-weight:800">${CHIP_SHORT[c]}</span>` : ''; return `<th>GW${g}${badge}</th>`; }).join('');
+      + gws.map(g=>{ const c=_plannerChips[g]; const badge = c ? `<br><span style="background:${CHIP_COL[c]};color:#06210f;border-radius:4px;padding:0 4px;font-size:9px;font-weight:800">${CHIP_SHORT[c]}</span>` : ''; return `<th style="${rb(g)}">GW${g}${g===CHIP_RESET_GW?' 🔁':''}${badge}</th>`; }).join('');
     // editable chip-plan row
     const chipRow = `<tr><td class="team" style="color:var(--muted);font-weight:700">🎴 Chip plan</td><td></td>`
-      + gws.map(g=>`<td style="text-align:center;padding:2px"><select onchange="setBoardChip(${g},this.value)" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:2px;font-size:11px">${boardChipOpts(_plannerChips[g]||'')}</select></td>`).join('') + `</tr>`;
+      + gws.map(g=>`<td style="text-align:center;padding:2px;${rb(g)}"><select onchange="setBoardChip(${g},this.value)" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:2px;font-size:11px">${boardChipOpts(_plannerChips[g]||'')}</select></td>`).join('') + `</tr>`;
     const body = chipRow + rows.map(({t,avg,played,mine})=>{
       const avgCol = avg<2.6?'var(--accent)':avg>3.4?'var(--red)':'var(--gold)';
       const rowStyle = mine ? ' style="background:rgba(255,210,63,.07)"' : '';
       let cells = `<td class="team"${mine?' style="color:var(--gold)"':''}>${mine?'⭐ ':''}${escapeHtml(t.short)}</td><td style="text-align:center;font-weight:800;color:${avgCol}">${played?avg.toFixed(2):'—'}</td>`;
       gws.forEach(g=>{
         const games = t.gws[g] || [];
-        if(!games.length){ cells += `<td class="blank">–</td>`; return; }
+        if(!games.length){ cells += `<td class="blank" style="${rb(g)}">–</td>`; return; }
         const d = Math.round(games.reduce((a,x)=>a+x.diff,0)/games.length);
         const inner = games.map(x=>`${escapeHtml(x.opp)} (${x.venue})`).join('<br>');
-        cells += `<td class="fx" style="background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'}">${inner}<br><small>${d}${games.length>1?' • DGW':''}</small></td>`;
+        cells += `<td class="fx" style="${rb(g)}background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'}">${inner}<br><small>${d}${games.length>1?' • DGW':''}</small></td>`;
       });
       return `<tr${rowStyle}>${cells}</tr>`;
     }).join('');
     const yourNote = mine.size ? `<b>⭐ Your teams</b> (${[...mine].join(', ')}) are pulled to the top and highlighted. ` : `Add players in the <b>Squad Builder</b> and your teams get starred here. `;
+    const resetNote = gws.includes(CHIP_RESET_GW) ? ` The <b>🔁 gold line at GW${CHIP_RESET_GW}</b> is where your chips reset for the second half.` : '';
     return `<div class="card"><h3>📅 Every team's fixtures <span class="tag">Next ${gws.length} GWs</span></h3>
-      <div class="callout blue" style="margin-top:0">${yourNote}All 20 teams, <b>easiest run at the top</b>. Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. Use the <b>🎴 Chip plan</b> row to mark which gameweek you'll play each chip — it saves and syncs with the Season Planner and your pitch. <b>DGW</b> = double, <b>–</b> = blank.</div>
+      <div class="callout blue" style="margin-top:0">${yourNote}All 20 teams, <b>easiest run at the top</b>. Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. Use the <b>🎴 Chip plan</b> row to mark which gameweek you'll play each chip — it saves and syncs with the Season Planner and your pitch, and only lets you use each chip once per half.${resetNote} <b>DGW</b> = double, <b>–</b> = blank.</div>
+      ${chipHalfSummaryHtml()}
       <div style="overflow-x:auto"><table class="fixgrid"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
   }
   // ── Chip advisor: built around YOUR squad, using its real fixtures & projections ──
@@ -2612,9 +2647,10 @@
     const byDbl   = [...stats].filter(s=>s.dbl>0).sort((a,b)=> b.dbl-a.dbl || (b.proj||0)-(a.proj||0));
     const byBlank = [...stats].filter(s=>s.blank>0).sort((a,b)=> b.blank-a.blank);
     const byTop   = [...stats].filter(s=>s.top && s.top.pts>0).sort((a,b)=> b.top.pts-a.top.pts);
-    // your toughest 3-GW run (lowest projected) → natural Wildcard window
-    let wcAt=null;
-    if(canProject){ for(let i=0;i<=stats.length-3;i++){ const w=stats.slice(i,i+3); if(w.some(s=>s.proj==null)) continue; const sum=w.reduce((a,s)=>a+s.proj,0); if(!wcAt||sum<wcAt.sum) wcAt={g:w[0].g, sum}; } }
+    const pickHalf = (arr, h) => arr.find(s => chipHalf(s.g)===h);   // best in that half (arrays are sorted best-first)
+    // your toughest 3-GW run (lowest projected) per half → natural Wildcard window
+    const worstRunInHalf = h => { let w=null; if(!canProject) return null; for(let i=0;i<=stats.length-3;i++){ const win=stats.slice(i,i+3); if(win.some(s=>s.proj==null)) continue; if(chipHalf(win[0].g)!==h) continue; const sum=win.reduce((a,s)=>a+s.proj,0); if(!w||sum<w.sum) w={g:win[0].g, sum}; } return w; };
+    const twoHalves = (h1, h2) => `<b>1st half:</b> ${h1} &nbsp;·&nbsp; <b>2nd half:</b> ${h2}`;
     // league doubles/blanks as supporting context
     const lDgw=[], lBgw=[];
     for(let g=startGw; g<=maxGw; g++){ let d=0,b=0; season.teams.forEach(t=>{ const n=(t.gws[g]||[]).length; if(n>=2)d++; if(n===0)b++; }); if(d>0)lDgw.push({g,d}); if(b>=4)lBgw.push({g,b}); }
@@ -2625,37 +2661,40 @@
     if(!hasTeam){
       html += `<div class="callout" style="margin-top:0">⚠️ <b>Add your 15 players in the Squad Builder</b> to get chip advice tailored to your exact team. Until then, here's the league-wide picture.</div>`;
     } else {
-      html += `<div class="callout blue" style="margin-top:0"><b>Your chip plan.</b> These recommendations read <b>your squad's</b> real fixtures and projected points across the season — the best gameweeks for each chip <b>for your team</b>, not a generic answer. Doubles & blanks are confirmed later in the season, so this sharpens through the year.</div>`;
+      html += `<div class="callout blue" style="margin-top:0"><b>Your chip plan.</b> These read <b>your squad's</b> real fixtures and projected points, and — because FPL gives you <b>two of each chip, one per half</b> — each suggestion covers a <b>first-half</b> and a <b>second-half</b> play. Doubles & blanks are confirmed later in the season, so this sharpens through the year.</div>`;
       if(!canProject) html += `<div class="callout" style="margin:8px 0">Projected-points advice needs the player database — open the <b>Squad Builder</b> once (or run the data update) and it'll fill in.</div>`;
     }
-    // already-planned chips
-    const planned = Object.keys(_plannerChips).filter(g=>_plannerChips[g]).sort((a,b)=>a-b);
-    if(planned.length) html += `<p style="margin:6px 0;color:var(--muted);font-size:13px">📌 You've planned: ${planned.map(g=>`<b style="color:${CHIP_COL[_plannerChips[g]]}">${CHIP_SHORT[_plannerChips[g]]} in GW${g}</b>`).join(' · ')}. Set or change these in the Fixtures grid's chip-plan row.</p>`;
+    // two-halves usage tracker
+    html += chipHalfSummaryHtml();
 
-    // Bench Boost — your best double
+    // Bench Boost — best double in each half
+    const bbTxt = s => s ? `<b>GW${s.g}</b> (${s.dbl} of your players double${s.proj!=null?`, ~${s.proj} pts`:''})` : 'no double yet';
+    const bb1=pickHalf(byDbl,1), bb2=pickHalf(byDbl,2);
     html += chip('🚀','Bench Boost', hasTeam
-      ? (byDbl.length
-          ? `Your strongest double is <b>GW${byDbl[0].g}</b> — <b>${byDbl[0].dbl} of your players</b> play twice${byDbl[0].proj!=null?` (your XI projects ~${byDbl[0].proj} pts)`:''}. Play it here so all 15 count.`
-          : `None of <b>your</b> players have a confirmed double gameweek yet.${lDgw.length?` Leaguewide the biggest is GW${lDgw[0].g}.`:''} Doubles get announced later in the season — re-check then.`)
+      ? (byDbl.length ? twoHalves(bbTxt(bb1), bbTxt(bb2)) + ` — play it in a double so all 15 count.`
+         : `None of <b>your</b> players have a confirmed double yet.${lDgw.length?` Leaguewide the biggest is GW${lDgw[0].g}.`:''} Doubles are announced later — re-check then.`)
       : `Play it in a Double Gameweek so all 15 play twice.${lDgw.length?` Biggest league double: <b>GW${lDgw[0].g}</b>.`:''}`);
-    // Triple Captain — your best single week
+    // Triple Captain — biggest single-week haul in each half
+    const tcTxt = s => s && s.top ? `<b>${escapeHtml(s.top.name)}</b>, GW${s.g} (~${s.top.pts.toFixed(1)} pts${clubGames(mine.find(m=>m.name===s.top.name)?.short, s.g)>=2?', double!':''})` : '—';
+    const tc1=pickHalf(byTop,1), tc2=pickHalf(byTop,2);
     html += chip('👑','Triple Captain', canProject && byTop.length
-      ? `Your biggest single-week haul looks like <b>${escapeHtml(byTop[0].top.name)}</b> in <b>GW${byTop[0].g}</b> (projected ~${byTop[0].top.pts.toFixed(1)} pts${clubGames(mine.find(m=>m.name===byTop[0].top.name)?.short, byTop[0].g)>=2?', a double!':''}). Triple-Captain him there.`
-      : (hasTeam
-          ? `Save it for your best premium in a Double Gameweek or a home game vs a weak side.${byDbl.length?` Your top double is <b>GW${byDbl[0].g}</b>.`:''}`
-          : `Save it for a premium with a Double Gameweek, or a home game vs a weak side.`));
-    // Free Hit — your emptiest week
+      ? twoHalves(tcTxt(tc1), tcTxt(tc2)) + ` — triple-captain your biggest projected haul in each half.`
+      : (hasTeam ? `Save it for your best premium in a double or a home game vs a weak side.${byDbl.length?` Your top double is <b>GW${byDbl[0].g}</b>.`:''}`
+                 : `Save it for a premium with a Double Gameweek, or a home game vs a weak side.`));
+    // Free Hit — emptiest week in each half
+    const fhTxt = s => s ? `<b>GW${s.g}</b> (${s.blank} of your players blank)` : 'no blank yet';
+    const fh1=pickHalf(byBlank,1), fh2=pickHalf(byBlank,2);
     html += chip('🎯','Free Hit', hasTeam
-      ? (byBlank.length
-          ? `Your emptiest week is <b>GW${byBlank[0].g}</b> — <b>${byBlank[0].blank} of your players</b> have no game. Free Hit here to field a one-week XI that all plays.`
-          : `None of <b>your</b> players blank in the data yet.${lBgw.length?` Leaguewide the biggest blank is GW${lBgw[0].g}.`:''} Blanks appear later once games are postponed — re-check then.`)
+      ? (byBlank.length ? twoHalves(fhTxt(fh1), fhTxt(fh2)) + ` — field a one-week XI that all plays.`
+         : `None of <b>your</b> players blank in the data yet.${lBgw.length?` Leaguewide the biggest blank is GW${lBgw[0].g}.`:''} Blanks appear later once games are postponed.`)
       : `Best in a Blank Gameweek when many of your players have no game.${lBgw.length?` Biggest league blank: <b>GW${lBgw[0].g}</b>.`:''}`);
-    // Wildcard — before your toughest run
-    html += chip('♻️','Wildcard', canProject && wcAt
-      ? `Your team's toughest 3-week stretch is around <b>GW${wcAt.g}</b> (your lowest projected run). Wildcard just before it to move onto teams with kinder fixtures. The classic spots are ~GW8–9 (after early prices settle) and a second Wildcard in the back half.`
-      : `Use it to reshape <b>before a good run</b>, not to chase one bad week. Build your team so this can read your own fixture swings. Classic spots: ~GW8–9 and a second Wildcard in the back half.`);
+    // Wildcard — before your toughest run in each half
+    const wc1=worstRunInHalf(1), wc2=worstRunInHalf(2);
+    html += chip('♻️','Wildcard', canProject && (wc1||wc2)
+      ? twoHalves(wc1?`play it before <b>GW${wc1.g}</b>`:'—', wc2?`play it before <b>GW${wc2.g}</b>`:'—') + ` — reshape ahead of your toughest run in each half. Classic spots are ~GW8–9 and early in the second half.`
+      : `Use it to reshape <b>before a good run</b>, not to chase one bad week. Build your team so this can read your own fixture swings. Classic spots: ~GW8–9 and early in the second half.`);
 
-    html += `<p class="save-note">Tip: open the <b>Fixtures grid</b> alongside this in <b>Split view</b> and use its <b>🎴 Chip plan</b> row to lock in the gameweeks — they save and show up here and in the Season Planner.</p>`;
+    html += `<p class="save-note">Tip: open the <b>Fixtures grid</b> alongside this in <b>Split view</b> and use its <b>🎴 Chip plan</b> row to lock in the gameweeks — the app keeps one of each chip per half and syncs them to the Season Planner.</p>`;
     return `<div>${html}</div>`;
   }
   function boardContent(season, which){
