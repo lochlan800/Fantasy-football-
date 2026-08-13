@@ -456,7 +456,7 @@
     <div class="callout blue" style="margin-top:0;font-size:13px">⚠️ <b>"Per 90" stats (xGI90) mislead for players with few minutes</b> — one moment in a short cameo looks elite. The minutes filter (default 500+) hides those flukes so the list reflects players who actually play. Lower it only if you want to see everyone.</div>
     <input class="textline" id="statsSearch" placeholder="🔎 Search a player or club…" oninput="renderStats()" autocomplete="off" style="margin-bottom:12px">
     <div id="statsTable"></div>
-    <p class="save-note">Pts = total points · PPG = points per game · CS = clean sheets · xGI90 = expected goals+assists per 90 · ICT = Influence/Creativity/Threat index · Bns = bonus · BPS = bonus points system · Val = value (points per £m) · xPts = projected points next GW. Showing the top 150 for the filter.</p>
+    <p class="save-note"><b>Tap any player row</b> to see their price, full stats, every fixture's difficulty and a bar chart of their projected points across the whole season. Pts = total points · PPG = points per match · CS = clean sheets · xGI90 = expected goals+assists per 90 · ICT = Influence/Creativity/Threat index · Bns = bonus · BPS = bonus points system · Val = value (points per £m) · xPts = projected points next GW · <b>xTot = projected total points for the rest of the season</b>. Showing the top 150 for the filter.</p>
   </section>
 
   <!-- ============ STATS GUIDE ============ -->
@@ -888,6 +888,14 @@
   </footer>
 </div>
 
+<!-- player detail card (top-level so it shows over any tab) -->
+<div class="pick-overlay" id="cardOverlay" onclick="if(event.target===this)closePlayerCard()">
+  <div class="pick-panel" style="max-width:640px">
+    <h3><span id="cardTitle">Player</span><button class="pick-close" onclick="closePlayerCard()">✕</button></h3>
+    <div id="cardBody"></div>
+  </div>
+</div>
+
 <script>
   // ---------- Tabs + burger menu ----------
   const tabs = document.getElementById('tabs');
@@ -1149,12 +1157,12 @@
     const sel = _swapSel === id;
     return `<div class="shirt" onclick="shirtTap('${pos}',${i},event)" style="cursor:pointer${sel?';outline:2px solid var(--gold);outline-offset:1px':''}">
       <button class="rm" title="Remove" onclick="removeSlot('${pos}',${i})">✕</button>${badge}
-      <div class="nm">${escapeHtml(pl.name)}</div>
+      <div class="nm" onclick="event.stopPropagation();openPlayerCardSlot('${pos}',${i})" style="cursor:pointer" title="View stats, fixtures &amp; projected points">${escapeHtml(pl.name)}</div>
       <div class="meta">${escapeHtml(shownTeam)} · ${pos}${wcTag}</div>
       <div class="pr">£${(parseFloat(pl.price)||0).toFixed(1)}m</div>${proj}
       <div style="display:flex;gap:3px;justify-content:center;flex-wrap:wrap">
         <button class="capbtn ${isCap?'on':isVc?'von':''}" onclick="toggleCap('${pos}',${i})">${isCap?'C':isVc?'V':'C?'}</button>
-        ${starterBtn}${wcBtn}
+        ${starterBtn}${wcBtn}<button class="capbtn" onclick="openPlayerCardSlot('${pos}',${i})" title="View stats, fixtures &amp; projected points">📊</button>
       </div>
     </div>`;
   }
@@ -1669,6 +1677,7 @@
     {key:'bps',   label:'BPS',   num:true, get:p=>p.bps},
     {key:'vseason',label:'Val',  num:true, get:p=>fmt(p.vseason)},
     {key:'xpts',  label:'xPts',  num:true, get:p=>p.xpts!=null?fmt(p.xpts):'—'},
+    {key:'xtot',  label:'xTot',  num:true, get:p=>p.xtot!=null?p.xtot:'—'},
   ];
   function fmt(v){ return (v==null||v==='')?'—':(typeof v==='number'?(Number.isInteger(v)?v:v.toFixed(1)):v); }
   function setStatsPos(pos){
@@ -1699,10 +1708,28 @@
     document.getElementById('statsMax').value = '';
     renderStats();
   }
+  // Expected TOTAL points for the rest of the season: sum each player's per-gameweek
+  // projection over their real fixtures. Computed once when season data is available.
+  let _xtotReady = false;
+  function computeXtot(db, season){
+    if(_xtotReady || !_seasonGws) return;
+    const lo = season.current_gw||1, hi = season.max_gw||38;
+    db.players.forEach(p=>{
+      const tg = _seasonGws[p.team];
+      if(!tg){ p.xtot = null; return; }
+      let s=0; for(let gw=lo; gw<=hi; gw++) s += playerGwPoints(p, tg, gw, false);
+      p.xtot = Math.round(s);
+    });
+    _xtotReady = true;
+  }
   function renderStats(){
     const box = document.getElementById('statsTable');
     ensureDb(db => {
       populateStatsFilters(db);
+      ensureSeason(season => { computeXtot(db, season); renderStatsRows(db, box); }, () => renderStatsRows(db, box));
+    }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Stats not loaded yet — run the <b>Update FPL data</b> workflow on GitHub (Actions tab), then reload.</div>'; });
+  }
+  function renderStatsRows(db, box){
       let list = db.players.slice();
       if(_statsPos!=='ALL') list = list.filter(p=>p.pos===_statsPos);
       if(_statsMins>0) list = list.filter(p=> (p.mins!=null?p.mins:9999) >= _statsMins);
@@ -1725,11 +1752,77 @@
         const hl = _statsSort.key===c.key ? 'color:var(--accent)' : '';
         return `<th onclick="sortStats('${c.key}')" style="cursor:pointer;white-space:nowrap;${hl}">${c.label}${arrow}</th>`;
       }).join('');
-      const body = list.map(p=>'<tr>'+STAT_COLS.map(c=>`<td style="white-space:nowrap${c.num?';text-align:center':''}">${c.get(p)}</td>`).join('')+'</tr>').join('');
+      const body = list.map(p=>`<tr data-name="${escapeHtml(p.name)}" data-team="${escapeHtml(p.team)}" style="cursor:pointer">`+STAT_COLS.map(c=>`<td style="white-space:nowrap${c.num?';text-align:center':''}">${c.get(p)}</td>`).join('')+'</tr>').join('');
       box.innerHTML = `<div style="overflow-x:auto"><table style="font-size:13px"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
-    }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Stats not loaded yet — run the <b>Update FPL data</b> workflow on GitHub (Actions tab), then reload.</div>'; });
   }
   document.querySelector('[data-tab="stats"]').addEventListener('click', () => renderStats());
+  document.getElementById('statsTable').addEventListener('click', e => { const tr = e.target.closest('tr[data-name]'); if(tr) openPlayerCard(tr.dataset.name, tr.dataset.team); });
+
+  // ---------- Player detail card (opens from the pitch and the stats table) ----------
+  function closePlayerCard(){ document.getElementById('cardOverlay').classList.remove('on'); }
+  function openPlayerCardSlot(pos, i){ const pl = squad[pos] && squad[pos][i]; if(pl && pl.name) openPlayerCard(pl.name, resolveTeam(pl) || pl.team); }
+  function openPlayerCard(name, team){
+    const ov = document.getElementById('cardOverlay'); ov.classList.add('on');
+    document.getElementById('cardTitle').textContent = name;
+    const body = document.getElementById('cardBody');
+    body.innerHTML = '<div style="color:var(--muted);padding:10px">Loading…</div>';
+    ensureDb(db => {
+      if(!_dbIndex) _dbIndex = buildDbIndex(db);
+      const info = dbLookup(name, team) || dbLookup(name);
+      if(!info){ body.innerHTML = '<div style="padding:10px;color:var(--muted)">No data found for '+escapeHtml(name)+' — check the spelling against the FPL name.</div>'; return; }
+      document.getElementById('cardTitle').textContent = info.name;
+      ensureSeason(season => renderPlayerCard(info, season), () => renderPlayerCard(info, null));
+    }, () => { body.innerHTML = '<div style="padding:10px;color:var(--muted)">Player data not loaded yet.</div>'; });
+  }
+  function renderPlayerCard(info, season){
+    const body = document.getElementById('cardBody');
+    const avail = info.avail !== false;
+    const pill = (label,val,extra) => `<div style="background:var(--panel-2);border:1px solid var(--border);border-radius:9px;padding:6px 3px;text-align:center"><div style="font-size:15px;font-weight:800;${extra||''}">${val==null?'—':val}</div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px">${label}</div></div>`;
+    // whole-season projection over real fixtures
+    let per=[], total=null;
+    if(season && _seasonGws){
+      const tg=_seasonGws[info.team]; const lo=season.current_gw||1, hi=season.max_gw||38; let s=0;
+      for(let gw=lo; gw<=hi; gw++){ const games=(tg&&tg[gw])||[]; const pts=playerGwPoints(info, tg, gw, false); s+=pts; per.push({gw,pts,games}); }
+      total=Math.round(s);
+    }
+    let html = `<div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:12px">
+      <span class="pill ${POS_PILL[info.pos]||'blue'}">${info.pos}</span>
+      <b style="font-size:16px">${escapeHtml(info.team)}</b>
+      <b style="font-size:16px;color:var(--gold)">£${Number(info.price||0).toFixed(1)}m</b>
+      ${avail?'':'<span class="pill red">'+escapeHtml(info.status||'out')+'</span>'}
+    </div>`;
+    const stats=[
+      ['Pts', info.points], ['Per match', fmt(info.ppg)], ['Form', fmt(info.form)], ['Own%', fmt(info.owned)],
+      ['Mins', info.mins], ['Goals', info.goals], ['Assists', info.assists], ['CS', info.clean_sheets],
+      ['xGI90', fmt(info.xgi90)], ['ICT', fmt(info.ict)], ['Bonus', info.bonus], ['xPts/GW', info.xpts!=null?fmt(info.xpts):'—'],
+    ];
+    html += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:6px;margin-bottom:14px">`
+      + stats.map(s=>pill(s[0], s[1])).join('')
+      + (total!=null ? pill('xSeason', total, 'color:var(--accent)') : '')
+      + `</div>`;
+    if(per.length){
+      const maxP=Math.max(...per.map(p=>p.pts),1);
+      const cells=per.map(p=>{
+        const h=Math.max(2, Math.round(p.pts/maxP*70));
+        const d=p.games.length?Math.round(p.games.reduce((a,g)=>a+g.diff,0)/p.games.length):0;
+        const bcol=p.games.length?(DIFF_BG[d]||'#5a6472'):'#161b22';
+        const opp=p.games.length?p.games.map(g=>escapeHtml(g.opp)+' ('+g.venue+')').join(', '):'blank';
+        const fdr=p.games.length
+          ? `<div style="font-size:8px;line-height:1.05;background:${DIFF_BG[d]};color:${DIFF_FG[d]};border-radius:3px;padding:1px 1px;margin-top:1px;width:100%">${escapeHtml(p.games.map(g=>g.opp).join('/'))}<br>${d}</div>`
+          : `<div style="font-size:9px;color:#3d4b5f;margin-top:1px">–</div>`;
+        return `<div title="GW${p.gw}: ${opp} — ${p.pts.toFixed(1)} pts" style="flex:0 0 auto;width:30px;display:flex;flex-direction:column;align-items:center">
+          <div style="height:72px;display:flex;flex-direction:column;justify-content:flex-end;width:100%"><div style="width:68%;margin:0 auto;height:${h}px;background:${bcol};border-radius:2px 2px 0 0"></div></div>
+          <div style="font-size:8px;color:var(--muted)">${p.gw}</div>${fdr}
+        </div>`;
+      }).join('');
+      html += `<h4 style="margin:6px 0 4px">📊 Expected points &amp; fixtures — whole season</h4>
+        <div class="callout blue" style="margin-top:0;font-size:12px">Each bar is that gameweek's projected points; the coloured cell below is the fixture (opponent + difficulty <b>1 green → 5 red</b>). Blank = no game. <b>Projected season total ≈ ${total} pts.</b></div>
+        <div style="overflow-x:auto;border:1px solid var(--border);border-radius:10px;padding:8px"><div style="display:flex;gap:2px;align-items:flex-start">${cells}</div></div>`;
+    } else {
+      html += '<div style="color:var(--muted);font-size:13px">Season fixtures not loaded yet — run the data update to see the per-gameweek chart.</div>';
+    }
+    body.innerHTML = html;
+  }
 
   function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
   function flash(msg){

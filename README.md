@@ -120,6 +120,15 @@ it against the latest team news before your deadline.
 
 ## More in the app
 The web tool now also includes:
+- **📊 Player detail card** — tap a player's **name on the Squad Builder pitch** (or the
+  **📊** button), or **any row in the Stats table**, to open a card showing their price,
+  full stats (points, points-per-match, form, ownership, minutes, goals, assists, clean
+  sheets, xGI/90, ICT, bonus, projected points), a **projected season total**, and a
+  **bar chart of their expected points for every gameweek of the season** with each
+  fixture's opponent and difficulty (FDR 1 green → 5 red, blanks marked) underneath.
+- **xTot column on the Stats table** — the **projected total points for the rest of the
+  season** (sum of each player's per-gameweek projection over their real fixtures),
+  sortable like every other column, alongside PPG (points per match) and xPts (next GW).
 - **🗺 Planner Board** (built for a laptop / wide screen) — a fixtures-first planning
   board with two sub-tabs:
   - **📅 Fixtures grid** — every one of the 20 teams with their upcoming run and the
