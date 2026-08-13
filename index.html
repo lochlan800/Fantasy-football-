@@ -2285,6 +2285,17 @@
     return pts;
   }
   function setPlannerChip(gw, val){ planChip(gw, val); renderPlanner(); }
+  // Per-gameweek pinned notes (your own reminders: "buy Salah", "WC here", etc.)
+  let _gwNotes = store.get('fpl_gwnotes', {});
+  function editGwNote(gw){
+    const cur = _gwNotes[gw] || '';
+    const val = prompt('📌 Note for GW'+gw+' (leave blank to remove):', cur);
+    if(val===null) return;                 // cancelled
+    const t = val.trim();
+    if(t) _gwNotes[gw] = t; else delete _gwNotes[gw];
+    store.set('fpl_gwnotes', _gwNotes);
+    renderPlanner();
+  }
   function renderPlanner(){
     const box = document.getElementById('plannerBody'); if(!box) return;
     const entered = POSITIONS.flatMap(p => squad[p.key].map((x,slot)=>({name:(x.name||'').trim(), team:x.team, price:x.price, pos:p.key, slot:p.key+'-'+slot}))).filter(x=>x.name);
@@ -2314,11 +2325,16 @@
         let rows='';
         weeks.forEach(w=>{
           const c=colour(w.total);
-          rows += `<tr>
-            <td style="font-weight:700">GW${w.gw}</td>
+          const note = _gwNotes[w.gw];
+          const noteCell = note
+            ? `<div style="display:flex;align-items:flex-start;gap:6px"><button class="btn ghost" onclick="editGwNote(${w.gw})" title="Edit note" style="padding:2px 6px;font-size:12px;flex:none">📌</button><span style="font-size:12px;white-space:pre-wrap;word-break:break-word">${escapeHtml(note)}</span></div>`
+            : `<button class="btn ghost" onclick="editGwNote(${w.gw})" style="padding:2px 8px;font-size:12px;color:var(--muted)">📌 add note</button>`;
+          rows += `<tr${note?' style="background:rgba(255,210,63,.06)"':''}>
+            <td style="font-weight:700">${note?'📌 ':''}GW${w.gw}</td>
             <td style="text-align:center"><div style="background:${c};color:#fff;border-radius:6px;padding:3px 0;font-weight:800;min-width:44px;display:inline-block">${w.total}</div></td>
             <td>${chipSel(w.gw, w.chip)}</td>
             <td style="color:var(--muted);font-size:12px">${w.chip==='tc'?'captain ×3':w.chip==='bb'?'+ bench points':w.chip==='wc'?'free transfers':w.chip==='fh'?'one-week team':''}</td>
+            <td style="min-width:150px">${noteCell}</td>
           </tr>`;
         });
         box.innerHTML = `
@@ -2329,8 +2345,8 @@
             </div>
             <div class="callout blue" style="margin-top:0">Each week shows your best XI's projected points (green = big week, red = a dip). <b>Plan transfers before the red weeks</b>, and pick a chip from the dropdown to see its effect — <b>Triple Captain</b> and <b>Bench Boost</b> are best saved for your green/double weeks.</div>
             <div style="overflow-x:auto;max-height:60vh;overflow-y:auto"><table>
-              <thead><tr><th>GW</th><th>Proj pts</th><th>Chip</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
-            <p class="save-note">Projections use each player's scoring rate × that week's real fixture difficulty (doubles counted, blanks = 0), with a minutes-confidence discount. They get less certain further out — treat the near weeks as firm and the far ones as a guide. Chip picks save automatically.</p>
+              <thead><tr><th>GW</th><th>Proj pts</th><th>Chip</th><th></th><th>📌 Notes</th></tr></thead><tbody>${rows}</tbody></table></div>
+            <p class="save-note"><b>📌 Pin a note</b> to any gameweek — a reminder like "transfer Salah in", "WC here", "TC vs bottom side" — with the <b>📌 add note</b> button in the Notes column. Notes save automatically and pinned weeks are highlighted. Projections use each player's scoring rate × that week's real fixture difficulty (doubles counted, blanks = 0), with a minutes-confidence discount — treat the near weeks as firm and the far ones as a guide. Chip picks save automatically.</p>
           </div>`;
       }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Season fixtures not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>'; });
     }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Player data not loaded yet — run the <b>Update FPL data</b> workflow on GitHub, then reload.</div>'; });

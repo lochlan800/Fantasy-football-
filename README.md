@@ -157,6 +157,11 @@ The web tool now also includes:
   the button morphs to an ✕ while open and the bar shows which tab you're on. On
   phones the menu auto-tucks after you pick a tab, and your open/closed choice is
   remembered between visits.
+- **📌 Pinned gameweek notes** (Season Planner) — pin your own note to any gameweek —
+  a reminder like "transfer Salah in", "Wildcard here", or "Triple Captain vs the
+  bottom side". Tap **📌 add note** in the Notes column, type it, and it saves
+  automatically; pinned weeks are highlighted and marked with a 📌, and blanking a
+  note removes it.
 - **📆 Season Planner** — projects your team across all 38 gameweeks: each week's
   best-XI projected points (green = big week, red = a dip), using every player's
   scoring rate × their real fixture that week (doubles counted, blanks = 0). Slot
