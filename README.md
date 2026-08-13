@@ -131,6 +131,9 @@ The web tool now also includes:
 - **xTot column on the Stats table** — the **projected total points for the rest of the
   season** (sum of each player's per-gameweek projection over their real fixtures),
   sortable like every other column, alongside PPG (points per match) and xPts (next GW).
+- **⭐ "Yours" marker** — players in your Squad Builder team are flagged with a green
+  **⭐ Yours** badge and a highlighted row on the Stats table, so you can instantly see
+  which of the listed players you already own.
 - **Rank (#) column** — a 1, 2, 3, 4 … number down the left of the Stats table showing
   each player's position in the current sort, so the leaders for whatever column you've
   sorted by are numbered at the top.

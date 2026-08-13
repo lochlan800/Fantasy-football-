@@ -1775,14 +1775,25 @@
         return dir * (av>bv?1:av<bv?-1:0);
       });
       list = list.slice(0, 150);
+      // which players are in your squad (mark them)
+      const ownedTeam = new Set(), ownedLoose = new Set();
+      POSITIONS.forEach(P => squad[P.key].forEach(x => { const nm=(x.name||'').trim(); if(!nm) return; const tk=(x.team||'').toLowerCase(); if(tk) ownedTeam.add(normName(nm)+'|'+tk); else ownedLoose.add(normName(nm)); }));
+      const isOwned = p => ownedTeam.has(normName(p.name)+'|'+(p.team||'').toLowerCase()) || ownedLoose.has(normName(p.name));
       const head = `<th style="color:var(--muted)">#</th>` + STAT_COLS.map(c=>{
         const arrow = _statsSort.key===c.key ? (_statsSort.dir<0?' ▼':' ▲') : '';
         const hl = _statsSort.key===c.key ? 'color:var(--accent)' : '';
         return `<th onclick="sortStats('${c.key}')" style="cursor:pointer;white-space:nowrap;${hl}">${c.label}${arrow}</th>`;
       }).join('');
-      const body = list.map((p,idx)=>`<tr data-name="${escapeHtml(p.name)}" data-team="${escapeHtml(p.team)}" style="cursor:pointer">`
-        + `<td style="text-align:right;color:var(--muted);font-weight:700;white-space:nowrap">${idx+1}</td>`
-        + STAT_COLS.map(c=>`<td style="white-space:nowrap${c.num?';text-align:center':''}">${c.get(p)}</td>`).join('')+'</tr>').join('');
+      const body = list.map((p,idx)=>{
+        const mine = isOwned(p);
+        const cells = STAT_COLS.map(c=>{
+          let val = c.get(p);
+          if(c.key==='name' && mine) val = '<span class="pill green" style="font-size:10px;padding:1px 6px">⭐ Yours</span> ' + val;
+          return `<td style="white-space:nowrap${c.num?';text-align:center':''}">${val}</td>`;
+        }).join('');
+        return `<tr data-name="${escapeHtml(p.name)}" data-team="${escapeHtml(p.team)}" style="cursor:pointer${mine?';background:rgba(55,214,122,.08)':''}">`
+          + `<td style="text-align:right;color:var(--muted);font-weight:700;white-space:nowrap">${idx+1}</td>` + cells + '</tr>';
+      }).join('');
       box.innerHTML = `<div style="overflow-x:auto"><table style="font-size:13px"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
   }
   document.querySelector('[data-tab="stats"]').addEventListener('click', () => renderStats());
