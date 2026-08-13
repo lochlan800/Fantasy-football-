@@ -264,6 +264,10 @@
   .fixgrid td.team{ position:sticky; left:0; background:var(--panel); font-weight:800; z-index:1; white-space:nowrap; padding-right:8px; }
   .fixgrid td.fx{ text-align:center; border-radius:6px; font-weight:700; font-size:11px; line-height:1.25; padding:4px 5px; min-width:58px; }
   .fixgrid td.blank{ background:#0d1117; color:#3d4b5f; text-align:center; border-radius:6px; }
+  .fixgrid tr[data-short]{ cursor:grab; }
+  .fixgrid tr[data-short].dragging{ opacity:.4; }
+  .fixgrid tr[data-short].drag-over td{ box-shadow: inset 0 3px 0 var(--gold); }
+  .fixgrid .drag-handle{ color:var(--muted); margin-right:5px; cursor:grab; user-select:none; }
   @media (max-width:900px){ .board-split{ grid-template-columns:1fr; } }
 </style>
 </head>
@@ -2544,6 +2548,25 @@
 
   // ---------- Planner Board (wide / laptop) ----------
   let _boardSub = 'fixtures', _boardSplit = false, _boardLeft = 'fixtures', _boardRight = 'chips';
+  let _boardOrder = store.get('fpl_board_order', null);   // custom team order (array of shorts) or null
+  // Drag-to-reorder the team rows in the fixtures grid.
+  let _dragShort = null;
+  function boardDragStart(e, short){ _dragShort = short; e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; try{ e.dataTransfer.setData('text/plain', short); }catch(_){} }
+  function boardDragOver(e){ e.preventDefault(); e.dataTransfer.dropEffect='move'; const tr=e.currentTarget; if(tr.getAttribute('data-short')!==_dragShort) tr.classList.add('drag-over'); }
+  function boardDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
+  function boardDrop(e, targetShort){
+    e.preventDefault(); const tr=e.currentTarget; tr.classList.remove('drag-over');
+    if(!_dragShort || _dragShort===targetShort){ _dragShort=null; return; }
+    const table = tr.closest('table');
+    const order = [...table.querySelectorAll('tr[data-short]')].map(r=>r.getAttribute('data-short'));
+    const from = order.indexOf(_dragShort); if(from>-1) order.splice(from,1);
+    const to = order.indexOf(targetShort);
+    order.splice(to<0?order.length:to, 0, _dragShort);   // drop in front of the target team
+    _boardOrder = order; store.set('fpl_board_order', _boardOrder);
+    _dragShort = null; renderBoard();
+  }
+  function boardDragEnd(){ document.querySelectorAll('.fixgrid tr.drag-over,.fixgrid tr.dragging').forEach(r=>r.classList.remove('drag-over','dragging')); _dragShort=null; }
+  function resetBoardOrder(){ _boardOrder = null; store.set('fpl_board_order', null); renderBoard(); }
   const boardWinVal = () => document.getElementById('boardWin').value;
   function boardWinLabel(){
     const v = boardWinVal();
@@ -2607,7 +2630,13 @@
     const rows = season.teams.map(t=>{
       let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{ s+=x.diff; n++; }));
       return { t, avg: n? s/n : 99, played:n, mine: mine.has((t.short||'').toUpperCase()) };
-    }).sort((a,b)=> (b.mine-a.mine) || (a.avg - b.avg));   // your teams first, then easiest run
+    });
+    if(_boardOrder && _boardOrder.length){                 // your custom drag order wins
+      const ix = sh => { const i=_boardOrder.indexOf(sh); return i<0 ? 999 : i; };
+      rows.sort((a,b)=> (ix(a.t.short)-ix(b.t.short)) || (b.mine-a.mine) || (a.avg-b.avg));
+    } else {
+      rows.sort((a,b)=> (b.mine-a.mine) || (a.avg - b.avg));   // your teams first, then easiest run
+    }
     const rb = g => (g===CHIP_RESET_GW ? 'border-left:2px solid var(--gold);' : '');   // reset boundary marker
     const head = `<th class="team" style="text-align:left">Team</th><th>Avg</th>`
       + gws.map(g=>{ const c=_plannerChips[g]; const badge = c ? `<br><span style="background:${CHIP_COL[c]};color:#06210f;border-radius:4px;padding:0 4px;font-size:9px;font-weight:800">${CHIP_SHORT[c]}</span>` : ''; return `<th style="${rb(g)}">GW${g}${g===CHIP_RESET_GW?' 🔁':''}${badge}</th>`; }).join('');
@@ -2617,7 +2646,8 @@
     const body = chipRow + rows.map(({t,avg,played,mine})=>{
       const avgCol = avg<2.6?'var(--accent)':avg>3.4?'var(--red)':'var(--gold)';
       const rowStyle = mine ? ' style="background:rgba(255,210,63,.07)"' : '';
-      let cells = `<td class="team"${mine?' style="color:var(--gold)"':''}>${mine?'⭐ ':''}${escapeHtml(t.short)}</td><td style="text-align:center;font-weight:800;color:${avgCol}">${played?avg.toFixed(2):'—'}</td>`;
+      const dragAttrs = ` data-short="${t.short}" draggable="true" ondragstart="boardDragStart(event,'${t.short}')" ondragover="boardDragOver(event)" ondragleave="boardDragLeave(event)" ondrop="boardDrop(event,'${t.short}')" ondragend="boardDragEnd(event)"`;
+      let cells = `<td class="team"${mine?' style="color:var(--gold)"':''}><span class="drag-handle" title="Drag to reorder">⠿</span>${mine?'⭐ ':''}${escapeHtml(t.short)}</td><td style="text-align:center;font-weight:800;color:${avgCol}">${played?avg.toFixed(2):'—'}</td>`;
       gws.forEach(g=>{
         const games = t.gws[g] || [];
         if(!games.length){ cells += `<td class="blank" style="${rb(g)}">–</td>`; return; }
@@ -2625,12 +2655,15 @@
         const inner = games.map(x=>`${escapeHtml(x.opp)} (${x.venue})`).join('<br>');
         cells += `<td class="fx" style="${rb(g)}background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'}">${inner}<br><small>${d}${games.length>1?' • DGW':''}</small></td>`;
       });
-      return `<tr${rowStyle}>${cells}</tr>`;
+      return `<tr${dragAttrs}${rowStyle}>${cells}</tr>`;
     }).join('');
-    const yourNote = mine.size ? `<b>⭐ Your teams</b> (${[...mine].join(', ')}) are pulled to the top and highlighted. ` : `Add players in the <b>Squad Builder</b> and your teams get starred here. `;
+    const orderNote = _boardOrder && _boardOrder.length
+      ? `<b>Custom order</b> — <a href="#" onclick="resetBoardOrder();return false" style="color:var(--accent)">↺ reset to easiest-run</a>. `
+      : `<b>Drag a team</b> by its ⠿ handle to slot it in front of another and build your own order. `;
+    const yourNote = mine.size ? `<b>⭐ Your teams</b> (${[...mine].join(', ')}) are highlighted. ` : `Add players in the <b>Squad Builder</b> and your teams get starred here. `;
     const resetNote = gws.includes(CHIP_RESET_GW) ? ` The <b>🔁 gold line at GW${CHIP_RESET_GW}</b> is where your chips reset for the second half.` : '';
     return `<div class="card"><h3>📅 Every team's fixtures <span class="tag">${boardWinLabel()}</span></h3>
-      <div class="callout blue" style="margin-top:0">${yourNote}All 20 teams, <b>easiest run at the top</b>. Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. Use the <b>🎴 Chip plan</b> row to mark which gameweek you'll play each chip — it saves and syncs with the Season Planner and your pitch, and only lets you use each chip once per half.${resetNote} <b>DGW</b> = double, <b>–</b> = blank.</div>
+      <div class="callout blue" style="margin-top:0">${orderNote}${yourNote}${_boardOrder&&_boardOrder.length?'':'All 20 teams, <b>easiest run at the top</b>. '}Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. Use the <b>🎴 Chip plan</b> row to mark which gameweek you'll play each chip — it saves and syncs with the Season Planner and your pitch, and only lets you use each chip once per half.${resetNote} <b>DGW</b> = double, <b>–</b> = blank.</div>
       ${chipHalfSummaryHtml()}
       <div style="overflow-x:auto"><table class="fixgrid"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
   }
