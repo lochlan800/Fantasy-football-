@@ -1633,6 +1633,48 @@
     }
     return out.slice(0,3).join(' · ');
   }
+  // Dismissed transfer suggestions (so an ignored one doesn't come back).
+  let _dismissed = store.get('fpl_dismissed_transfers', []);
+  const dismissKey = (outN, inN) => normName(outN) + '>' + normName(inN);
+  const isDismissed = (outN, inN) => _dismissed.includes(dismissKey(outN, inN));
+  let _lastRate = {};   // {sugg, raise, bankRaise} of the current render, for the buttons
+  function toggleArg(id){ const el=document.getElementById('arg-'+id); if(el) el.style.display = (el.style.display==='none'||!el.style.display) ? 'table-row' : 'none'; }
+  function dismissTransfer(kind, idx){
+    const r = _lastRate[kind] && _lastRate[kind][idx]; if(!r) return;
+    const k = dismissKey(r.out.name, r.in.name);
+    if(!_dismissed.includes(k)) _dismissed.push(k);
+    store.set('fpl_dismissed_transfers', _dismissed);
+    rateTeam();
+  }
+  function clearDismissed(){ _dismissed = []; store.set('fpl_dismissed_transfers', _dismissed); rateTeam(); }
+  // A short pros/cons/verdict argument for one suggested transfer.
+  function transferArgument(out, inp){
+    const g=[];
+    if(isNailed(inp)) g.push('nailed-on starter (plays regularly)');
+    if(goodFix(inp)) g.push('easier upcoming fixtures');
+    if(inp.pens) g.push('takes penalties'); else if(inp.setpiece) g.push('on set-pieces');
+    if(inp.ppg!=null && inp.ppg>=3.3) g.push(Number(inp.ppg).toFixed(1)+' pts per match');
+    if(inp.xgi90!=null && inp.xgi90>=0.30) g.push('high goal threat (xGI/90 '+Number(inp.xgi90).toFixed(2)+')');
+    if(inp.vseason!=null && inp.vseason>=15) g.push('great value ('+Number(inp.vseason).toFixed(1)+' pts/£m)');
+    if(inp.bonus!=null && inp.bonus>=8) g.push(inp.bonus+' bonus pts');
+    if(!g.length) g.push('higher overall rating for the position');
+    const b=[];
+    if(!isNailed(out)) b.push('not nailed on / rotation risk');
+    if(!goodFix(out)) b.push('tougher fixtures ahead');
+    if(out.mins!=null && out.mins<1200) b.push('low minutes ('+out.mins+')');
+    if(out.ppg!=null && out.ppg<3) b.push('only '+Number(out.ppg).toFixed(1)+' pts per match');
+    if(!out.pens && !out.setpiece) b.push('no penalty / set-piece duty');
+    if(!b.length) b.push('rated lower for the position');
+    return `<div style="font-size:12.5px;line-height:1.55">
+      <div><b style="color:var(--accent)">✅ Why ${escapeHtml(inp.name)} is good:</b> <span style="color:var(--muted)">${g.slice(0,4).join(' · ')}.</span></div>
+      <div style="margin-top:3px"><b style="color:var(--red)">⚠️ Why ${escapeHtml(out.name)} is weaker:</b> <span style="color:var(--muted)">${b.slice(0,4).join(' · ')}.</span></div>
+      <div style="margin-top:3px"><b>⚖️ Verdict:</b> <span style="color:var(--muted)">${escapeHtml(inp.name)} is the better pick — ${whyBetter(out, inp)}.</span></div>
+      <div style="margin-top:4px;color:var(--muted);font-style:italic">Don't agree? Tap <b>✕ Ignore</b> and this suggestion won't come back.</div>
+    </div>`;
+  }
+  // action buttons (Why? / Ignore) for a suggestion row
+  const rowActionsCell = (kind, idx) => `<td style="white-space:nowrap"><button class="btn ghost" style="padding:2px 7px;font-size:11px" onclick="toggleArg('${kind}-${idx}')">Why?</button> <button class="btn ghost" style="padding:2px 7px;font-size:11px;color:var(--red)" onclick="dismissTransfer('${kind}',${idx})" title="Hide this suggestion for good">✕ Ignore</button></td>`;
+  const argRow = (kind, idx, cols, out, inp) => `<tr id="arg-${kind}-${idx}" style="display:none"><td colspan="${cols}" style="padding:9px 12px;background:var(--panel-2)">${transferArgument(out, inp)}</td></tr>`;
   function rateTeam(){
     const out = document.getElementById('rateResult');
     out.innerHTML = '<div class="card" style="color:var(--muted)">Rating your team…</div>';
@@ -1686,6 +1728,7 @@
         const pool=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
                      && c.price <= p.price + 0.05                        // their exact price or cheaper
                      && (c.mins==null || c.mins>=600)                     // must actually play (not a fringe/academy player)
+                     && !isDismissed(p.name, c.name)                      // not an ignored suggestion
                      && !ownedKeys.has(normName(c.name)) && !suggested.has(normName(c.name)));
         // hierarchy: 1) nailed AND good fixtures  2) on pens/free-kicks/corners  then rating
         const cand=pool.sort((a,b)=>{
@@ -1710,6 +1753,7 @@
       const bestUpgradeFor = p => {
         const pool=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
              && c.price <= p.price + 0.05 && (c.mins==null||c.mins>=600)
+             && !isDismissed(p.name, c.name)
              && !ownedKeys.has(normName(c.name)));
         return pool.sort((a,b)=> b.rating - a.rating)[0];   // highest-rated affordable = biggest percentile jump
       };
@@ -1729,6 +1773,7 @@
         const affordUpgradeFor = p => {
           const pool=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
                && c.price <= p.price + bank + 0.05 && (c.mins==null||c.mins>=600)
+               && !isDismissed(p.name, c.name)
                && !ownedKeys.has(normName(c.name)));
           return pool.sort((a,b)=> b.rating - a.rating)[0];   // best player you can afford for this spot
         };
@@ -1740,6 +1785,7 @@
         const seen=new Set();
         for(const r of all){ const k=normName(r.in.name); if(seen.has(k)) continue; seen.add(k); bankRaise.push(r); if(bankRaise.length>=3) break; }
       }
+      _lastRate = {sugg, raise, bankRaise};   // for the Why? / Ignore buttons
       // captain lift: captaining your highest-percentile starter maximises the weighted score
       const topXi = [...xi].sort((a,b)=>b.pctl-a.pctl)[0];
       let capTip = null;
@@ -1764,14 +1810,15 @@
       html += `<div class="callout blue" style="margin:12px 0"><b>📈 Why it's stuck at ${score} — and how to beat it.</b><br>
         Your score is the <b>average ranking of your whole starting XI</b> (each player vs everyone else in his position, 0–100). Because it's an <b>average</b>, it's held down by your <b>weakest starters</b>, not lifted by your best — buying one more superstar barely nudges it. To climb you must <b>raise the floor</b>: upgrade the lowest-ranked players in your XI (usually the cheap enablers). A score in the ${score>=90?'90s is already elite':'80s+ is strong'}, so the last few points are the hardest — each one means every single starter is near the top of his position.</div>`;
       if(raise.length){
-        html += `<h4 style="margin:14px 0 6px">📈 Biggest score boosts <span style="font-weight:400;color:var(--muted);font-size:13px">— each is one move, same price or cheaper</span></h4><div style="overflow-x:auto"><table><thead><tr><th>Swap out (weakest)</th><th></th><th>Bring in</th><th>Your score</th></tr></thead><tbody>`;
-        raise.forEach(r=>{
+        html += `<h4 style="margin:14px 0 6px">📈 Biggest score boosts <span style="font-weight:400;color:var(--muted);font-size:13px">— each is one move, same price or cheaper</span></h4><div style="overflow-x:auto"><table><thead><tr><th>Swap out (weakest)</th><th></th><th>Bring in</th><th>Your score</th><th></th></tr></thead><tbody>`;
+        raise.forEach((r,idx)=>{
           const reasons = candReasons(r.in);
           html += `<tr><td>${escapeHtml(r.out.name)} <span class="pill red">${r.out.pctl}%</span> <span style="color:var(--muted);font-size:12px">£${Number(r.out.price).toFixed(1)}m</span></td><td>▸</td>`+
             `<td><b>${escapeHtml(r.in.name)}</b> <span class="pill green">${r.upPctl}%</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(r.in.team)} · £${Number(r.in.price).toFixed(1)}m</span>`+
             (reasons?`<br>${reasons}`:'')+
             `<div style="color:var(--muted);font-size:11px;margin-top:2px">✅ ${escapeHtml(whyBetter(r.out, r.in))}</div></td>`+
-            `<td><b style="color:var(--accent);font-size:15px">${score} → ${r.newScore}</b> <span style="color:var(--accent);font-size:12px">(+${r.gain})</span></td></tr>`;
+            `<td><b style="color:var(--accent);font-size:15px">${score} → ${r.newScore}</b> <span style="color:var(--accent);font-size:12px">(+${r.gain})</span></td>`+
+            rowActionsCell('raise', idx) + `</tr>` + argRow('raise', idx, 5, r.out, r.in);
         });
         html += `</tbody></table></div><p class="save-note">These are the single transfers that move your rating the <b>most</b> — do the top one first. Each figure is your new score if you made only that swap. The <b>✅ reason</b> shows why the incoming player rates higher; a player's rating is built from <b>points per game, form, expected goal involvement (xGI), defensive contribution and penalty/set-piece duty</b>, adjusted for fixtures and minutes played — so you can judge each call yourself.</p>`;
       } else {
@@ -1781,12 +1828,13 @@
       if(bank >= 0.3){
         html += `<h4 style="margin:14px 0 6px">💰 Best upgrade with your bank <span style="font-weight:400;color:var(--muted);font-size:13px">— you have <b style="color:var(--gold)">£${bank.toFixed(1)}m</b> spare to spend</span></h4>`;
         if(bankRaise.length){
-          html += `<div style="overflow-x:auto"><table><thead><tr><th>Swap out</th><th></th><th>Bring in (affordable)</th><th>Extra cost</th><th>Your score</th></tr></thead><tbody>`;
-          bankRaise.forEach(r=>{
+          html += `<div style="overflow-x:auto"><table><thead><tr><th>Swap out</th><th></th><th>Bring in (affordable)</th><th>Extra cost</th><th>Your score</th><th></th></tr></thead><tbody>`;
+          bankRaise.forEach((r,idx)=>{
             html += `<tr><td>${escapeHtml(r.out.name)} <span class="pill red">${r.out.pctl}%</span> <span style="color:var(--muted);font-size:12px">£${Number(r.out.price).toFixed(1)}m</span></td><td>▸</td>`+
               `<td><b>${escapeHtml(r.in.name)}</b> <span class="pill green">${r.upPctl}%</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(r.in.team)} · £${Number(r.in.price).toFixed(1)}m</span>${candReasons(r.in)?'<br>'+candReasons(r.in):''}</td>`+
               `<td style="color:var(--gold);font-weight:700;white-space:nowrap">+£${r.cost.toFixed(1)}m</td>`+
-              `<td><b style="color:var(--accent);font-size:15px">${score} → ${r.newScore}</b> <span style="color:var(--accent);font-size:12px">(+${r.gain})</span></td></tr>`;
+              `<td><b style="color:var(--accent);font-size:15px">${score} → ${r.newScore}</b> <span style="color:var(--accent);font-size:12px">(+${r.gain})</span></td>`+
+              rowActionsCell('bankRaise', idx) + `</tr>` + argRow('bankRaise', idx, 6, r.out, r.in);
           });
           html += `</tbody></table></div><p class="save-note">These put your <b>£${bank.toFixed(1)}m</b> in the bank to work on a <b>better, pricier player</b> than a same-price swap could get — the most you can afford for a spot is its price + your bank. Extra cost is what comes out of the bank. Do the top one first.</p>`;
         } else {
@@ -1797,17 +1845,21 @@
         html += `<div class="callout" style="margin:8px 0"><b>🅒 Captain tip:</b> ${capTip.type==='none'?'Set your captain to':'Move the captaincy to'} <b>${escapeHtml(capTip.player.name)}</b> (your highest-rated starter) — that alone lifts your rating to <b style="color:var(--accent)">${capTip.newScore}</b>. Your captain counts extra in the score, and doubles their points on the pitch.</div>`;
       }
       if(sugg.length){
-        html += `<h4 style="margin:14px 0 6px">🔁 Who to bring in <span style="font-weight:400;color:var(--muted);font-size:13px">— better players at the same price or cheaper</span></h4><div style="overflow-x:auto"><table><thead><tr><th>Weak spot</th><th></th><th>Upgrade to</th><th>Price</th></tr></thead><tbody>`;
-        sugg.forEach(s=>{
+        html += `<h4 style="margin:14px 0 6px">🔁 Who to bring in <span style="font-weight:400;color:var(--muted);font-size:13px">— better players at the same price or cheaper</span></h4><div style="overflow-x:auto"><table><thead><tr><th>Weak spot</th><th></th><th>Upgrade to</th><th>Price</th><th></th></tr></thead><tbody>`;
+        sugg.forEach((s,idx)=>{
           const diff = Number(s.in.price) - Number(s.out.price);
           const diffTxt = Math.abs(diff) < 0.05 ? 'same price' : (diff>0?'+£'+diff.toFixed(1)+'m':'−£'+Math.abs(diff).toFixed(1)+'m');
           html += `<tr><td>${escapeHtml(s.out.name)} <span class="pill red">${s.out.pctl}%</span> <span style="color:var(--muted);font-size:12px">£${Number(s.out.price).toFixed(1)}m</span></td><td>▸</td>`+
             `<td><b>${escapeHtml(s.in.name)}</b> <span class="pill green">${pct(s.in.rating,byPos[s.in.pos])}%</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(s.in.team)}</span><br>${candReasons(s.in)||'<span style="color:var(--muted);font-size:11px">higher rated</span>'}</td>`+
-            `<td>£${Number(s.in.price).toFixed(1)}m <span style="color:var(--muted);font-size:11px">(${diffTxt})</span></td></tr>`;
+            `<td>£${Number(s.in.price).toFixed(1)}m <span style="color:var(--muted);font-size:11px">(${diffTxt})</span></td>`+
+            rowActionsCell('sugg', idx) + `</tr>` + argRow('sugg', idx, 5, s.out, s.in);
         });
-        html += `</tbody></table></div><p class="save-note">Higher quality at the <b>same price or cheaper</b> (never costs extra). Picked in priority order: <b>1)</b> nailed-on with good fixtures, <b>2)</b> on penalties / free-kicks / corners, then overall rating. Always sense-check the latest team news first.</p>`;
+        html += `</tbody></table></div><p class="save-note"><b>Why?</b> shows a full pros/cons argument for the swap; <b>✕ Ignore</b> hides a suggestion for good. Higher quality at the <b>same price or cheaper</b> (never costs extra). Picked in priority order: <b>1)</b> nailed-on with good fixtures, <b>2)</b> on penalties / free-kicks / corners, then overall rating. Always sense-check the latest team news first.</p>`;
       } else {
         html += `<p style="color:var(--accent)">💪 No better players available at the same price or cheaper — strong squad!</p>`;
+      }
+      if(_dismissed.length){
+        html += `<p class="save-note" style="margin-top:4px">🚫 You've ignored <b>${_dismissed.length}</b> suggestion${_dismissed.length>1?'s':''}. <a href="#" onclick="clearDismissed();return false" style="color:var(--accent)">Show them again</a></p>`;
       }
       html += `</div>`;
       out.innerHTML = html;
@@ -2011,6 +2063,8 @@
      a:"Two usual reasons: (1) a <b>filter is on</b> — check the Teams tick-boxes, price cap and minutes filter, or hit <b>Clear</b>; (2) FPL lists them in a <b>surprising position</b>. For example Ampadu plays centre-back but is a <b>midfielder</b> in FPL, so he only shows on a midfielder slot. The Stats search isn't position-locked, so use it to check which position a player is."},
     {q:"What's the difference between xPts and xTot?",
      a:"<b>xPts</b> = projected points for the <b>next gameweek</b>. <b>xTot</b> = projected <b>total</b> points for the rest of the season (every gameweek added up). Use xPts for this week's captain/transfer, xTot for who's the best long-term hold."},
+    {q:"What do the Why? and ✕ Ignore buttons do on the transfer suggestions?",
+     a:"In <b>Rate my team</b>, every suggested transfer has two buttons. <b>Why?</b> expands a short argument — <b>why the incoming player is good</b>, <b>why your player is weaker</b>, and a <b>verdict</b> on why it's the better move. <b>✕ Ignore</b> hides that suggestion so it <b>won't come back</b>. If you change your mind, a \"Show them again\" link at the bottom brings your ignored suggestions back."},
     {q:"What are the ⋯ dots on my players for?",
      a:"On the Squad Builder pitch, the <b>⋯</b> in a player's top corner opens a menu to show an extra stat <b>under every player</b>: their <b>fixture difficulty for the next 3 gameweeks</b> (colour-coded opponents) or their <b>ownership %</b>. Pick one and it applies to all your players; choose <b>Off</b> to hide it again. Your choice is saved."},
   ];

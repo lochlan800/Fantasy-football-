@@ -300,6 +300,11 @@ The web tool now also includes:
   team out of 100 with a grade, flags injured/unavailable players, and suggests
   who to bring in for your weakest spots. Powered by `players-data.json` (every
   player with a tactic-based rating), matched to the names you type.
+- **Why? / ✕ Ignore on transfer suggestions** (Rate My Team) — every suggested transfer
+  (Who to bring in, Biggest score boosts, Best upgrade with your bank) has a **Why?**
+  button that expands a short argument — why the incoming player is good, why yours is
+  weaker, and a verdict on why it's better — and a **✕ Ignore** button that hides that
+  suggestion for good (with a "Show them again" link to restore ignored ones).
 - **💰 Best upgrade with your bank** (Rate My Team) — if you have money spare, it reads
   how much is in your bank and suggests the best **pricier** upgrades you can actually
   afford (the most you can spend on a spot is its price + your bank), each with the
