@@ -195,6 +195,10 @@ The web tool now also includes:
   - **⬌ Split view** — on a wide screen, splits the page in half so you can show two
     panels side by side (e.g. the fixtures grid next to the chip advice). A notice
     appears on phones, where split is turned off but the grid still scrolls sideways.
+- **⋯ Per-shirt info menu** — the three-dots button in each pitch player's corner opens
+  a menu to show an extra stat **under every player**: their **fixture difficulty for the
+  next 3 gameweeks** (colour-coded opponents) or their **ownership %**. Pick one to apply
+  it to all your players, or Off to hide it; the choice is saved.
 - **☰ Burger menu** — the tab list (Squad Builder, Stats, Guide, Rotations, etc.)
   lives behind a three-line burger button that's **always** pinned to the top. Tap
   it to tuck the menu away for a cleaner screen and tap it again to bring it back;

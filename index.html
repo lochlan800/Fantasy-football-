@@ -237,7 +237,16 @@
   .shirt.empty{ border-style:dashed; cursor:pointer; color:var(--muted); background:rgba(0,0,0,.18); }
   .shirt.empty:hover{ border-color:var(--accent); color:var(--text); }
   .shirt .plus{ font-size:22px; font-weight:800; line-height:1; }
-  .shirt .top-badge{ position:absolute; top:-7px; left:-6px; }
+  .shirt .top-badge{ position:absolute; top:-7px; left:16px; }
+  .shirt .dots{ position:absolute; top:-7px; left:-6px; background:var(--panel-2); border:1px solid var(--border); color:var(--text);
+    border-radius:50%; width:19px; height:19px; font-size:13px; cursor:pointer; line-height:1; padding:0; font-weight:800; }
+  .shirt .dots:hover{ border-color:var(--accent); color:var(--accent); }
+  .shirt-menu{ position:fixed; z-index:70; background:var(--panel); border:1px solid var(--border); border-radius:10px; box-shadow:var(--shadow); padding:5px; display:none; min-width:158px; }
+  .shirt-menu.on{ display:block; }
+  .shirt-menu .hd{ font-size:11px; color:var(--muted); padding:3px 9px 5px; }
+  .shirt-menu button{ display:block; width:100%; text-align:left; background:none; border:none; color:var(--text); padding:8px 10px; border-radius:7px; cursor:pointer; font-size:13px; }
+  .shirt-menu button:hover{ background:var(--panel-2); }
+  .shirt-menu button.active{ color:var(--accent); font-weight:700; }
   .shirt .rm{ position:absolute; top:-7px; right:-6px; background:var(--red); color:#fff; border:none;
     border-radius:50%; width:19px; height:19px; font-size:12px; cursor:pointer; line-height:1; padding:0; }
   .shirt .capbtn{ font-size:10px; padding:1px 5px; border-radius:5px; border:1px solid var(--border);
@@ -936,6 +945,14 @@
   </footer>
 </div>
 
+<!-- per-shirt "⋯" menu: choose extra info shown under every player -->
+<div class="shirt-menu" id="shirtMenu">
+  <div class="hd">Show under players</div>
+  <button data-extra="fdr3" onclick="setShirtExtra('fdr3')">📅 FDR — next 3 GWs</button>
+  <button data-extra="own" onclick="setShirtExtra('own')">👥 Ownership %</button>
+  <button data-extra="" onclick="setShirtExtra('')">✕ Off</button>
+</div>
+
 <!-- player detail card (top-level so it shows over any tab) -->
 <div class="pick-overlay" id="cardOverlay" onclick="if(event.target===this)closePlayerCard()">
   <div class="pick-panel" style="max-width:640px">
@@ -1084,6 +1101,26 @@
     _xtotReady = false;               // recompute stats projections with the new flag
     renderSquad();
   }
+  // Per-shirt "⋯" menu: choose one extra stat to show under every player.
+  let _shirtExtra = store.get('fpl_shirt_extra', '');
+  function openShirtMenu(ev){
+    ev.stopPropagation();
+    const menu = document.getElementById('shirtMenu');
+    menu.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.extra === _shirtExtra));
+    const r = ev.currentTarget.getBoundingClientRect();
+    menu.style.left = Math.max(6, Math.min(r.left, window.innerWidth - 172)) + 'px';
+    menu.classList.add('on');                       // show first so we can measure it
+    const mh = menu.offsetHeight || 140;
+    let top = r.bottom + 4;
+    if(top + mh > window.innerHeight - 6) top = Math.max(6, r.top - mh - 4);   // flip up near the bottom
+    menu.style.top = top + 'px';
+  }
+  function setShirtExtra(mode){
+    _shirtExtra = mode; store.set('fpl_shirt_extra', mode);
+    document.getElementById('shirtMenu').classList.remove('on');
+    renderSquad();
+  }
+  document.addEventListener('click', e => { const m=document.getElementById('shirtMenu'); if(m && m.classList.contains('on') && !m.contains(e.target)) m.classList.remove('on'); });
   // Tap-to-substitute: tap a starter then a bench player (or two bench players to
   // reorder). Any position swap is allowed as long as the formation stays legal
   // (1 GK, 3-5 DEF, 2-5 MID, 1-3 FWD) — so you can bench a forward for a midfielder.
@@ -1207,12 +1244,33 @@
       : '';
     const wcBtn = `<button class="capbtn ${wcOn?'wc':''}" onclick="toggleWorldCup('${pos}',${i})" title="Played deep at the World Cup — late return, weaker for the first 3 gameweeks (fine from GW4). Downgrades points AND rating.">🌍</button>`;
     const shownTeam = (_dbIndex ? resolveTeam(pl) : pl.team) || pl.team || '';
+    // extra info under the shirt, chosen from the ⋯ menu
+    let extra = '';
+    if(_shirtExtra === 'fdr3'){
+      const tg = teamGwsFor(resolveTeam(pl));
+      const startGw = (_teamGw != null) ? _teamGw : ((_season && _season.current_gw) || 1);
+      const maxGw = (_season && _season.max_gw) || 38;
+      if(tg){
+        let cells = '';
+        for(let g=startGw; g<startGw+3 && g<=maxGw; g++){
+          const games = tg[g] || [];
+          if(!games.length){ cells += `<span style="background:#0d1117;color:#3d4b5f;border-radius:3px;padding:0 3px;font-size:9px">–</span>`; continue; }
+          const d = Math.round(games.reduce((a,x)=>a+x.diff,0)/games.length);
+          cells += `<span title="GW${g}: ${games.map(x=>escapeHtml(x.opp)+' ('+x.venue+')').join(', ')}" style="background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'};border-radius:3px;padding:0 3px;font-size:9px;font-weight:700">${escapeHtml(games.map(x=>x.opp).join('/'))}</span>`;
+        }
+        if(cells) extra = `<div class="meta" style="display:flex;gap:2px;justify-content:center;flex-wrap:wrap;margin-top:1px" title="Fixture difficulty, next 3 gameweeks">${cells}</div>`;
+      }
+    } else if(_shirtExtra === 'own'){
+      const info = dbLookup(pl.name, pl.team);
+      if(info && info.owned != null) extra = `<div class="meta" style="color:var(--accent-2)" title="Owned by">👥 ${Number(info.owned).toFixed(1)}%</div>`;
+    }
     const sel = _swapSel === id;
     return `<div class="shirt" onclick="shirtTap('${pos}',${i},event)" style="cursor:pointer${sel?';outline:2px solid var(--gold);outline-offset:1px':''}">
+      <button class="dots" title="More info under the player" onclick="openShirtMenu(event)">⋯</button>
       <button class="rm" title="Remove" onclick="removeSlot('${pos}',${i})">✕</button>${badge}
       <div class="nm" onclick="event.stopPropagation();openPlayerCardSlot('${pos}',${i})" style="cursor:pointer" title="View stats, fixtures &amp; projected points">${escapeHtml(pl.name)}</div>
       <div class="meta">${escapeHtml(shownTeam)} · ${pos}${wcTag}</div>
-      <div class="pr">£${(parseFloat(pl.price)||0).toFixed(1)}m</div>${proj}
+      <div class="pr">£${(parseFloat(pl.price)||0).toFixed(1)}m</div>${proj}${extra}
       <div style="display:flex;gap:3px;justify-content:center;flex-wrap:wrap">
         <button class="capbtn ${isCap?'on':isVc?'von':''}" onclick="toggleCap('${pos}',${i})">${isCap?'C':isVc?'V':'C?'}</button>
         ${starterBtn}${wcBtn}<button class="capbtn" onclick="openPlayerCardSlot('${pos}',${i})" title="View stats, fixtures &amp; projected points">📊</button>
@@ -1953,6 +2011,8 @@
      a:"Two usual reasons: (1) a <b>filter is on</b> — check the Teams tick-boxes, price cap and minutes filter, or hit <b>Clear</b>; (2) FPL lists them in a <b>surprising position</b>. For example Ampadu plays centre-back but is a <b>midfielder</b> in FPL, so he only shows on a midfielder slot. The Stats search isn't position-locked, so use it to check which position a player is."},
     {q:"What's the difference between xPts and xTot?",
      a:"<b>xPts</b> = projected points for the <b>next gameweek</b>. <b>xTot</b> = projected <b>total</b> points for the rest of the season (every gameweek added up). Use xPts for this week's captain/transfer, xTot for who's the best long-term hold."},
+    {q:"What are the ⋯ dots on my players for?",
+     a:"On the Squad Builder pitch, the <b>⋯</b> in a player's top corner opens a menu to show an extra stat <b>under every player</b>: their <b>fixture difficulty for the next 3 gameweeks</b> (colour-coded opponents) or their <b>ownership %</b>. Pick one and it applies to all your players; choose <b>Off</b> to hide it again. Your choice is saved."},
   ];
   function renderFaq(){
     const box=document.getElementById('faqBody'); if(!box) return;
