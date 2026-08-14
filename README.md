@@ -138,6 +138,12 @@ The web tool now also includes:
   otherwise unavailable is flagged on the Stats table with a red badge (🚑 injured,
   🟥 suspended, ❓ doubt, ⛔ out) and a red-tinted row, so you can avoid picking someone
   who won't play — and spot when one of your own players is a doubt.
+- **⭐ Rating (0–100) column & explainer** — the Stats table now has a **Rating** column:
+  a 0–100 score for how good a player is *for his position* (100 = the best defender /
+  midfielder / etc.), blending points, form, xG/xA, defensive actions and set-pieces,
+  adjusted for fixtures and minutes — sort by it to find the best in each position. The
+  player detail card explains it in plain English too, e.g. "99/100 — better than 99%
+  of defenders", so the number actually means something.
 - **Rank (#) column** — a 1, 2, 3, 4 … number down the left of the Stats table showing
   each player's position in the current sort, so the leaders for whatever column you've
   sorted by are numbered at the top.

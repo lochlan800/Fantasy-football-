@@ -469,7 +469,7 @@
     <div class="callout blue" style="margin-top:0;font-size:13px">⚠️ <b>"Per 90" stats (xGI90) mislead for players with few minutes</b> — one moment in a short cameo looks elite. The minutes filter (default 500+) hides those flukes so the list reflects players who actually play. Lower it only if you want to see everyone.</div>
     <input class="textline" id="statsSearch" placeholder="🔎 Search a player or club…" oninput="renderStats()" autocomplete="off" style="margin-bottom:12px">
     <div id="statsTable"></div>
-    <p class="save-note"><b>Tap any player row</b> to see their price, full stats, every fixture's difficulty and a bar chart of their projected points across the whole season. Pts = total points · PPG = points per match · CS = clean sheets · xGI90 = expected goals+assists per 90 · ICT = Influence/Creativity/Threat index · Bns = bonus · BPS = bonus points system · Val = value (points per £m) · xPts = projected points next GW · <b>xTot = projected total points for the rest of the season</b>. <b>Penalty (🎯) and set-piece (⚽) takers get a projection boost</b> for their extra route to points, so they rank higher. Showing the top 150 for the filter.</p>
+    <p class="save-note"><b>Tap any player row</b> to see their price, full stats, every fixture's difficulty and a bar chart of their projected points across the whole season. Pts = total points · PPG = points per match · CS = clean sheets · xGI90 = expected goals+assists per 90 · ICT = Influence/Creativity/Threat index · Bns = bonus · BPS = bonus points system · Val = value (points per £m) · xPts = projected points next GW · <b>xTot = projected total points for the rest of the season</b>. <b>Rating = our 0–100 score for how good a player is for his position</b> (100 = the best defender / midfielder / etc.), blending points, form, xG/xA, defensive actions and set-pieces, adjusted for fixtures and minutes — sort by it to find the best in each position. <b>Penalty (🎯) and set-piece (⚽) takers get a projection boost</b> for their extra route to points, so they rank higher. Showing the top 150 for the filter.</p>
   </section>
 
   <!-- ============ STATS GUIDE ============ -->
@@ -1763,7 +1763,17 @@
     {key:'vseason',label:'Val',  num:true, get:p=>fmt(p.vseason)},
     {key:'xnext', label:'xPts',  num:true, get:p=> p.xnext!=null?fmt(p.xnext):(p.xpts!=null?fmt(p.xpts):'—')},
     {key:'xtot',  label:'xTot',  num:true, get:p=>p.xtot!=null?p.xtot:'—'},
+    {key:'ratePct', label:'Rating', num:true, get:p=> p.ratePct!=null?p.ratePct:'—'},
   ];
+  // 0-100 rating score = how a player ranks vs others in his own position (100 = best).
+  let _ratePctReady = false;
+  function computeRatePct(db){
+    if(_ratePctReady) return;
+    const byPos={GK:[],DEF:[],MID:[],FWD:[]};
+    db.players.forEach(p=>{ if(byPos[p.pos]) byPos[p.pos].push(p); });
+    db.players.forEach(p=>{ p.ratePct = byPos[p.pos] ? pct(p.rating, byPos[p.pos]) : null; });
+    _ratePctReady = true;
+  }
   function fmt(v){ return (v==null||v==='')?'—':(typeof v==='number'?(Number.isInteger(v)?v:v.toFixed(1)):v); }
   function setStatsPos(pos){
     _statsPos = pos;
@@ -1827,6 +1837,7 @@
     const box = document.getElementById('statsTable');
     ensureDb(db => {
       populateStatsFilters(db);
+      computeRatePct(db);
       ensureSeason(season => { computeXtot(db, season); renderStatsRows(db, box); }, () => renderStatsRows(db, box));
     }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Stats not loaded yet — run the <b>Update FPL data</b> workflow on GitHub (Actions tab), then reload.</div>'; });
   }
@@ -1894,6 +1905,7 @@
     body.innerHTML = '<div style="color:var(--muted);padding:10px">Loading…</div>';
     ensureDb(db => {
       if(!_dbIndex) _dbIndex = buildDbIndex(db);
+      computeRatePct(db);
       const info = dbLookup(name, team) || dbLookup(name);
       if(!info){ body.innerHTML = '<div style="padding:10px;color:var(--muted)">No data found for '+escapeHtml(name)+' — check the spelling against the FPL name.</div>'; return; }
       document.getElementById('cardTitle').textContent = info.name;
@@ -1911,12 +1923,17 @@
       for(let gw=lo; gw<=hi; gw++){ const games=(tg&&tg[gw])||[]; const pts=playerGwPoints(info, tg, gw, false) * wcMultiplier(info, gw); s+=pts; per.push({gw,pts,games}); }
       total=Math.round(s);
     }
-    let html = `<div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:12px">
+    const posName = {GK:'goalkeeper', DEF:'defender', MID:'midfielder', FWD:'forward'}[info.pos] || 'player';
+    let html = `<div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-bottom:10px">
       <span class="pill ${POS_PILL[info.pos]||'blue'}">${info.pos}</span>
       <b style="font-size:16px">${escapeHtml(info.team)}</b>
       <b style="font-size:16px;color:var(--gold)">£${Number(info.price||0).toFixed(1)}m</b>
       ${avail?'':'<span class="pill red">'+escapeHtml(info.status||'out')+'</span>'}
     </div>`;
+    if(info.ratePct!=null){
+      const rc = info.ratePct>=80?'var(--accent)':info.ratePct>=55?'var(--gold)':'var(--red)';
+      html += `<div class="callout" style="margin:0 0 12px;border:1px solid ${rc}"><span style="font-size:26px;font-weight:800;color:${rc}">${info.ratePct}<span style="font-size:14px;color:var(--muted)">/100</span></span> <b>Rating</b> — better than <b>${info.ratePct}% of ${posName}s</b>. Our all-round score (points, form, xG/xA, defensive actions, set-pieces, fixtures &amp; minutes); 100 = the best ${posName} in the game.</div>`;
+    }
     const xNextGw = per.length ? per[0].pts.toFixed(1) : (info.xpts!=null?fmt(info.xpts):'—');   // next GW, matches the pitch
     const stats=[
       ['Pts', info.points], ['Per match', fmt(info.ppg)], ['Form', fmt(info.form)], ['Own%', fmt(info.owned)],
