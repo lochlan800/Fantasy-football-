@@ -1665,11 +1665,11 @@
     if(out.ppg!=null && out.ppg<3) b.push('only '+Number(out.ppg).toFixed(1)+' pts per match');
     if(!out.pens && !out.setpiece) b.push('no penalty / set-piece duty');
     if(!b.length) b.push('rated lower for the position');
-    return `<div style="font-size:12.5px;line-height:1.55">
-      <div><b style="color:var(--accent)">✅ Why ${escapeHtml(inp.name)} is good:</b> <span style="color:var(--muted)">${g.slice(0,4).join(' · ')}.</span></div>
-      <div style="margin-top:3px"><b style="color:var(--red)">⚠️ Why ${escapeHtml(out.name)} is weaker:</b> <span style="color:var(--muted)">${b.slice(0,4).join(' · ')}.</span></div>
-      <div style="margin-top:3px"><b>⚖️ Verdict:</b> <span style="color:var(--muted)">${escapeHtml(inp.name)} is the better pick — ${whyBetter(out, inp)}.</span></div>
-      <div style="margin-top:4px;color:var(--muted);font-style:italic">Don't agree? Tap <b>✕ Ignore</b> and this suggestion won't come back.</div>
+    return `<div style="font-size:14.5px;line-height:1.65">
+      <div style="margin-bottom:5px"><b style="color:var(--accent)">✅ Why ${escapeHtml(inp.name)} is good:</b> <span style="color:var(--muted)">${g.slice(0,4).join(' · ')}.</span></div>
+      <div style="margin-bottom:5px"><b style="color:var(--red)">⚠️ Why ${escapeHtml(out.name)} is weaker:</b> <span style="color:var(--muted)">${b.slice(0,4).join(' · ')}.</span></div>
+      <div style="margin-bottom:5px"><b>⚖️ Verdict:</b> <span style="color:var(--muted)">${escapeHtml(inp.name)} is the better pick — ${whyBetter(out, inp)}.</span></div>
+      <div style="margin-top:6px;color:var(--muted);font-style:italic;font-size:13px">Don't agree? Tap <b>✕ Ignore</b> and this suggestion won't come back.</div>
     </div>`;
   }
   // action buttons (Why? / Ignore) for a suggestion row
