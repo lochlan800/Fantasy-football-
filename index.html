@@ -257,6 +257,14 @@
   .stats-team-panel{ position:absolute; z-index:30; top:100%; left:0; margin-top:5px; background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:11px; box-shadow:var(--shadow); width:min(360px,88vw); max-height:320px; overflow-y:auto; }
   .stats-team-panel label{ display:inline-flex; align-items:center; gap:5px; font-size:13px; color:var(--text); font-weight:600; margin:3px 10px 3px 0; cursor:pointer; }
   .stats-team-panel input{ width:15px; height:15px; accent-color:var(--accent); }
+  .faq-item{ background:var(--panel); border:1px solid var(--border); border-radius:10px; margin-bottom:8px; overflow:hidden; }
+  .faq-item summary{ cursor:pointer; padding:12px 14px; font-weight:700; font-size:14.5px; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .faq-item summary::-webkit-details-marker{ display:none; }
+  .faq-item summary::after{ content:'＋'; color:var(--accent); font-weight:800; }
+  .faq-item[open] summary::after{ content:'－'; }
+  .faq-item summary:hover{ color:var(--accent); }
+  .faq-answer{ padding:0 14px 13px; color:var(--muted); font-size:13.5px; line-height:1.6; }
+  .faq-answer b{ color:var(--text); }
   /* ---- Planner Board (wide / laptop) ---- */
   .board-toolbar{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-bottom:14px; }
   .board-split{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
@@ -295,6 +303,7 @@
     <button data-tab="insights">📊 Player Insights</button>
     <button data-tab="stats">📋 Stats</button>
     <button data-tab="guide">📖 Guide</button>
+    <button data-tab="questions">❓ Questions</button>
     <button data-tab="watchlist">👀 Watchlist</button>
     <button data-tab="squad">🧮 Squad Builder</button>
     <button data-tab="planner">📆 Season Planner</button>
@@ -530,7 +539,24 @@
         <tbody>
           <tr><td><b>Val</b></td><td><b>Value</b> = points per £m. <span style="color:var(--muted)"><b>Use it</b> to find cheap "enablers" — players who score well for their price, freeing up cash for your premiums.</span></td></tr>
           <tr><td><b>Own%</b></td><td>How many managers own him. <span style="color:var(--muted)"><b>High</b> = a "template" player; owning him protects your rank. <b>Low (&lt;10%)</b> = a differential to climb with. Both have their place.</span></td></tr>
-          <tr><td><b>xPts</b></td><td><b>Projected points next gameweek</b> — our forecast from form, fixtures, availability and xG. <span style="color:var(--muted)"><b>Use it</b> to compare transfer targets and pick your captain (sort by xPts, look at the top).</span></td></tr>
+          <tr><td><b>xPts</b></td><td><b>Projected points next gameweek</b> — our forecast for the coming week from scoring rate, that week's real fixture, availability and set-pieces. <span style="color:var(--muted)"><b>Use it</b> to compare transfer targets and pick your captain (sort by xPts, look at the top). It matches the number on your Squad Builder pitch for the same gameweek.</span></td></tr>
+          <tr><td><b>xTot</b></td><td><b>Projected total points for the rest of the season</b> — every gameweek's projection added up over their real fixtures. <span style="color:var(--muted)"><b>Use it</b> to judge who's the best long-term hold, not just a one-week punt.</span></td></tr>
+          <tr><td><b>Rating</b></td><td><b>Our 0–100 score for how good a player is <em>for his position</em></b> (100 = the best defender / midfielder / etc.). <span style="color:var(--muted)">Blends points, form, xG/xA, defensive actions and set-pieces, adjusted for fixtures and minutes. <b>Use it</b> to find the best in each position — sort by it. It's the same score behind the ⭐% in Rate My Team (a "88%" means better than 88% of that position).</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>🧭 The tools — what each part of the app does</h3>
+      <table>
+        <tbody>
+          <tr><td><b>🧮 Squad Builder</b></td><td>Your team on a pitch. Tap <b>＋</b> to add a player (with <b>⚙ Filter</b> for club &amp; price), tap a name or <b>📊</b> to see their full card, drag-swap to substitute, and use the <b>◀ ▶</b> gameweek stepper to plan each week. <b>▶</b> = "assume he starts", <b style="color:var(--red)">🌍</b> = World Cup returnee.</td></tr>
+          <tr><td><b>⭐ Rate my team</b></td><td>Scores your XI out of 100 and tells you <b>how to raise it</b> — the single moves that lift your score most (same price, or spending your <b>bank</b>), plus advice tailored to the <b>chips</b> you've planned.</td></tr>
+          <tr><td><b>📊 Player card</b></td><td>Tap any player (pitch or Stats row) for their price, every stat, their 0–100 rating explained, and a <b>bar chart of projected points for all 38 gameweeks</b> with each fixture's difficulty.</td></tr>
+          <tr><td><b>🗺 Planner Board</b></td><td>A wide, laptop-friendly board: every team's fixtures colour-coded (drag to reorder, your teams starred), a <b>🎴 chip-plan row</b>, and a <b>chip advisor</b> that reads your squad. Split-view shows two panels at once.</td></tr>
+          <tr><td><b>📆 Season Planner</b></td><td>Your projected points across all 38 gameweeks, with chip dropdowns and <b>📌 pinned notes</b> per gameweek (they also show on the Planner Board grid).</td></tr>
+          <tr><td><b>🔄 Rotations</b></td><td>Best pairs of cheap teams to own one player from each and rotate — ranked to favour genuine week-to-week alternation, not clustered fixtures.</td></tr>
+          <tr><td><b>🎴 Chips</b></td><td>You get <b>each chip twice</b> — one per half (they reset at GW20). Set a chip's gameweek anywhere (Chip Planner, Season Planner, Planner Board or pitch) and it <b>syncs everywhere</b>.</td></tr>
         </tbody>
       </table>
     </div>
@@ -540,12 +566,21 @@
       <ul class="clean">
         <li><b>Find a captain:</b> sort by <b>xPts</b> — the top few are your best armband options this week.</li>
         <li><b>Find a bargain:</b> filter a position, sort by <b>Val</b> — the best points-per-£m for cheap enablers.</li>
-        <li><b>Find the best defenders:</b> filter <b>DEF</b>, sort by <b>CS</b> (clean sheets) or <b>Pts</b>.</li>
+        <li><b>Find the best defenders:</b> filter <b>DEF</b>, sort by <b>Rating</b> (best all-round for the position) or <b>CS</b> (clean sheets).</li>
+        <li><b>Best value in a price bracket:</b> set the <b>price cap</b> ("£5.5m &amp; below"), sort by <b>Rating</b> — the strongest players you can afford.</li>
         <li><b>Spot a player about to explode:</b> sort by <b>xGI90</b>, then look for ones with <em>low</em> goals — they're creating chances but haven't cashed in yet.</li>
         <li><b>Find bonus-point magnets:</b> sort by <b>Bns</b> — consistent bonus is free points most managers ignore.</li>
         <li><b>Beat the crowd:</b> sort by form or xPts, then check <b>Own%</b> — a strong player with low ownership is how you climb your mini-league.</li>
       </ul>
     </div>
+  </section>
+
+  <!-- ============ QUESTIONS (FAQ) ============ -->
+  <section class="tab" id="questions">
+    <h2><span class="em">❓</span>Questions &amp; Answers</h2>
+    <p class="lede">Answers to questions about how the app works and what its numbers mean. New ones get added here as they come up.</p>
+    <input class="textline" id="faqSearch" placeholder="🔎 Search the questions…" oninput="renderFaq()" autocomplete="off" style="margin-bottom:12px">
+    <div id="faqBody"></div>
   </section>
 
   <!-- ============ WATCHLIST ============ -->
@@ -1895,6 +1930,39 @@
   document.querySelector('[data-tab="stats"]').addEventListener('click', () => renderStats());
   document.getElementById('statsTable').addEventListener('click', e => { const tr = e.target.closest('tr[data-name]'); if(tr) openPlayerCard(tr.dataset.name, tr.dataset.team); });
 
+  // ---------- Questions (FAQ) ----------
+  // Relevant questions about how the app works. New ones get appended here.
+  const FAQ = [
+    {q:"Is the expected points (xPts) for the first gameweek or the whole season?",
+     a:"It's <b>per gameweek</b>, not a season total. xPts is the projected points for the <b>next gameweek</b> — built from a player's scoring rate, that week's real fixture, availability and set-pieces. For the whole-season figure, use the <b>xTot</b> column. Before the season starts the base is last season's scoring rate, so treat it as a preseason guide until real games are played."},
+    {q:"The Squad Builder shows a different projected points to the Stats page — why?",
+     a:"They now <b>match</b>. Earlier the pitch used that specific gameweek's fixture while the Stats page averaged the next five gameweeks, so the same player could read (say) 4.2 vs 3.7. Both now use the same per-gameweek model over the same fixture, so a player shows the same xPts on the pitch, the Stats table and their card for a given week."},
+    {q:"What is the Rating (the 'defender score')?",
+     a:"A <b>0–100 score for how good a player is for his position</b> — 100 = the best defender / midfielder / etc., 50 = middle of the pack. It blends points, form, expected goals &amp; assists (xGI), defensive actions and set-pieces, adjusted for fixtures and minutes. See it in the <b>Rating</b> column on the Stats table and on each player's card (\"88/100 — better than 88% of defenders\")."},
+    {q:"Why does a cheap player like Wieffer rate so highly?",
+     a:"Because of <b>defensive-contribution points</b> (the rule rewarding tackles, interceptions and recoveries). Players like Wieffer play as holding midfielders but are <b>listed as defenders</b> in FPL, so they rack up defensive points at a cheap defender's price — great value. Always sense-check they're still starting, since ratings use last season's data before GW1."},
+    {q:"What is the 🌍 World Cup flag and when does it reset?",
+     a:"Tap the red <b>🌍</b> on a player's shirt to mark someone who went deep at the summer World Cup — they come back late and tired. It <b>downgrades their points and rating</b> for the opening weeks (about −45% in GW1, −28% in GW2, −13% in GW3) and they're <b>back to normal from GW4</b>. It saves per player and updates the pitch, Stats and rating live."},
+    {q:"Why do penalty and set-piece takers rank higher?",
+     a:"They get a <b>projection boost</b> (penalties ×1.12, set-pieces ×1.06) because they have an extra, reliable route to points. It flows through the pitch, the Stats xPts/xTot and the card, so nailed takers rise up the rankings."},
+    {q:"How do the chips work — how many do I get?",
+     a:"You get <b>each chip twice a season — one in the first half (GW1–19) and a fresh one after they reset at GW20</b>. The app enforces one per half, and setting a chip's gameweek anywhere (Chip Planner, Season Planner, Planner Board or the pitch) <b>syncs to all of them</b>."},
+    {q:"Will my team save if I log in on another device?",
+     a:"Not yet — everything saves <b>only in the browser on the device you're using</b>, so your phone and computer keep separate copies. There's no login/cloud sync at the moment (the site is free static hosting with no server). A simple export/import \"backup code\" could be added if you'd like to move data between devices."},
+    {q:"I can't find a player — where are they?",
+     a:"Two usual reasons: (1) a <b>filter is on</b> — check the Teams tick-boxes, price cap and minutes filter, or hit <b>Clear</b>; (2) FPL lists them in a <b>surprising position</b>. For example Ampadu plays centre-back but is a <b>midfielder</b> in FPL, so he only shows on a midfielder slot. The Stats search isn't position-locked, so use it to check which position a player is."},
+    {q:"What's the difference between xPts and xTot?",
+     a:"<b>xPts</b> = projected points for the <b>next gameweek</b>. <b>xTot</b> = projected <b>total</b> points for the rest of the season (every gameweek added up). Use xPts for this week's captain/transfer, xTot for who's the best long-term hold."},
+  ];
+  function renderFaq(){
+    const box=document.getElementById('faqBody'); if(!box) return;
+    const q=(document.getElementById('faqSearch').value||'').trim().toLowerCase();
+    const list = q ? FAQ.filter(f=> (f.q+' '+f.a).toLowerCase().includes(q)) : FAQ;
+    if(!list.length){ box.innerHTML='<div class="card" style="color:var(--muted)">No questions match that search.</div>'; return; }
+    box.innerHTML = list.map(f=>`<details class="faq-item"><summary>${escapeHtml(f.q)}</summary><div class="faq-answer">${f.a}</div></details>`).join('');
+  }
+  document.querySelector('[data-tab="questions"]').addEventListener('click', ()=>renderFaq());
+
   // ---------- Player detail card (opens from the pitch and the stats table) ----------
   function closePlayerCard(){ document.getElementById('cardOverlay').classList.remove('on'); }
   function openPlayerCardSlot(pos, i){ const pl = squad[pos] && squad[pos][i]; if(pl && pl.name) openPlayerCard(pl.name, resolveTeam(pl) || pl.team); }
@@ -3093,7 +3161,7 @@
   window.addEventListener('resize', () => { const b=document.getElementById('board'); if(b && b.classList.contains('active')) renderBoard(); });
 
   // ---------- Init ----------
-  renderSquad(); renderChips(); loadCaptain(); renderChecklist();
+  renderSquad(); renderChips(); loadCaptain(); renderChecklist(); renderFaq();
   ensureDb(() => renderSquad(), () => {});   // load projections onto the shirts once available
   ensureSeason(s => { _teamGw = s.current_gw || 1; renderSquad(); }, () => {});   // enable the GW stepper
   renderTransferPlan(); loadRival(); renderWatchlist();

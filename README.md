@@ -120,6 +120,12 @@ it against the latest team news before your deadline.
 
 ## More in the app
 The web tool now also includes:
+- **❓ Questions tab** — a searchable Q&A that answers common questions about how the
+  app works and what its numbers mean (xPts vs xTot, the 0–100 Rating, the World Cup
+  flag, chip halves, why a player isn't showing, cross-device saving, and more). New
+  questions get added here as they come up.
+- **📖 Guide** also documents the newer columns (**xTot**, **Rating**) and a
+  "🧭 The tools" overview of what each part of the app does.
 - **📊 Player detail card** — tap a player's **name on the Squad Builder pitch** (or the
   **📊** button), or **any row in the Stats table**, to open a card showing their price,
   full stats (points, points-per-match, form, ownership, minutes, goals, assists, clean
