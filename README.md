@@ -283,6 +283,11 @@ The web tool now also includes:
   points), filter by position, minutes, **teams (tick any number of clubs — none ticked
   shows all) and a price cap ("£X.Xm & below")** with the controls at the top, and
   search by name.
+- **📈 Ownership in the ratings** — heavily-owned "template" players are safer picks that
+  protect your rank, so ownership now nudges the rating: about **+12% at 39%+ owned
+  (must-have)**, **+7% at 27%+**, **+3% at 15%+**, and neutral below (differentials
+  aren't penalised). It flows through the Rating column, Rate My Team and the transfer
+  suggestions, where template picks show a **📈 template** / **📈 popular** tag.
 - **🎯 Set-piece & penalty boost** — penalty takers and corner/free-kick takers get a
   lift in their projected points (penalties ×1.12, set-pieces ×1.06), reflecting their
   extra, reliable route to returns. It flows through every projection — the pitch, the

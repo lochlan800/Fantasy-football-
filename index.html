@@ -550,7 +550,7 @@
           <tr><td><b>Own%</b></td><td>How many managers own him. <span style="color:var(--muted)"><b>High</b> = a "template" player; owning him protects your rank. <b>Low (&lt;10%)</b> = a differential to climb with. Both have their place.</span></td></tr>
           <tr><td><b>xPts</b></td><td><b>Projected points next gameweek</b> — our forecast for the coming week from scoring rate, that week's real fixture, availability and set-pieces. <span style="color:var(--muted)"><b>Use it</b> to compare transfer targets and pick your captain (sort by xPts, look at the top). It matches the number on your Squad Builder pitch for the same gameweek.</span></td></tr>
           <tr><td><b>xTot</b></td><td><b>Projected total points for the rest of the season</b> — every gameweek's projection added up over their real fixtures. <span style="color:var(--muted)"><b>Use it</b> to judge who's the best long-term hold, not just a one-week punt.</span></td></tr>
-          <tr><td><b>Rating</b></td><td><b>Our 0–100 score for how good a player is <em>for his position</em></b> (100 = the best defender / midfielder / etc.). <span style="color:var(--muted)">Blends points, form, xG/xA, defensive actions and set-pieces, adjusted for fixtures and minutes. <b>Use it</b> to find the best in each position — sort by it. It's the same score behind the ⭐% in Rate My Team (a "88%" means better than 88% of that position).</span></td></tr>
+          <tr><td><b>Rating</b></td><td><b>Our 0–100 score for how good a player is <em>for his position</em></b> (100 = the best defender / midfielder / etc.). <span style="color:var(--muted)">Blends points, form, xG/xA, defensive actions, set-pieces <b>and ownership</b> (heavily-owned "template" players get a nudge as safer picks that protect your rank), adjusted for fixtures and minutes. <b>Use it</b> to find the best in each position — sort by it. It's the same score behind the ⭐% in Rate My Team.</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -1563,6 +1563,8 @@
     if(goodFix(c)) r.push('<span class="pill blue" style="font-size:10px">🟢 fixtures</span>');
     if(c.pens) r.push('<span class="pill gold" style="font-size:10px">🎯 pens</span>');
     else if(c.setpiece) r.push('<span class="pill purple" style="font-size:10px">⚽ set-piece</span>');
+    if((Number(c.owned)||0) >= 39) r.push('<span class="pill gold" style="font-size:10px">📈 template</span>');
+    else if((Number(c.owned)||0) >= 27) r.push('<span class="pill blue" style="font-size:10px">📈 popular</span>');
     return r.join(' ');
   }
   // Tailor the transfer advice to the chips you've planned (and their order).
@@ -1607,6 +1609,8 @@
     if(isNailed(newP) && !isNailed(oldP)) tactical.push('more nailed-on to start');
     if(goodFix(newP) && !goodFix(oldP)) tactical.push('kinder fixtures');
     if(onSetPiece(newP) && !onSetPiece(oldP)) tactical.push(newP.pens ? 'takes penalties' : 'on set-pieces');
+    const nown=num(newP.owned), oown=num(oldP.owned);
+    if(nown!=null && nown>=39 && (oown==null || nown-oown>=10)) tactical.push(`a ${nown.toFixed(0)}%-owned template pick (protects your rank)`);
     // concrete underlying-rating stats — the justification for a higher rating
     const stats = [];
     const nppg=num(newP.ppg), oppg=num(oldP.ppg);
@@ -1657,6 +1661,8 @@
     if(inp.xgi90!=null && inp.xgi90>=0.30) g.push('high goal threat (xGI/90 '+Number(inp.xgi90).toFixed(2)+')');
     if(inp.vseason!=null && inp.vseason>=15) g.push('great value ('+Number(inp.vseason).toFixed(1)+' pts/£m)');
     if(inp.bonus!=null && inp.bonus>=8) g.push(inp.bonus+' bonus pts');
+    if((Number(inp.owned)||0)>=39) g.push(Number(inp.owned).toFixed(0)+'%-owned template (a must-have that protects your rank)');
+    else if((Number(inp.owned)||0)>=27) g.push('widely owned ('+Number(inp.owned).toFixed(0)+'%)');
     if(!g.length) g.push('higher overall rating for the position');
     const b=[];
     if(!isNailed(out)) b.push('not nailed on / rotation risk');
@@ -1873,11 +1879,27 @@
 
   // ---------- Player database access ----------
   const POS_PILL2 = {GK:'blue', DEF:'green', MID:'gold', FWD:'purple'};
+  // Ownership factors the rating: high-owned "template" players are safer picks that
+  // protect your rank, so they're nudged up toward must-have; differentials stay neutral.
+  const ownershipFactor = own => {
+    const o = Number(own) || 0;
+    if(o >= 39) return 1.12;   // must-have template
+    if(o >= 27) return 1.07;   // strongly owned
+    if(o >= 15) return 1.03;   // popular — the bulk of most teams
+    return 1.00;               // differential — no penalty, just no template bonus
+  };
+  const ownTier = own => { const o=Number(own)||0; return o>=39?'must-have':o>=27?'popular':o>=15?'common':''; };
+  let _ownBoostDone = false;
+  function applyOwnershipBoost(db){
+    if(_ownBoostDone) return;
+    db.players.forEach(p => { p.rawRating = p.rating; p.rating = +((p.rating||0) * ownershipFactor(p.owned)).toFixed(3); });
+    _ownBoostDone = true;
+  }
   function ensureDb(cb, onFail){
     if(_playersDb){ cb(_playersDb); return; }
     fetch('players-data.json', {cache:'no-store'})
       .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
-      .then(db => { _playersDb = db; _dbIndex = buildDbIndex(db); cb(db); })
+      .then(db => { _playersDb = db; applyOwnershipBoost(db); _dbIndex = buildDbIndex(db); cb(db); })
       .catch(() => onFail && onFail());
   }
   function dbLookup(name, team){
@@ -2053,6 +2075,8 @@
      a:"Because of <b>defensive-contribution points</b> (the rule rewarding tackles, interceptions and recoveries). Players like Wieffer play as holding midfielders but are <b>listed as defenders</b> in FPL, so they rack up defensive points at a cheap defender's price — great value. Always sense-check they're still starting, since ratings use last season's data before GW1."},
     {q:"What is the 🌍 World Cup flag and when does it reset?",
      a:"Tap the red <b>🌍</b> on a player's shirt to mark someone who went deep at the summer World Cup — they come back late and tired. It <b>downgrades their points and rating</b> for the opening weeks (about −45% in GW1, −28% in GW2, −13% in GW3) and they're <b>back to normal from GW4</b>. It saves per player and updates the pitch, Stats and rating live."},
+    {q:"Is ownership taken into account?",
+     a:"Yes — <b>ownership now factors into the rating</b>. Heavily-owned \"template\" players are safer picks (owning them protects your rank and avoids scary weeks), so they get a nudge: about <b>+12% at 39%+ owned (must-have)</b>, <b>+7% at 27%+</b>, <b>+3% at 15%+</b>, and no change below that (differentials aren't penalised — they're just not boosted). This flows through the Rating column, Rate My Team and the transfer suggestions, where a template pick shows a <b>📈 template</b> tag."},
     {q:"Why do penalty and set-piece takers rank higher?",
      a:"They get a <b>projection boost</b> (penalties ×1.12, set-pieces ×1.06) because they have an extra, reliable route to points. It flows through the pitch, the Stats xPts/xTot and the card, so nailed takers rise up the rankings."},
     {q:"How do the chips work — how many do I get?",
