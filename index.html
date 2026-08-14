@@ -237,10 +237,10 @@
   .shirt.empty{ border-style:dashed; cursor:pointer; color:var(--muted); background:rgba(0,0,0,.18); }
   .shirt.empty:hover{ border-color:var(--accent); color:var(--text); }
   .shirt .plus{ font-size:22px; font-weight:800; line-height:1; }
-  .shirt .top-badge{ position:absolute; top:-7px; left:16px; }
-  .shirt .dots{ position:absolute; top:-7px; left:-6px; background:var(--panel-2); border:1px solid var(--border); color:var(--text);
-    border-radius:50%; width:19px; height:19px; font-size:13px; cursor:pointer; line-height:1; padding:0; font-weight:800; }
-  .shirt .dots:hover{ border-color:var(--accent); color:var(--accent); }
+  .shirt .top-badge{ position:absolute; top:-7px; left:-6px; }
+  .pitch-dots{ position:absolute; top:8px; right:8px; z-index:5; background:rgba(13,17,23,.7); border:1px solid var(--border);
+    color:var(--text); border-radius:8px; padding:5px 9px; font-size:12px; font-weight:700; cursor:pointer; }
+  .pitch-dots:hover{ border-color:var(--accent); color:var(--accent); }
   .shirt-menu{ position:fixed; z-index:70; background:var(--panel); border:1px solid var(--border); border-radius:10px; box-shadow:var(--shadow); padding:5px; display:none; min-width:158px; }
   .shirt-menu.on{ display:block; }
   .shirt-menu .hd{ font-size:11px; color:var(--muted); padding:3px 9px 5px; }
@@ -1266,7 +1266,6 @@
     }
     const sel = _swapSel === id;
     return `<div class="shirt" onclick="shirtTap('${pos}',${i},event)" style="cursor:pointer${sel?';outline:2px solid var(--gold);outline-offset:1px':''}">
-      <button class="dots" title="More info under the player" onclick="openShirtMenu(event)">⋯</button>
       <button class="rm" title="Remove" onclick="removeSlot('${pos}',${i})">✕</button>${badge}
       <div class="nm" onclick="event.stopPropagation();openPlayerCardSlot('${pos}',${i})" style="cursor:pointer" title="View stats, fixtures &amp; projected points">${escapeHtml(pl.name)}</div>
       <div class="meta">${escapeHtml(shownTeam)} · ${pos}${wcTag}</div>
@@ -1310,7 +1309,8 @@
     const benchSet = new Set(benchArr);
     const starterRows = {GK:[], DEF:[], MID:[], FWD:[]};
     POSITIONS.forEach(p => squad[p.key].forEach((pl,i) => { const id=p.key+'-'+i; if(!benchSet.has(id)) starterRows[p.key].push([p.key,i]); }));
-    let html = nav + '<div class="pitch">';
+    const extraLabel = _shirtExtra==='fdr3' ? '📅 FDR ▾' : _shirtExtra==='own' ? '👥 Own ▾' : '⋯ Info ▾';
+    let html = nav + `<div class="pitch"><button class="pitch-dots" title="Show extra info under players" onclick="openShirtMenu(event)">${extraLabel}</button>`;
     ['GK','DEF','MID','FWD'].forEach(pos => {
       if(starterRows[pos].length) html += '<div class="pitch-row">' + starterRows[pos].map(([p,i])=>shirtHtml(p,i)).join('') + '</div>';
     });
@@ -2065,8 +2065,8 @@
      a:"<b>xPts</b> = projected points for the <b>next gameweek</b>. <b>xTot</b> = projected <b>total</b> points for the rest of the season (every gameweek added up). Use xPts for this week's captain/transfer, xTot for who's the best long-term hold."},
     {q:"What do the Why? and ✕ Ignore buttons do on the transfer suggestions?",
      a:"In <b>Rate my team</b>, every suggested transfer has two buttons. <b>Why?</b> expands a short argument — <b>why the incoming player is good</b>, <b>why your player is weaker</b>, and a <b>verdict</b> on why it's the better move. <b>✕ Ignore</b> hides that suggestion so it <b>won't come back</b>. If you change your mind, a \"Show them again\" link at the bottom brings your ignored suggestions back."},
-    {q:"What are the ⋯ dots on my players for?",
-     a:"On the Squad Builder pitch, the <b>⋯</b> in a player's top corner opens a menu to show an extra stat <b>under every player</b>: their <b>fixture difficulty for the next 3 gameweeks</b> (colour-coded opponents) or their <b>ownership %</b>. Pick one and it applies to all your players; choose <b>Off</b> to hide it again. Your choice is saved."},
+    {q:"What is the ⋯ Info button on the pitch for?",
+     a:"On the Squad Builder pitch, the button in the <b>top-right corner</b> opens a menu to show an extra stat <b>under every player</b>: their <b>fixture difficulty for the next 3 gameweeks</b> (colour-coded opponents) or their <b>ownership %</b>. Pick one and it applies to all your players; choose <b>Off</b> to hide it again. Your choice is saved."},
   ];
   function renderFaq(){
     const box=document.getElementById('faqBody'); if(!box) return;
