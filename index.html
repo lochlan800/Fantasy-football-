@@ -1669,7 +1669,10 @@
     if(!goodFix(out)) b.push('tougher fixtures ahead');
     if(out.mins!=null && out.mins<1200) b.push('low minutes ('+out.mins+')');
     if(out.ppg!=null && out.ppg<3) b.push('only '+Number(out.ppg).toFixed(1)+' pts per match');
-    if(!out.pens && !out.setpiece) b.push('no penalty / set-piece duty');
+    // penalties/set-pieces only matter for attackers; clean sheets matter for defenders/keepers
+    if((out.pos==='MID'||out.pos==='FWD') && !out.pens && !out.setpiece) b.push('not on penalties or set-pieces');
+    if((out.pos==='DEF'||out.pos==='GK') && out.clean_sheets!=null && out.clean_sheets<8) b.push('few clean sheets ('+out.clean_sheets+')');
+    if((Number(out.owned)||0) < 15 && (Number(inp.owned)||0) >= 27) b.push('low-owned differential vs a template pick');
     if(!b.length) b.push('rated lower for the position');
     return `<div style="font-size:14.5px;line-height:1.65">
       <div style="margin-bottom:5px"><b style="color:var(--accent)">✅ Why ${escapeHtml(inp.name)} is good:</b> <span style="color:var(--muted)">${g.slice(0,4).join(' · ')}.</span></div>
