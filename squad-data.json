@@ -332,9 +332,9 @@
           "setpiece": true
         },
         {
-          "id": 163,
-          "name": "D.Essugo",
-          "team": "CHE",
+          "id": 221,
+          "name": "Drakes-Thomas",
+          "team": "CRY",
           "pos": "MID",
           "price": 4.5,
           "starting": false,
@@ -519,8 +519,8 @@
           "setpiece": false
         },
         {
-          "id": 212,
-          "name": "Hughes",
+          "id": 221,
+          "name": "Drakes-Thomas",
           "team": "CRY",
           "pos": "MID",
           "price": 4.5,
@@ -528,7 +528,7 @@
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
           "id": 106,
