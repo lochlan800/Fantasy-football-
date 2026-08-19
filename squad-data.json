@@ -73,8 +73,8 @@
           "setpiece": false
         },
         {
-          "id": 174,
-          "name": "Kitching",
+          "id": 175,
+          "name": "van Ewijk",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -85,9 +85,9 @@
           "setpiece": false
         },
         {
-          "id": 175,
-          "name": "van Ewijk",
-          "team": "COV",
+          "id": 235,
+          "name": "Aznou",
+          "team": "EVE",
           "pos": "DEF",
           "price": 4.0,
           "starting": false,
@@ -260,8 +260,8 @@
           "setpiece": false
         },
         {
-          "id": 174,
-          "name": "Kitching",
+          "id": 175,
+          "name": "van Ewijk",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -272,9 +272,9 @@
           "setpiece": false
         },
         {
-          "id": 175,
-          "name": "van Ewijk",
-          "team": "COV",
+          "id": 235,
+          "name": "Aznou",
+          "team": "EVE",
           "pos": "DEF",
           "price": 4.0,
           "starting": false,
@@ -332,9 +332,9 @@
           "setpiece": true
         },
         {
-          "id": 221,
-          "name": "Drakes-Thomas",
-          "team": "CRY",
+          "id": 163,
+          "name": "D.Essugo",
+          "team": "CHE",
           "pos": "MID",
           "price": 4.5,
           "starting": false,
@@ -519,8 +519,8 @@
           "setpiece": false
         },
         {
-          "id": 221,
-          "name": "Drakes-Thomas",
+          "id": 212,
+          "name": "Hughes",
           "team": "CRY",
           "pos": "MID",
           "price": 4.5,
@@ -528,7 +528,7 @@
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": false
+          "setpiece": true
         },
         {
           "id": 106,
@@ -634,8 +634,8 @@
       "setpiece": false
     },
     {
-      "id": 174,
-      "name": "Kitching",
+      "id": 175,
+      "name": "van Ewijk",
       "team": "COV",
       "pos": "DEF",
       "price": 4.0,
@@ -646,9 +646,9 @@
       "setpiece": false
     },
     {
-      "id": 175,
-      "name": "van Ewijk",
-      "team": "COV",
+      "id": 235,
+      "name": "Aznou",
+      "team": "EVE",
       "pos": "DEF",
       "price": 4.0,
       "starting": false,
