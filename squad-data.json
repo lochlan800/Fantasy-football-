@@ -37,8 +37,8 @@
           "setpiece": false
         },
         {
-          "id": 8,
-          "name": "Calafiori",
+          "id": 10,
+          "name": "White",
           "team": "ARS",
           "pos": "DEF",
           "price": 5.5,
@@ -61,8 +61,8 @@
           "setpiece": false
         },
         {
-          "id": 176,
-          "name": "Dasilva",
+          "id": 182,
+          "name": "Amenda",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -73,8 +73,8 @@
           "setpiece": false
         },
         {
-          "id": 175,
-          "name": "van Ewijk",
+          "id": 176,
+          "name": "Dasilva",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -195,9 +195,9 @@
       ]
     },
     "attacking": {
-      "budget_spent": 88.5,
-      "captain_id": 15,
-      "vice_id": 12,
+      "budget_spent": 87.0,
+      "captain_id": 12,
+      "vice_id": 15,
       "players": [
         {
           "id": 58,
@@ -224,8 +224,8 @@
           "setpiece": false
         },
         {
-          "id": 8,
-          "name": "Calafiori",
+          "id": 10,
+          "name": "White",
           "team": "ARS",
           "pos": "DEF",
           "price": 5.5,
@@ -248,8 +248,8 @@
           "setpiece": false
         },
         {
-          "id": 175,
-          "name": "van Ewijk",
+          "id": 182,
+          "name": "Amenda",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -260,12 +260,12 @@
           "setpiece": false
         },
         {
-          "id": 174,
-          "name": "Kitching",
+          "id": 176,
+          "name": "Dasilva",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
-          "starting": false,
+          "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
@@ -284,27 +284,27 @@
           "setpiece": false
         },
         {
-          "id": 15,
-          "name": "\u00d8degaard",
-          "team": "ARS",
-          "pos": "MID",
-          "price": 6.5,
-          "starting": true,
-          "captain": true,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
-        },
-        {
           "id": 12,
           "name": "Saka",
           "team": "ARS",
           "pos": "MID",
           "price": 9.5,
           "starting": true,
+          "captain": true,
+          "vice": false,
+          "pens": true,
+          "setpiece": true
+        },
+        {
+          "id": 15,
+          "name": "\u00d8degaard",
+          "team": "ARS",
+          "pos": "MID",
+          "price": 6.5,
+          "starting": true,
           "captain": false,
           "vice": true,
-          "pens": true,
+          "pens": false,
           "setpiece": true
         },
         {
@@ -356,15 +356,15 @@
           "setpiece": false
         },
         {
-          "id": 346,
-          "name": "Calvert-Lewin",
-          "team": "LEE",
+          "id": 169,
+          "name": "Mheuka",
+          "team": "CHE",
           "pos": "FWD",
-          "price": 6.0,
-          "starting": true,
+          "price": 4.5,
+          "starting": false,
           "captain": false,
           "vice": false,
-          "pens": true,
+          "pens": false,
           "setpiece": false
         },
         {
@@ -411,8 +411,8 @@
           "setpiece": false
         },
         {
-          "id": 8,
-          "name": "Calafiori",
+          "id": 10,
+          "name": "White",
           "team": "ARS",
           "pos": "DEF",
           "price": 5.5,
@@ -435,8 +435,8 @@
           "setpiece": false
         },
         {
-          "id": 176,
-          "name": "Dasilva",
+          "id": 182,
+          "name": "Amenda",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -447,8 +447,8 @@
           "setpiece": false
         },
         {
-          "id": 175,
-          "name": "van Ewijk",
+          "id": 176,
+          "name": "Dasilva",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -598,8 +598,8 @@
       "setpiece": false
     },
     {
-      "id": 8,
-      "name": "Calafiori",
+      "id": 10,
+      "name": "White",
       "team": "ARS",
       "pos": "DEF",
       "price": 5.5,
@@ -622,8 +622,8 @@
       "setpiece": false
     },
     {
-      "id": 176,
-      "name": "Dasilva",
+      "id": 182,
+      "name": "Amenda",
       "team": "COV",
       "pos": "DEF",
       "price": 4.0,
@@ -634,8 +634,8 @@
       "setpiece": false
     },
     {
-      "id": 175,
-      "name": "van Ewijk",
+      "id": 176,
+      "name": "Dasilva",
       "team": "COV",
       "pos": "DEF",
       "price": 4.0,
