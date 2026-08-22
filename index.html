@@ -1736,7 +1736,7 @@
       const sugg = weak.map(p=>{
         const pool=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
                      && c.price <= p.price + 0.05                        // their exact price or cheaper
-                     && (c.mins==null || c.mins>=600)                     // must actually play (not a fringe/academy player)
+                     && (c.mins==null || c.mins>=_minsGate)                     // must actually play (not a fringe/academy player)
                      && !isDismissed(p.name, c.name)                      // not an ignored suggestion
                      && !ownedKeys.has(normName(c.name)) && !suggested.has(normName(c.name)));
         // hierarchy: 1) nailed AND good fixtures  2) on pens/free-kicks/corners  then rating
@@ -1761,7 +1761,7 @@
       };
       const bestUpgradeFor = p => {
         const pool=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
-             && c.price <= p.price + 0.05 && (c.mins==null||c.mins>=600)
+             && c.price <= p.price + 0.05 && (c.mins==null||c.mins>=_minsGate)
              && !isDismissed(p.name, c.name)
              && !ownedKeys.has(normName(c.name)));
         return pool.sort((a,b)=> b.rating - a.rating)[0];   // highest-rated affordable = biggest percentile jump
@@ -1781,7 +1781,7 @@
       if(bank >= 0.3){
         const affordUpgradeFor = p => {
           const pool=(byPos[p.pos]||[]).filter(c=>c.avail && c.rating>p.rating
-               && c.price <= p.price + bank + 0.05 && (c.mins==null||c.mins>=600)
+               && c.price <= p.price + bank + 0.05 && (c.mins==null||c.mins>=_minsGate)
                && !isDismissed(p.name, c.name)
                && !ownedKeys.has(normName(c.name)));
           return pool.sort((a,b)=> b.rating - a.rating)[0];   // best player you can afford for this spot
@@ -1898,11 +1898,19 @@
     db.players.forEach(p => { p.rawRating = p.rating; p.rating = +((p.rating||0) * ownershipFactor(p.owned)).toFixed(3); });
     _ownBoostDone = true;
   }
+  // Minutes gate for "does he actually play?" checks — scaled to the season stage so
+  // that early on (when nobody has many minutes yet) it doesn't exclude everyone.
+  let _minsGate = 600, _seasonEarly = false;
+  function computeMinsGate(db){
+    const maxMins = db.players.reduce((m,p)=> Math.max(m, p.mins||0), 0);
+    _minsGate = maxMins >= 1500 ? 600 : maxMins >= 600 ? 300 : maxMins >= 200 ? 90 : 0;
+    _seasonEarly = maxMins < 900;
+  }
   function ensureDb(cb, onFail){
     if(_playersDb){ cb(_playersDb); return; }
     fetch('players-data.json', {cache:'no-store'})
       .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
-      .then(db => { _playersDb = db; applyOwnershipBoost(db); _dbIndex = buildDbIndex(db); cb(db); })
+      .then(db => { _playersDb = db; applyOwnershipBoost(db); computeMinsGate(db); _dbIndex = buildDbIndex(db); cb(db); })
       .catch(() => onFail && onFail());
   }
   function dbLookup(name, team){
@@ -1913,7 +1921,17 @@
   }
 
   // ---------- Sortable Stats table ----------
-  let _statsSort = {key:'points', dir:-1}, _statsPos = 'ALL', _statsMins = 500;
+  let _statsSort = {key:'points', dir:-1}, _statsPos = 'ALL', _statsMins = 500, _statsMinsAutoSet = false;
+  // Early in the season nobody has many minutes yet, so a 500+ default would hide
+  // everyone. Pick a sensible minutes default from the data (once), and light up
+  // the matching button.
+  function autoStatsMins(db){
+    if(_statsMinsAutoSet) return;
+    const maxMins = db.players.reduce((m,p)=> Math.max(m, p.mins||0), 0);
+    _statsMins = maxMins >= 900 ? 500 : maxMins >= 450 ? 250 : 0;
+    document.querySelectorAll('.sm-btn').forEach(b=>{ const on=Number(b.dataset.sm)===_statsMins; b.classList.toggle('active',on); b.classList.toggle('ghost',!on); });
+    _statsMinsAutoSet = true;
+  }
   const STAT_COLS = [
     {key:'name',  label:'Player', num:false, get:p=>nameCell(p)},
     {key:'price', label:'£m',    num:true, get:p=>'£'+Number(p.price||0).toFixed(1)},
@@ -2007,6 +2025,7 @@
     const box = document.getElementById('statsTable');
     ensureDb(db => {
       populateStatsFilters(db);
+      autoStatsMins(db);
       computeRatePct(db);
       ensureSeason(season => { computeXtot(db, season); renderStatsRows(db, box); }, () => renderStatsRows(db, box));
     }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Stats not loaded yet — run the <b>Update FPL data</b> workflow on GitHub (Actions tab), then reload.</div>'; });
@@ -2060,7 +2079,8 @@
         return `<tr data-name="${escapeHtml(p.name)}" data-team="${escapeHtml(p.team)}" style="cursor:pointer${bg}">`
           + `<td style="text-align:right;color:var(--muted);font-weight:700;white-space:nowrap">${idx+1}</td>` + cells + '</tr>';
       }).join('');
-      box.innerHTML = `<div style="overflow-x:auto"><table style="font-size:13px"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+      const earlyNote = _seasonEarly ? `<div class="callout gold" style="margin:0 0 10px;font-size:13px">🌱 <b>Early season</b> — only a game or two has been played, so minutes are low and these numbers are <b>small-sample</b> (one big game can look elite). The minutes filter has been set low so players actually show; treat the ratings as a rough guide until a few more gameweeks are in.</div>` : '';
+      box.innerHTML = earlyNote + `<div style="overflow-x:auto"><table style="font-size:13px"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
   }
   document.querySelector('[data-tab="stats"]').addEventListener('click', () => renderStats());
   document.getElementById('statsTable').addEventListener('click', e => { const tr = e.target.closest('tr[data-name]'); if(tr) openPlayerCard(tr.dataset.name, tr.dataset.team); });
@@ -2078,6 +2098,8 @@
      a:"Because of <b>defensive-contribution points</b> (the rule rewarding tackles, interceptions and recoveries). Players like Wieffer play as holding midfielders but are <b>listed as defenders</b> in FPL, so they rack up defensive points at a cheap defender's price — great value. Always sense-check they're still starting, since ratings use last season's data before GW1."},
     {q:"What is the 🌍 World Cup flag and when does it reset?",
      a:"Tap the red <b>🌍</b> on a player's shirt to mark someone who went deep at the summer World Cup — they come back late and tired. It <b>downgrades their points and rating</b> for the opening weeks (about −45% in GW1, −28% in GW2, −13% in GW3) and they're <b>back to normal from GW4</b>. It saves per player and updates the pitch, Stats and rating live."},
+    {q:"Why did the players disappear / stats look empty at the start of the season?",
+     a:"When a new season starts the data resets and everyone's minutes go back near zero. The Stats table used to default to a \"500+ minutes\" filter, which then hid <b>everyone</b>. It now <b>auto-adjusts the minutes filter to the season stage</b> (low early on) so players always show, and the transfer suggestions use a season-aware minutes gate too. An <b>Early season</b> note reminds you the numbers are small-sample until a few gameweeks are played."},
     {q:"Is ownership taken into account?",
      a:"Yes — <b>ownership now factors into the rating</b>. Heavily-owned \"template\" players are safer picks (owning them protects your rank and avoids scary weeks), so they get a nudge: about <b>+12% at 39%+ owned (must-have)</b>, <b>+7% at 27%+</b>, <b>+3% at 15%+</b>, and no change below that (differentials aren't penalised — they're just not boosted). This flows through the Rating column, Rate My Team and the transfer suggestions, where a template pick shows a <b>📈 template</b> tag."},
     {q:"Why do penalty and set-piece takers rank higher?",
