@@ -2590,7 +2590,7 @@
 
   // ---------- Player Insights (reads insights-data.json) ----------
   let _insights = null;
-  let _insightView = 'under';
+  let _insightView = 'penalties';   // always populated; "due a haul" etc. fill in once games are played
   const POS_PILL = {GK:'blue', DEF:'green', MID:'gold', FWD:'purple'};
   function tbl(rows, cols){
     if(!rows || !rows.length) return '<p style="color:var(--muted)">No players to show yet (needs match data — comes alive once the season is underway).</p>';
