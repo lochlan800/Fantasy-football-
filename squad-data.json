@@ -61,11 +61,11 @@
           "setpiece": false
         },
         {
-          "id": 332,
-          "name": "Justin",
+          "id": 327,
+          "name": "Bijol",
           "team": "LEE",
           "pos": "DEF",
-          "price": 4.5,
+          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -73,11 +73,11 @@
           "setpiece": false
         },
         {
-          "id": 327,
-          "name": "Bijol",
+          "id": 332,
+          "name": "Justin",
           "team": "LEE",
           "pos": "DEF",
-          "price": 5.0,
+          "price": 4.5,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -435,11 +435,11 @@
           "setpiece": false
         },
         {
-          "id": 332,
-          "name": "Justin",
+          "id": 327,
+          "name": "Bijol",
           "team": "LEE",
           "pos": "DEF",
-          "price": 4.5,
+          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -447,11 +447,11 @@
           "setpiece": false
         },
         {
-          "id": 327,
-          "name": "Bijol",
+          "id": 332,
+          "name": "Justin",
           "team": "LEE",
           "pos": "DEF",
-          "price": 5.0,
+          "price": 4.5,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -622,11 +622,11 @@
       "setpiece": false
     },
     {
-      "id": 332,
-      "name": "Justin",
+      "id": 327,
+      "name": "Bijol",
       "team": "LEE",
       "pos": "DEF",
-      "price": 4.5,
+      "price": 5.0,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -634,11 +634,11 @@
       "setpiece": false
     },
     {
-      "id": 327,
-      "name": "Bijol",
+      "id": 332,
+      "name": "Justin",
       "team": "LEE",
       "pos": "DEF",
-      "price": 5.0,
+      "price": 4.5,
       "starting": true,
       "captain": false,
       "vice": false,
