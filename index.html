@@ -2593,7 +2593,7 @@
   let _insightView = 'penalties';   // always populated; "due a haul" etc. fill in once games are played
   const POS_PILL = {GK:'blue', DEF:'green', MID:'gold', FWD:'purple'};
   function tbl(rows, cols){
-    if(!rows || !rows.length) return '<p style="color:var(--muted)">No players to show yet (needs match data — comes alive once the season is underway).</p>';
+    if(!rows || !rows.length) return '<p style="color:var(--muted)">Nothing stands out yet — it\'s only a game or two into the season, so this needs a few more gameweeks of data before the pattern is meaningful. Check back soon.</p>';
     let head = cols.map(c=>`<th>${c.h}</th>`).join('');
     let body = rows.map(p => '<tr>' + cols.map(c=>`<td>${c.f(p)}</td>`).join('') + '</tr>').join('');
     return `<div style="overflow-x:auto"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
@@ -2601,17 +2601,37 @@
   const nameCell = p => `<b>${escapeHtml(p.name)}</b> <span class="pill ${POS_PILL[p.pos]||'blue'}">${p.pos}</span> <span style="color:var(--muted);font-size:12px">${escapeHtml(p.team)}</span>`;
   const money = p => '£'+Number(p.price).toFixed(1)+'m';
   const own = p => Number(p.owned).toFixed(1)+'%';
+  // Early-season fallbacks built live from the player data, so these views still show
+  // something before the auto-generated insights file has enough games to populate.
+  function clientDueHaul(over){
+    if(!_playersDb) return [];
+    return _playersDb.players
+      .filter(p => p.avail && (p.mins||0) >= 45 && (p.pos==='MID'||p.pos==='FWD'))
+      .map(p => { const exp=(Number(p.xgi90)||0)*(p.mins/90), act=(p.goals||0)+(p.assists||0);
+        return {name:p.name,pos:p.pos,team:p.team,price:p.price,owned:p.owned,xgi:exp.toFixed(1),actual:act,gap:(over?act-exp:exp-act).toFixed(1),_g:exp-act}; })
+      .filter(x => over ? x._g <= -0.4 : x._g >= 0.4)
+      .sort((a,b) => over ? a._g-b._g : b._g-a._g)
+      .slice(0,20);
+  }
+  function clientDifferentials(){
+    if(!_playersDb) return [];
+    return _playersDb.players
+      .filter(p => p.avail && (Number(p.owned)||0) < 10 && (p.mins||0) >= 45 && (p.points||0) >= 3)
+      .sort((a,b) => (b.points||0)-(a.points||0) || (Number(b.form)||0)-(Number(a.form)||0))
+      .slice(0,20)
+      .map(p => ({name:p.name,pos:p.pos,team:p.team,price:p.price,owned:p.owned,form:(Number(p.form)||0).toFixed(1),xgi90:(Number(p.xgi90)||0).toFixed(2)}));
+  }
   const INSIGHT_VIEWS = {
     under: {
       title:'💎 Due a haul — big xG, few goals so far',
       note:'These players are creating chances but haven\'t been rewarded yet. History says the goals are coming — buy them <b>before</b> everyone else does.',
-      get:d=>d.xg_under,
+      get:d=>(d.xg_under&&d.xg_under.length)?d.xg_under:clientDueHaul(false),
       cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'xG+xA',f:p=>p.xgi},{h:'Actual G+A',f:p=>p.actual},{h:'Gap',f:p=>'<span class="pill green">+'+p.gap+'</span>'},{h:'Own',f:own}]
     },
     over: {
       title:'⚠️ Riding their luck — scoring above xG',
       note:'These have scored more than their chances suggest. Great <em>if</em> it lasts, but the numbers say a cold spell may be coming — think about selling near the peak.',
-      get:d=>d.xg_over,
+      get:d=>(d.xg_over&&d.xg_over.length)?d.xg_over:clientDueHaul(true),
       cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'xG+xA',f:p=>p.xgi},{h:'Actual G+A',f:p=>p.actual},{h:'Over by',f:p=>'<span class="pill red">+'+p.gap+'</span>'},{h:'Own',f:own}]
     },
     penalties: {
@@ -2647,7 +2667,7 @@
     differentials: {
       title:'🚀 Best differentials (owned by under 10%)',
       note:'Low-owned players in good form — this is how you climb past rivals. Pick 2–3, not ten; too many differentials and one bad week hurts.',
-      get:d=>d.differentials,
+      get:d=>(d.differentials&&d.differentials.length)?d.differentials:clientDifferentials(),
       cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'Owned',f:p=>'<span class="pill green">'+own(p)+'</span>'},{h:'Form',f:p=>p.form},{h:'xGI/90',f:p=>p.xgi90}]
     }
   };
@@ -2746,12 +2766,15 @@
       const v = INSIGHT_VIEWS[view];
       body.innerHTML = `<div class="card"><h3>${v.title}</h3><div class="callout blue" style="margin-top:0">${v.note}</div>${tbl(v.get(d), v.cols)}</div>`;
     };
-    if(_insights){ render(_insights); return; }
-    body.innerHTML = '<p style="color:var(--muted)">Loading…</p>';
-    fetch('insights-data.json', {cache:'no-store'})
-      .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
-      .then(d => { _insights = d; render(d); })
-      .catch(() => { body.innerHTML = ''; help.style.display = 'block'; });
+    const proceed = () => {
+      if(_insights){ render(_insights); return; }
+      body.innerHTML = '<p style="color:var(--muted)">Loading…</p>';
+      fetch('insights-data.json', {cache:'no-store'})
+        .then(r => { if(!r.ok) throw new Error('nofile'); return r.json(); })
+        .then(d => { _insights = d; render(d); })
+        .catch(() => { body.innerHTML = ''; help.style.display = 'block'; });
+    };
+    ensureDb(proceed, proceed);   // load the player DB first so the early-season fallbacks have data
   }
   // load insights lazily when the tab is first opened
   document.querySelector('[data-tab="insights"]').addEventListener('click', () => {
