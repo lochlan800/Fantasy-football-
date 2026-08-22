@@ -73,8 +73,8 @@
           "setpiece": false
         },
         {
-          "id": 176,
-          "name": "Dasilva",
+          "id": 175,
+          "name": "van Ewijk",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -260,8 +260,8 @@
           "setpiece": false
         },
         {
-          "id": 176,
-          "name": "Dasilva",
+          "id": 175,
+          "name": "van Ewijk",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -447,8 +447,8 @@
           "setpiece": false
         },
         {
-          "id": 176,
-          "name": "Dasilva",
+          "id": 175,
+          "name": "van Ewijk",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -634,8 +634,8 @@
       "setpiece": false
     },
     {
-      "id": 176,
-      "name": "Dasilva",
+      "id": 175,
+      "name": "van Ewijk",
       "team": "COV",
       "pos": "DEF",
       "price": 4.0,
