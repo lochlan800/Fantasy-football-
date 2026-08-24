@@ -332,15 +332,15 @@
           "setpiece": true
         },
         {
-          "id": 368,
-          "name": "Szoboszlai",
+          "id": 367,
+          "name": "Gakpo",
           "team": "LIV",
           "pos": "MID",
           "price": 7.0,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": true,
+          "pens": false,
           "setpiece": true
         },
         {
