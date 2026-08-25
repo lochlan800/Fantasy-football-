@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 74.5,
+      "budget_spent": 73.5,
       "captain_id": 243,
       "vice_id": 72,
       "players": [
@@ -49,6 +49,18 @@
           "setpiece": true
         },
         {
+          "id": 586,
+          "name": "Mendy",
+          "team": "HUL",
+          "pos": "DEF",
+          "price": 4.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
+        },
+        {
           "id": 88,
           "name": "Kayode",
           "team": "BRE",
@@ -66,18 +78,6 @@
           "team": "HUL",
           "pos": "DEF",
           "price": 4.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
-        },
-        {
-          "id": 327,
-          "name": "Bijol",
-          "team": "LEE",
-          "pos": "DEF",
-          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 81.5,
+      "budget_spent": 80.0,
       "captain_id": 243,
       "vice_id": 123,
       "players": [
@@ -236,6 +236,18 @@
           "setpiece": true
         },
         {
+          "id": 586,
+          "name": "Mendy",
+          "team": "HUL",
+          "pos": "DEF",
+          "price": 4.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
+        },
+        {
           "id": 88,
           "name": "Kayode",
           "team": "BRE",
@@ -253,18 +265,6 @@
           "team": "MCI",
           "pos": "DEF",
           "price": 6.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
-        },
-        {
-          "id": 10,
-          "name": "White",
-          "team": "ARS",
-          "pos": "DEF",
-          "price": 5.5,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 74.5,
+      "budget_spent": 73.5,
       "captain_id": 243,
       "vice_id": 72,
       "players": [
@@ -423,6 +423,18 @@
           "setpiece": true
         },
         {
+          "id": 586,
+          "name": "Mendy",
+          "team": "HUL",
+          "pos": "DEF",
+          "price": 4.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
+        },
+        {
           "id": 277,
           "name": "Egan",
           "team": "HUL",
@@ -440,18 +452,6 @@
           "team": "BRE",
           "pos": "DEF",
           "price": 4.5,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
-        },
-        {
-          "id": 327,
-          "name": "Bijol",
-          "team": "LEE",
-          "pos": "DEF",
-          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 74.5,
+  "budget_spent": 73.5,
   "captain_id": 243,
   "vice_id": 72,
   "players": [
@@ -610,6 +610,18 @@
       "setpiece": true
     },
     {
+      "id": 586,
+      "name": "Mendy",
+      "team": "HUL",
+      "pos": "DEF",
+      "price": 4.0,
+      "starting": true,
+      "captain": false,
+      "vice": false,
+      "pens": false,
+      "setpiece": false
+    },
+    {
       "id": 88,
       "name": "Kayode",
       "team": "BRE",
@@ -627,18 +639,6 @@
       "team": "HUL",
       "pos": "DEF",
       "price": 4.0,
-      "starting": true,
-      "captain": false,
-      "vice": false,
-      "pens": false,
-      "setpiece": false
-    },
-    {
-      "id": 327,
-      "name": "Bijol",
-      "team": "LEE",
-      "pos": "DEF",
-      "price": 5.0,
       "starting": true,
       "captain": false,
       "vice": false,
