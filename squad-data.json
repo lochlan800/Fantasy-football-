@@ -196,8 +196,8 @@
     },
     "attacking": {
       "budget_spent": 79.0,
-      "captain_id": 165,
-      "vice_id": 243,
+      "captain_id": 243,
+      "vice_id": 123,
       "players": [
         {
           "id": 572,
@@ -290,8 +290,8 @@
           "pos": "MID",
           "price": 5.0,
           "starting": true,
-          "captain": false,
-          "vice": true,
+          "captain": true,
+          "vice": false,
           "pens": false,
           "setpiece": false
         },
@@ -303,7 +303,7 @@
           "price": 6.0,
           "starting": true,
           "captain": false,
-          "vice": false,
+          "vice": true,
           "pens": false,
           "setpiece": false
         },
@@ -350,7 +350,7 @@
           "pos": "FWD",
           "price": 7.5,
           "starting": true,
-          "captain": true,
+          "captain": false,
           "vice": false,
           "pens": false,
           "setpiece": false
