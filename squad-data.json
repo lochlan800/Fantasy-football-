@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 79.0,
+      "budget_spent": 81.5,
       "captain_id": 243,
       "vice_id": 123,
       "players": [
@@ -308,6 +308,18 @@
           "setpiece": false
         },
         {
+          "id": 154,
+          "name": "Palmer",
+          "team": "CHE",
+          "pos": "MID",
+          "price": 9.5,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": true,
+          "setpiece": true
+        },
+        {
           "id": 565,
           "name": "M.Sangar\u00e9",
           "team": "BRE",
@@ -325,18 +337,6 @@
           "team": "LEE",
           "pos": "MID",
           "price": 6.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
-        },
-        {
-          "id": 367,
-          "name": "Gakpo",
-          "team": "LIV",
-          "pos": "MID",
-          "price": 7.0,
           "starting": true,
           "captain": false,
           "vice": false,
