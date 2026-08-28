@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 79.4,
+      "budget_spent": 81.8,
       "captain_id": 243,
       "vice_id": 154,
       "players": [
@@ -260,11 +260,11 @@
           "setpiece": false
         },
         {
-          "id": 88,
-          "name": "Kayode",
-          "team": "BRE",
+          "id": 388,
+          "name": "Gu\u00e9hi",
+          "team": "MCI",
           "pos": "DEF",
-          "price": 4.6,
+          "price": 6.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -320,15 +320,15 @@
           "setpiece": false
         },
         {
-          "id": 335,
-          "name": "Stach",
-          "team": "LEE",
+          "id": 368,
+          "name": "Szoboszlai",
+          "team": "LIV",
           "pos": "MID",
-          "price": 6.0,
+          "price": 7.0,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": false,
+          "pens": true,
           "setpiece": true
         },
         {
@@ -382,16 +382,16 @@
       ]
     },
     "value": {
-      "budget_spent": 77.4,
+      "budget_spent": 77.3,
       "captain_id": 243,
       "vice_id": 72,
       "players": [
         {
-          "id": 572,
-          "name": "Tzolakis",
-          "team": "HUL",
+          "id": 385,
+          "name": "Trafford",
+          "team": "LEE",
           "pos": "GK",
-          "price": 4.5,
+          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -411,18 +411,6 @@
           "setpiece": false
         },
         {
-          "id": 115,
-          "name": "De Cuyper",
-          "team": "BHA",
-          "pos": "DEF",
-          "price": 4.6,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
-        },
-        {
           "id": 586,
           "name": "Mendy",
           "team": "HUL",
@@ -433,6 +421,18 @@
           "vice": false,
           "pens": false,
           "setpiece": false
+        },
+        {
+          "id": 115,
+          "name": "De Cuyper",
+          "team": "BHA",
+          "pos": "DEF",
+          "price": 4.6,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
         },
         {
           "id": 279,
@@ -447,11 +447,11 @@
           "setpiece": false
         },
         {
-          "id": 88,
-          "name": "Kayode",
-          "team": "BRE",
+          "id": 277,
+          "name": "Egan",
+          "team": "HUL",
           "pos": "DEF",
-          "price": 4.6,
+          "price": 4.0,
           "starting": true,
           "captain": false,
           "vice": false,
