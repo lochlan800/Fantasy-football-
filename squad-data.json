@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 73.9,
+      "budget_spent": 77.4,
       "captain_id": 243,
       "vice_id": 72,
       "players": [
@@ -121,18 +121,6 @@
           "setpiece": false
         },
         {
-          "id": 123,
-          "name": "Hinshelwood",
-          "team": "BHA",
-          "pos": "MID",
-          "price": 6.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
-        },
-        {
           "id": 565,
           "name": "M.Sangar\u00e9",
           "team": "BRE",
@@ -154,6 +142,18 @@
           "captain": false,
           "vice": false,
           "pens": false,
+          "setpiece": true
+        },
+        {
+          "id": 154,
+          "name": "Palmer",
+          "team": "CHE",
+          "pos": "MID",
+          "price": 9.5,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": true,
           "setpiece": true
         },
         {
@@ -195,9 +195,9 @@
       ]
     },
     "attacking": {
-      "budget_spent": 78.4,
+      "budget_spent": 79.4,
       "captain_id": 243,
-      "vice_id": 123,
+      "vice_id": 154,
       "players": [
         {
           "id": 572,
@@ -296,18 +296,6 @@
           "setpiece": false
         },
         {
-          "id": 123,
-          "name": "Hinshelwood",
-          "team": "BHA",
-          "pos": "MID",
-          "price": 6.0,
-          "starting": true,
-          "captain": false,
-          "vice": true,
-          "pens": false,
-          "setpiece": false
-        },
-        {
           "id": 154,
           "name": "Palmer",
           "team": "CHE",
@@ -315,7 +303,7 @@
           "price": 9.5,
           "starting": true,
           "captain": false,
-          "vice": false,
+          "vice": true,
           "pens": true,
           "setpiece": true
         },
@@ -337,6 +325,18 @@
           "team": "LEE",
           "pos": "MID",
           "price": 6.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
+        },
+        {
+          "id": 367,
+          "name": "Gakpo",
+          "team": "LIV",
+          "pos": "MID",
+          "price": 7.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 73.9,
+      "budget_spent": 77.4,
       "captain_id": 243,
       "vice_id": 72,
       "players": [
@@ -519,16 +519,16 @@
           "setpiece": true
         },
         {
-          "id": 123,
-          "name": "Hinshelwood",
-          "team": "BHA",
+          "id": 154,
+          "name": "Palmer",
+          "team": "CHE",
           "pos": "MID",
-          "price": 6.0,
+          "price": 9.5,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": false,
-          "setpiece": false
+          "pens": true,
+          "setpiece": true
         },
         {
           "id": 165,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 73.9,
+  "budget_spent": 77.4,
   "captain_id": 243,
   "vice_id": 72,
   "players": [
@@ -682,18 +682,6 @@
       "setpiece": false
     },
     {
-      "id": 123,
-      "name": "Hinshelwood",
-      "team": "BHA",
-      "pos": "MID",
-      "price": 6.0,
-      "starting": true,
-      "captain": false,
-      "vice": false,
-      "pens": false,
-      "setpiece": false
-    },
-    {
       "id": 565,
       "name": "M.Sangar\u00e9",
       "team": "BRE",
@@ -715,6 +703,18 @@
       "captain": false,
       "vice": false,
       "pens": false,
+      "setpiece": true
+    },
+    {
+      "id": 154,
+      "name": "Palmer",
+      "team": "CHE",
+      "pos": "MID",
+      "price": 9.5,
+      "starting": true,
+      "captain": false,
+      "vice": false,
+      "pens": true,
       "setpiece": true
     },
     {
