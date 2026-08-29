@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 77.4,
+      "budget_spent": 85.4,
       "captain_id": 243,
       "vice_id": 72,
       "players": [
@@ -149,7 +149,7 @@
           "name": "Palmer",
           "team": "CHE",
           "pos": "MID",
-          "price": 9.5,
+          "price": 9.6,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -157,15 +157,15 @@
           "setpiece": true
         },
         {
-          "id": 165,
-          "name": "Jo\u00e3o Pedro",
-          "team": "CHE",
+          "id": 411,
+          "name": "Haaland",
+          "team": "MCI",
           "pos": "FWD",
-          "price": 7.6,
+          "price": 15.5,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": false,
+          "pens": true,
           "setpiece": false
         },
         {
@@ -195,9 +195,9 @@
       ]
     },
     "attacking": {
-      "budget_spent": 81.8,
+      "budget_spent": 88.0,
       "captain_id": 243,
-      "vice_id": 154,
+      "vice_id": 399,
       "players": [
         {
           "id": 572,
@@ -260,11 +260,11 @@
           "setpiece": false
         },
         {
-          "id": 388,
-          "name": "Gu\u00e9hi",
-          "team": "MCI",
+          "id": 88,
+          "name": "Kayode",
+          "team": "BRE",
           "pos": "DEF",
-          "price": 6.0,
+          "price": 4.6,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -296,14 +296,26 @@
           "setpiece": false
         },
         {
+          "id": 399,
+          "name": "Cherki",
+          "team": "MCI",
+          "pos": "MID",
+          "price": 7.6,
+          "starting": true,
+          "captain": false,
+          "vice": true,
+          "pens": false,
+          "setpiece": true
+        },
+        {
           "id": 154,
           "name": "Palmer",
           "team": "CHE",
           "pos": "MID",
-          "price": 9.5,
+          "price": 9.6,
           "starting": true,
           "captain": false,
-          "vice": true,
+          "vice": false,
           "pens": true,
           "setpiece": true
         },
@@ -320,39 +332,27 @@
           "setpiece": false
         },
         {
-          "id": 368,
-          "name": "Szoboszlai",
-          "team": "LIV",
+          "id": 335,
+          "name": "Stach",
+          "team": "LEE",
           "pos": "MID",
-          "price": 7.0,
+          "price": 6.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
+        },
+        {
+          "id": 411,
+          "name": "Haaland",
+          "team": "MCI",
+          "pos": "FWD",
+          "price": 15.5,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": true,
-          "setpiece": true
-        },
-        {
-          "id": 367,
-          "name": "Gakpo",
-          "team": "LIV",
-          "pos": "MID",
-          "price": 7.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
-        },
-        {
-          "id": 165,
-          "name": "Jo\u00e3o Pedro",
-          "team": "CHE",
-          "pos": "FWD",
-          "price": 7.6,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
           "setpiece": false
         },
         {
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 77.3,
+      "budget_spent": 85.3,
       "captain_id": 243,
       "vice_id": 72,
       "players": [
@@ -523,7 +523,7 @@
           "name": "Palmer",
           "team": "CHE",
           "pos": "MID",
-          "price": 9.5,
+          "price": 9.6,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -531,15 +531,15 @@
           "setpiece": true
         },
         {
-          "id": 165,
-          "name": "Jo\u00e3o Pedro",
-          "team": "CHE",
+          "id": 411,
+          "name": "Haaland",
+          "team": "MCI",
           "pos": "FWD",
-          "price": 7.6,
+          "price": 15.5,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": false,
+          "pens": true,
           "setpiece": false
         },
         {
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 77.4,
+  "budget_spent": 85.4,
   "captain_id": 243,
   "vice_id": 72,
   "players": [
@@ -710,7 +710,7 @@
       "name": "Palmer",
       "team": "CHE",
       "pos": "MID",
-      "price": 9.5,
+      "price": 9.6,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -718,15 +718,15 @@
       "setpiece": true
     },
     {
-      "id": 165,
-      "name": "Jo\u00e3o Pedro",
-      "team": "CHE",
+      "id": 411,
+      "name": "Haaland",
+      "team": "MCI",
       "pos": "FWD",
-      "price": 7.6,
+      "price": 15.5,
       "starting": true,
       "captain": false,
       "vice": false,
-      "pens": false,
+      "pens": true,
       "setpiece": false
     },
     {
