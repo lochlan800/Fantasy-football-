@@ -129,8 +129,11 @@ The web tool now also includes:
   scoring the 15 against the winning ratios — goal threat (xGI/90 ≥ 0.4), **starters on a
   good fixture run**, penalty/set-piece takers, in-form players, budget enablers, template
   picks (30%+ owned) and premiums — with green ticks where it hits target. Tap
-  **⬇ Use this as my team** to copy it into My Team. The **🧩 The optimal squad blueprint**
-  card on **📖 Guide → Core Strategy** explains the ratios it's built to.
+  **⬇ Use this as my team** to copy it into My Team. You can also grade **your own team**
+  against the same blueprint (fixture row included): on the **🧮 My Team** tab tap
+  **🧩 Check my make-up** and it scores your actual 15, so reds show exactly where you're
+  light. The **🧩 The optimal squad blueprint** card on **📖 Guide → Core Strategy**
+  explains the ratios it's built to.
 - **❓ Questions tab** — a searchable Q&A that answers common questions about how the
   app works and what its numbers mean (xPts vs xTot, the 0–100 Rating, the World Cup
   flag, chip halves, why a player isn't showing, cross-device saving, and more). New

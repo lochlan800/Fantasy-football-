@@ -669,12 +669,14 @@
         <div id="posContainer"></div>
         <div class="row-actions" style="margin-top:14px">
           <button class="btn" onclick="rateTeam()">⭐ Rate my team</button>
+          <button class="btn ghost" onclick="checkMyMakeup()">🧩 Check my make-up</button>
           <button class="btn ghost" onclick="clearSquad()">🗑 Clear all</button>
         </div>
         <p class="save-note">Your team saves automatically (2 GK · 5 DEF · 5 MID · 3 FWD, with a 4-man bench). <b>To substitute:</b> tap a player in your XI, then tap a bench player — they swap, and the formation flexes to any legal shape (3-5 DEF, 2-5 MID, 1-3 FWD). Tap two bench players to reorder them.</p>
       </div>
 
       <div id="rateResult"></div>
+      <div id="makeupResult"></div>
 
       <div class="callout blue">
         <b>🪑 Bench order matters (a quiet points-saver):</b> if one of your starters doesn't play, the game automatically subs in your bench <b>in order</b> — so put your <b>most-likely-to-play</b> outfield sub first. Two more freebies: never leave a gap (always field 11 players who are actually playing), and check the Friday press conferences for injuries before you finalise.
@@ -1604,26 +1606,68 @@
       xgi90:p.xgi90, form:p.form, owned:p.owned, pens:p.pens, setpiece:p.setpiece, fix:p._fix}));
     return { players, budget_spent: spent };
   }
-  function templateBreakdown(v){
-    const ps = v.players, cnt = f => ps.filter(f).length;
+  function templateBreakdown(v, opts){
+    opts = opts || {};
+    const ps = v.players, n = ps.length, cnt = f => ps.filter(f).length;
     const highX = cnt(p=> (Number(p.xgi90)||0) >= 0.4);
     const setp  = cnt(p=> p.pens || p.setpiece);
     const form  = cnt(p=> (Number(p.form)||0) >= 3.0);
     const budg  = cnt(p=> Number(p.price) <= 4.5);
     const tmpl  = cnt(p=> (Number(p.owned)||0) >= 30);
     const prem  = cnt(p=> Number(p.price) >= 9);
-    const goodFix = cnt(p=> p.starting!==false && (Number(p.fix)||1) >= 1.05);   // starters on a good run
+    const goodFix = cnt(p=> p.starting!==false && (Number(p.fix)||1) >= 1.02);   // starters on a favourable run
     const row = (label,val,target,ok)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--border);font-size:13.5px"><span>${label}</span><span><b style="color:${ok?'var(--accent)':'var(--gold)'}">${val}</b> <span style="color:var(--muted);font-size:12px">aim ${target}</span></span></div>`;
-    return `<div class="card"><h3>🧩 Template make-up</h3>
-      <p style="margin-top:0;color:var(--muted);font-size:13px">How these 15 break down against the winning blueprint (green = on target):</p>
+    const heading = opts.heading || '🧩 Template make-up';
+    const intro = opts.intro || ('How these '+n+' break down against the winning blueprint (green = on target):');
+    const note = opts.note || 'Built live from the current stats to a proven template shape — premiums up top for your captain & ceiling, value enablers at the back to fund them, weighted for goal threat, set-pieces, form and template safety. Sense-check team news before your deadline.';
+    return `<div class="card"><h3>${heading}</h3>
+      <p style="margin-top:0;color:var(--muted);font-size:13px">${intro}</p>
       ${row('💥 Goal threat (xGI/90 ≥ 0.4)', highX, '5–6', highX>=5)}
-      ${row('🟢 Starters on a good fixture run (next 6)', goodFix, '6+', goodFix>=6)}
+      ${row('🟢 Starters on a favourable run (next 6)', goodFix, '5+', goodFix>=5)}
       ${row('🎯 On penalties / set-pieces', setp, '4+', setp>=4)}
       ${row('🔥 In good form', form, '4+', form>=4)}
       ${row('💷 Budget enablers (≤ £4.5m)', budg, '4–5', budg>=4)}
       ${row('📈 Template picks (30%+ owned)', tmpl, '6+', tmpl>=6)}
       ${row('⭐ Premiums (£9m+)', prem, '2–3', prem>=2)}
-      <p class="save-note">Built live from the current stats to a proven template shape — premiums up top for your captain & ceiling, value enablers at the back to fund them, weighted for goal threat, set-pieces, form and template safety. Sense-check team news before your deadline.</p></div>`;
+      <p class="save-note">${note}</p></div>`;
+  }
+  // Map the user's actual entered squad into the same shape the make-up card reads,
+  // pulling each player's live stats from the DB and their next-6 fixture factor.
+  function myTeamVariant(){
+    const benchSet = new Set(activeBench());
+    const players = []; let spent = 0;
+    const fromGw = (_season && _season.current_gw) || 1;
+    POSITIONS.forEach(pp => squad[pp.key].forEach((pl,i)=>{
+      const nm = (pl.name||'').trim(); if(!nm) return;
+      const id = pp.key+'-'+i;
+      const info = dbLookup(pl.name, pl.team) || {};
+      const team = resolveTeam(pl);
+      const price = (pl.price!=='' && pl.price!=null) ? Number(pl.price) : (info.price!=null?Number(info.price):0);
+      spent += price || 0;
+      players.push({ pos:pp.key, name:pl.name, price:price, team:team,
+        captain:id===squad.captain, vice:id===squad.vice, starting:!benchSet.has(id),
+        xgi90:info.xgi90, form:info.form, owned:info.owned, pens:info.pens, setpiece:info.setpiece,
+        fix: fixtureFactor(team, fromGw, 6) });
+    }));
+    return { players, budget_spent: spent };
+  }
+  function checkMyMakeup(){
+    const box = document.getElementById('makeupResult'); if(!box) return;
+    const filled = POSITIONS.reduce((n,p)=>n+squad[p.key].filter(x=>x.name&&x.name.trim()).length,0);
+    box.innerHTML = '<div class="card" style="color:var(--muted)">Checking your make-up…</div>';
+    ensureDb(() => {
+      const run = () => {
+        const v = myTeamVariant();
+        if(!v.players.length){ box.innerHTML = '<div class="card" style="color:var(--muted)">Add some players to your team first, then check the make-up.</div>'; return; }
+        const partial = filled < 15 ? ` <span class="tag">only ${filled}/15 in — add the rest for a full read</span>` : '';
+        box.innerHTML = templateBreakdown(v, {
+          heading: '🧩 Your team\'s make-up',
+          intro: 'How <b>your team</b> breaks down against the winning blueprint (green = on target):' + partial,
+          note: 'Reds show where you\'re light versus the template — e.g. add another premium or set-piece taker, lean on players with better upcoming fixtures (the 🟢 row uses your next 6 gameweeks), or free up cash with a budget enabler. Compare it with the <b>⚡ Auto-Pick → 🧩 Template</b> team to see what a full template looks like. Sense-check team news before your deadline.'
+        });
+      };
+      ensureSeason(run, run);
+    }, () => { box.innerHTML = '<div class="card" style="color:var(--muted)">Player data not loaded yet — run the <b>Update FPL data</b> workflow, then reload.</div>'; });
   }
   function buildTemplate(){
     _autoStrat = 'template'; setActiveStrat('template');
@@ -2239,7 +2283,7 @@
     {q:"What is the ⋯ Info button on the pitch for?",
      a:"On the Squad Builder pitch, the button in the <b>top-right corner</b> opens a menu to show an extra stat <b>under every player</b>: their <b>fixture difficulty for the next 3 gameweeks</b> (colour-coded opponents) or their <b>ownership %</b>. Pick one and it applies to all your players; choose <b>Off</b> to hide it again. Your choice is saved."},
     {q:"What is the 🧩 Template team and how is it built?",
-     a:"In <b>Squad Builder → ⚡ Auto-Pick → 🧩 Template</b>, the app builds a <b>proven-shape £100m squad</b> from the live stats. It follows the winning <b>blueprint ratios</b>: 5–6 goal-threat players (high xGI/90), 4+ penalty/set-piece takers, some in-form players, 6+ template picks (30%+ owned for rank safety), 4–5 budget enablers (≤£4.5m) to fund a cheap playing bench, and 2–3 premiums up top for your captain and ceiling. It keeps a legal squad (2·5·5·3, max 3 per club, ≤£100m), captains your best premium, and shows a <b>🧩 Template make-up</b> card scoring the 15 against each target (green = on target). Tap <b>⬇ Use this as my team</b> to copy it into My Team, then tweak it. <b>Fixtures matter hugely, so every pick is weighted by their next 6 gameweeks' difficulty</b> — a good player on a brutal run drops down and a team on a green run (or a double gameweek) rises up, right down to who gets the armband. See <b>📖 Guide → 🧩 The optimal squad blueprint</b> for the ratios it aims at. Early season the picks are ownership-led (performance data is small-sample), sharpening as real games are played."},
+     a:"In <b>Squad Builder → ⚡ Auto-Pick → 🧩 Template</b>, the app builds a <b>proven-shape £100m squad</b> from the live stats. It follows the winning <b>blueprint ratios</b>: 5–6 goal-threat players (high xGI/90), 4+ penalty/set-piece takers, some in-form players, 6+ template picks (30%+ owned for rank safety), 4–5 budget enablers (≤£4.5m) to fund a cheap playing bench, and 2–3 premiums up top for your captain and ceiling. It keeps a legal squad (2·5·5·3, max 3 per club, ≤£100m), captains your best premium, and shows a <b>🧩 Template make-up</b> card scoring the 15 against each target (green = on target). Tap <b>⬇ Use this as my team</b> to copy it into My Team, then tweak it. You can also score <b>your own team</b> the same way: on the <b>🧮 My Team</b> tab tap <b>🧩 Check my make-up</b> — it grades your actual 15 against the same blueprint (including the fixture row), so reds show exactly where you're light. <b>Fixtures matter hugely, so every pick is weighted by their next 6 gameweeks' difficulty</b> — a good player on a brutal run drops down and a team on a green run (or a double gameweek) rises up, right down to who gets the armband. See <b>📖 Guide → 🧩 The optimal squad blueprint</b> for the ratios it aims at. Early season the picks are ownership-led (performance data is small-sample), sharpening as real games are played."},
   ];
   function renderFaq(){
     const box=document.getElementById('faqBody'); if(!box) return;
