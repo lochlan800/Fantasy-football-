@@ -351,6 +351,23 @@
     </div>
 
     <div class="card">
+      <h3>🧩 The optimal squad blueprint <span class="tag">Ratios</span></h3>
+      <p style="margin-top:0">There's a proven <b>shape</b> to a winning £100m squad. Aim for these ratios across your 15 — then the app can build it for you: open <b>🧮 Squad Builder → ⚡ Auto-Pick → 🧩 Template</b>, which picks the actual template players from the live stats and shows how they hit each target.</p>
+      <table>
+        <thead><tr><th>Ingredient</th><th>How many</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td><b>⭐ Premiums (£9m+)</b></td><td>2–3</td><td>Your captain rotation and points ceiling — attacking mids &amp; a top forward. This is where you spend big.</td></tr>
+          <tr><td><b>💥 Goal threat (high xGI/90)</b></td><td>5–6</td><td>Players genuinely creating &amp; getting chances — the engine of your score.</td></tr>
+          <tr><td><b>🎯 Penalty / set-piece takers</b></td><td>4+</td><td>An extra, reliable route to points every week — ideally your premiums are on them.</td></tr>
+          <tr><td><b>📈 Template picks (30%+ owned)</b></td><td>6+</td><td>The players most top managers own — owning them protects your rank and avoids scary weeks.</td></tr>
+          <tr><td><b>💷 Budget enablers (≤£4.5m)</b></td><td>4–5</td><td>Cheap nailed players (your bench + 1–2 starters) that free up the cash for the premiums.</td></tr>
+          <tr><td><b>🥅 Cheap keeper pair</b></td><td>~£4.5m each</td><td>Don't pay up for a keeper — rotate two cheap ones by fixture and spend the money outfield.</td></tr>
+        </tbody>
+      </table>
+      <p class="save-note">Rough spend split: ~£83m on your best XI, the rest on a cheap playing bench. Balance it with a differential or two (2–3 low-owned punts) to actually climb — but never on the captain.</p>
+    </div>
+
+    <div class="card">
       <h3>📅 Fixtures beat form (most of the time) <span class="tag">Planning</span></h3>
       <p style="margin-top:0">Rank teams by their next 3–5 fixtures, not last week's result. Buy players entering an easy run <b>before</b> the run starts — you get the price rises and the points.</p>
       <table>
@@ -677,6 +694,7 @@
           <button class="btn strat-btn active" data-strat="balanced" onclick="autoBuild('balanced')">⚖️ Balanced</button>
           <button class="btn ghost strat-btn" data-strat="attacking" onclick="autoBuild('attacking')">⚔️ Attacking</button>
           <button class="btn ghost strat-btn" data-strat="value" onclick="autoBuild('value')">💷 Value</button>
+          <button class="btn ghost strat-btn" data-strat="template" onclick="buildTemplate()">🧩 Template</button>
         </div>
         <p class="save-note"><b>Balanced</b>: best all-round team. <b>Attacking</b>: loads up on goals &amp; assists. <b>Value</b>: most points per £m, banking funds.</p>
       </div>
@@ -1520,6 +1538,82 @@
         disp.innerHTML = '<div class="card" style="color:var(--muted)">Not built yet — run the "Update FPL data" workflow on GitHub (Actions tab), then reload. Or just build your own team in My Team.</div>';
       });
   }
+  // ---------- Template team builder (client-side, from the live stats) ----------
+  // Builds the optimal legal 15 to a winning blueprint: premiums up top, value
+  // enablers at the back, weighted for goal threat, set-pieces, form and template
+  // ownership. Then shows how the squad breaks down against the target ratios.
+  function buildTemplateSquad(){
+    if(!_playersDb) return null;
+    const pool = {GK:[],DEF:[],MID:[],FWD:[]};
+    _playersDb.players.filter(p=>p.avail && Number(p.price)>0).forEach(p=>{ if(pool[p.pos]) pool[p.pos].push(Object.assign({}, p)); });
+    // A "template" is what the best managers actually own, so ownership is the main
+    // driver (reliable even early season), with the blended rating as a tiebreak.
+    const tScore = p => (Number(p.owned)||0) + (Number(p.rating)||0)*4;
+    Object.keys(pool).forEach(k=> pool[k].sort((a,b)=> tScore(b) - tScore(a)));
+    const need = {GK:2, DEF:5, MID:5, FWD:3};
+    // starters get the money (premiums), the 4 bench slots stay cheap
+    const posBudget = {GK:9.5, DEF:26.0, MID:38.5, FWD:26.0};   // ~£100m template split
+    const club = {}; const picked = {GK:[],DEF:[],MID:[],FWD:[]};
+    const canClub = t => (club[t]||0) < 3;
+    // slots per position that should be cheap bench fillers (kept under £5.0m)
+    const benchSlots = {GK:1, DEF:2, MID:1, FWD:0};
+    ['FWD','MID','DEF','GK'].forEach(pos=>{      // premiums first, keepers last
+      let budget = posBudget[pos]; const slots = need[pos], nBench = benchSlots[pos]; const list = pool[pos];
+      // starters (best owned) then bench (cheapest nailed)
+      for(let s=0; s<slots - nBench; s++){
+        const cheapReserve = 4.0 * (slots - s - 1);    // keep enough for the rest
+        let cand = list.find(p => !p._used && canClub(p.team) && Number(p.price) <= budget - cheapReserve + 0.001);
+        if(!cand) cand = [...list].filter(p=>!p._used && canClub(p.team)).sort((a,b)=>a.price-b.price)[0];
+        if(cand){ cand._used=true; cand._bench=false; picked[pos].push(cand); budget -= Number(cand.price); club[cand.team]=(club[cand.team]||0)+1; }
+      }
+      for(let s=0; s<nBench; s++){                       // cheapest playing fillers for the bench
+        const cand = [...list].filter(p=>!p._used && canClub(p.team) && (p.mins==null||p.mins>=_minsGate)).sort((a,b)=> a.price-b.price || tScore(b)-tScore(a))[0]
+                  || [...list].filter(p=>!p._used && canClub(p.team)).sort((a,b)=>a.price-b.price)[0];
+        if(cand){ cand._used=true; cand._bench=true; picked[pos].push(cand); budget -= Number(cand.price); club[cand.team]=(club[cand.team]||0)+1; }
+      }
+    });
+    // bench = the 4 filler slots (backup GK + 2 DEF + 1 MID) → XI is a 3-4-3
+    const all = [].concat(picked.GK,picked.DEF,picked.MID,picked.FWD);
+    const bench = new Set(all.filter(p=>p._bench));
+    const spent = all.reduce((s,p)=>s+Number(p.price),0);
+    // captain the marquee template attacker (highest owned MID/FWD starter)
+    const attackers = all.filter(p=>!bench.has(p) && (p.pos==='MID'||p.pos==='FWD')).sort((a,b)=> tScore(b)-tScore(a));
+    const cap = attackers[0], vice = attackers[1];
+    const players = all.map(p=>({pos:p.pos, name:p.name, price:p.price, team:p.team,
+      captain:p===cap, vice:p===vice, starting:!bench.has(p),
+      xgi90:p.xgi90, form:p.form, owned:p.owned, pens:p.pens, setpiece:p.setpiece}));
+    return { players, budget_spent: spent };
+  }
+  function templateBreakdown(v){
+    const ps = v.players, cnt = f => ps.filter(f).length;
+    const highX = cnt(p=> (Number(p.xgi90)||0) >= 0.4);
+    const setp  = cnt(p=> p.pens || p.setpiece);
+    const form  = cnt(p=> (Number(p.form)||0) >= 3.0);
+    const budg  = cnt(p=> Number(p.price) <= 4.5);
+    const tmpl  = cnt(p=> (Number(p.owned)||0) >= 30);
+    const prem  = cnt(p=> Number(p.price) >= 9);
+    const row = (label,val,target,ok)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--border);font-size:13.5px"><span>${label}</span><span><b style="color:${ok?'var(--accent)':'var(--gold)'}">${val}</b> <span style="color:var(--muted);font-size:12px">aim ${target}</span></span></div>`;
+    return `<div class="card"><h3>🧩 Template make-up</h3>
+      <p style="margin-top:0;color:var(--muted);font-size:13px">How these 15 break down against the winning blueprint (green = on target):</p>
+      ${row('💥 Goal threat (xGI/90 ≥ 0.4)', highX, '5–6', highX>=5)}
+      ${row('🎯 On penalties / set-pieces', setp, '4+', setp>=4)}
+      ${row('🔥 In good form', form, '4+', form>=4)}
+      ${row('💷 Budget enablers (≤ £4.5m)', budg, '4–5', budg>=4)}
+      ${row('📈 Template picks (30%+ owned)', tmpl, '6+', tmpl>=6)}
+      ${row('⭐ Premiums (£9m+)', prem, '2–3', prem>=2)}
+      <p class="save-note">Built live from the current stats to a proven template shape — premiums up top for your captain & ceiling, value enablers at the back to fund them, weighted for goal threat, set-pieces, form and template safety. Sense-check team news before your deadline.</p></div>`;
+  }
+  function buildTemplate(){
+    _autoStrat = 'template'; setActiveStrat('template');
+    const disp = document.getElementById('autoPickDisplay');
+    disp.innerHTML = '<div class="card" style="color:var(--muted)">Building the template team…</div>';
+    ensureDb(() => {
+      const v = buildTemplateSquad();
+      if(!v || v.players.length < 15){ disp.innerHTML = '<div class="card" style="color:var(--muted)">Couldn\'t build a full squad from the data.</div>'; return; }
+      renderAutoPick(v);
+      disp.insertAdjacentHTML('beforeend', templateBreakdown(v));
+    }, () => { disp.innerHTML = '<div class="card" style="color:var(--muted)">Player data not loaded yet — run the <b>Update FPL data</b> workflow, then reload.</div>'; });
+  }
 
   function saveSquad(){ store.set('fpl_squad', squad); flash('Squad saved ✓'); }
   function clearSquad(){
@@ -2118,6 +2212,8 @@
      a:"In <b>Rate my team</b>, every suggested transfer has two buttons. <b>Why?</b> expands a short argument — <b>why the incoming player is good</b>, <b>why your player is weaker</b>, and a <b>verdict</b> on why it's the better move. <b>✕ Ignore</b> hides that suggestion so it <b>won't come back</b>. If you change your mind, a \"Show them again\" link at the bottom brings your ignored suggestions back."},
     {q:"What is the ⋯ Info button on the pitch for?",
      a:"On the Squad Builder pitch, the button in the <b>top-right corner</b> opens a menu to show an extra stat <b>under every player</b>: their <b>fixture difficulty for the next 3 gameweeks</b> (colour-coded opponents) or their <b>ownership %</b>. Pick one and it applies to all your players; choose <b>Off</b> to hide it again. Your choice is saved."},
+    {q:"What is the 🧩 Template team and how is it built?",
+     a:"In <b>Squad Builder → ⚡ Auto-Pick → 🧩 Template</b>, the app builds a <b>proven-shape £100m squad</b> from the live stats. It follows the winning <b>blueprint ratios</b>: 5–6 goal-threat players (high xGI/90), 4+ penalty/set-piece takers, some in-form players, 6+ template picks (30%+ owned for rank safety), 4–5 budget enablers (≤£4.5m) to fund a cheap playing bench, and 2–3 premiums up top for your captain and ceiling. It keeps a legal squad (2·5·5·3, max 3 per club, ≤£100m), captains your best premium, and shows a <b>🧩 Template make-up</b> card scoring the 15 against each target (green = on target). Tap <b>⬇ Use this as my team</b> to copy it into My Team, then tweak it. See <b>📖 Guide → 🧩 The optimal squad blueprint</b> for the ratios it aims at. Early season the picks are ownership-led (data is small-sample), sharpening as real games are played."},
   ];
   function renderFaq(){
     const box=document.getElementById('faqBody'); if(!box) return;
