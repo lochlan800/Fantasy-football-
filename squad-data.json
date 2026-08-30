@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 85.2,
+      "budget_spent": 84.7,
       "captain_id": 547,
       "vice_id": 72,
       "players": [
@@ -61,18 +61,6 @@
           "setpiece": false
         },
         {
-          "id": 533,
-          "name": "Mukiele",
-          "team": "SUN",
-          "pos": "DEF",
-          "price": 5.5,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
-        },
-        {
           "id": 229,
           "name": "Tarkowski",
           "team": "EVE",
@@ -83,6 +71,18 @@
           "vice": false,
           "pens": false,
           "setpiece": false
+        },
+        {
+          "id": 449,
+          "name": "Hall",
+          "team": "NEW",
+          "pos": "DEF",
+          "price": 5.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
         },
         {
           "id": 174,
@@ -196,8 +196,8 @@
     },
     "attacking": {
       "budget_spent": 99.9,
-      "captain_id": 426,
-      "vice_id": 547,
+      "captain_id": 547,
+      "vice_id": 426,
       "players": [
         {
           "id": 572,
@@ -284,28 +284,28 @@
           "setpiece": false
         },
         {
-          "id": 426,
-          "name": "B.Fernandes",
-          "team": "MUN",
-          "pos": "MID",
-          "price": 12.0,
-          "starting": true,
-          "captain": true,
-          "vice": false,
-          "pens": true,
-          "setpiece": true
-        },
-        {
           "id": 547,
           "name": "Mundle",
           "team": "SUN",
           "pos": "MID",
           "price": 5.0,
           "starting": true,
-          "captain": false,
-          "vice": true,
+          "captain": true,
+          "vice": false,
           "pens": false,
           "setpiece": false
+        },
+        {
+          "id": 426,
+          "name": "B.Fernandes",
+          "team": "MUN",
+          "pos": "MID",
+          "price": 12.0,
+          "starting": true,
+          "captain": false,
+          "vice": true,
+          "pens": true,
+          "setpiece": true
         },
         {
           "id": 154,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 79.1,
+      "budget_spent": 78.6,
       "captain_id": 547,
       "vice_id": 72,
       "players": [
@@ -447,16 +447,16 @@
           "setpiece": false
         },
         {
-          "id": 533,
-          "name": "Mukiele",
-          "team": "SUN",
+          "id": 449,
+          "name": "Hall",
+          "team": "NEW",
           "pos": "DEF",
-          "price": 5.5,
+          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": false
+          "setpiece": true
         },
         {
           "id": 174,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 85.2,
+  "budget_spent": 84.7,
   "captain_id": 547,
   "vice_id": 72,
   "players": [
@@ -622,18 +622,6 @@
       "setpiece": false
     },
     {
-      "id": 533,
-      "name": "Mukiele",
-      "team": "SUN",
-      "pos": "DEF",
-      "price": 5.5,
-      "starting": true,
-      "captain": false,
-      "vice": false,
-      "pens": false,
-      "setpiece": false
-    },
-    {
       "id": 229,
       "name": "Tarkowski",
       "team": "EVE",
@@ -644,6 +632,18 @@
       "vice": false,
       "pens": false,
       "setpiece": false
+    },
+    {
+      "id": 449,
+      "name": "Hall",
+      "team": "NEW",
+      "pos": "DEF",
+      "price": 5.0,
+      "starting": true,
+      "captain": false,
+      "vice": false,
+      "pens": false,
+      "setpiece": true
     },
     {
       "id": 174,
