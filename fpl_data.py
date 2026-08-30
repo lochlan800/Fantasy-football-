@@ -529,6 +529,7 @@ def write_players_db(players, ranking, boot, fixtures):
             "team": p["team"], "pos": p["pos"], "price": p["price"],
             "mins": p["minutes"], "starts": p.get("starts", 0),
             "owned": p["owned"], "form": p["form"], "xgi90": round(p["xgi90"], 2),
+            "xgi_total": round(p["xgi_total"], 2),             # season xG+xA total (matches FPL's "Expected Goal Involvements")
             "rating": player_rating(p, team_diff, w) if avail else 0.0,
             "xpts": xpts.get(p["id"], 0.0),                    # projected points / gameweek
             "cs": (int(cs) if cs is not None else None),        # team clean-sheet % (for GK/DEF)

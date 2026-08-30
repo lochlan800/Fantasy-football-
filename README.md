@@ -296,7 +296,8 @@ The web tool now also includes:
   shows how many filters are active.
 - **📋 Stats table** — a sortable table of every player, like the paid sites' main
   stats page: tap any column to sort (points, PPG, form, ownership, minutes, goals,
-  assists, clean sheets, saves, xGI/90, ICT index, bonus, BPS, value, projected
+  assists, clean sheets, saves, **xGI (season xG+xA total — matches FPL's "Expected Goal
+  Involvements") and xGI/90 (the per-90 rate)**, ICT index, bonus, BPS, value, projected
   points), filter by position, minutes, **teams (tick any number of clubs — none ticked
   shows all) and a price cap ("£X.Xm & below")** with the controls at the top, and
   search by name.

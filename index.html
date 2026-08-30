@@ -505,7 +505,7 @@
     <div class="callout blue" style="margin-top:0;font-size:13px">⚠️ <b>"Per 90" stats (xGI90) mislead for players with few minutes</b> — one moment in a short cameo looks elite. The minutes filter (default 500+) hides those flukes so the list reflects players who actually play. Lower it only if you want to see everyone.</div>
     <input class="textline" id="statsSearch" placeholder="🔎 Search a player or club…" oninput="renderStats()" autocomplete="off" style="margin-bottom:12px">
     <div id="statsTable"></div>
-    <p class="save-note"><b>Tap any player row</b> to see their price, full stats, every fixture's difficulty and a bar chart of their projected points across the whole season. Pts = total points · PPG = points per match · CS = clean sheets · xGI90 = expected goals+assists per 90 · ICT = Influence/Creativity/Threat index · Bns = bonus · BPS = bonus points system · Val = value (points per £m) · xPts = projected points next GW · <b>xTot = projected total points for the rest of the season</b>. <b>Rating = our 0–100 score for how good a player is for his position</b> (100 = the best defender / midfielder / etc.), blending points, form, xG/xA, defensive actions and set-pieces, adjusted for fixtures and minutes — sort by it to find the best in each position. <b>Penalty (🎯) and set-piece (⚽) takers get a projection boost</b> for their extra route to points, so they rank higher. Showing the top 150 for the filter.</p>
+    <p class="save-note"><b>Tap any player row</b> to see their price, full stats, every fixture's difficulty and a bar chart of their projected points across the whole season. Pts = total points · PPG = points per match · CS = clean sheets · <b>xGI = season expected goals+assists total (matches FPL's "Expected Goal Involvements")</b> · xGI90 = the same but <b>per 90 minutes</b> (a rate — best for spotting form regardless of games played) · ICT = Influence/Creativity/Threat index · Bns = bonus · BPS = bonus points system · Val = value (points per £m) · xPts = projected points next GW · <b>xTot = projected total points for the rest of the season</b>. <b>Rating = our 0–100 score for how good a player is for his position</b> (100 = the best defender / midfielder / etc.), blending points, form, xG/xA, defensive actions and set-pieces, adjusted for fixtures and minutes — sort by it to find the best in each position. <b>Penalty (🎯) and set-piece (⚽) takers get a projection boost</b> for their extra route to points, so they rank higher. Showing the top 150 for the filter.</p>
   </section>
 
   <!-- ============ STATS GUIDE ============ -->
@@ -2126,6 +2126,13 @@
     // projection judges "is he a starter?" against games played, not a full 38.
     const maxStarts = db.players.reduce((m,p)=> Math.max(m, p.starts||0), 0);
     _gamesPlayed = Math.max(1, maxStarts, Math.round(maxMins/90));
+    // Season-total xGI (xG+xA) to match FPL's "Expected Goal Involvements". Use the
+    // exact total from the data when present, else rebuild it from the per-90 rate and
+    // minutes played (xGI/90 × mins ÷ 90). xgi90 stays for the predictive per-90 views.
+    db.players.forEach(p=>{
+      p.xgi_tot = (p.xgi_total!=null) ? +Number(p.xgi_total).toFixed(2)
+                 : +(((Number(p.xgi90)||0) * (p.mins||0)) / 90).toFixed(2);
+    });
   }
   function ensureDb(cb, onFail){
     if(_playersDb){ cb(_playersDb); return; }
@@ -2165,6 +2172,7 @@
     {key:'assists',label:'A',    num:true, get:p=>p.assists},
     {key:'clean_sheets',label:'CS',num:true, get:p=>p.clean_sheets},
     {key:'saves', label:'Sv',    num:true, get:p=>p.saves},
+    {key:'xgi_tot', label:'xGI', num:true, get:p=> p.xgi_tot!=null?p.xgi_tot.toFixed(2):'—'},
     {key:'xgi90', label:'xGI90', num:true, get:p=>fmt(p.xgi90)},
     {key:'ict',   label:'ICT',   num:true, get:p=>fmt(p.ict)},
     {key:'bonus', label:'Bns',   num:true, get:p=>p.bonus},
@@ -2325,6 +2333,8 @@
      a:"When a new season starts the data resets and everyone's minutes go back near zero. The Stats table used to default to a \"500+ minutes\" filter, which then hid <b>everyone</b>. It now <b>auto-adjusts the minutes filter to the season stage</b> (low early on) so players always show, and the transfer suggestions use a season-aware minutes gate too. An <b>Early season</b> note reminds you the numbers are small-sample until a few gameweeks are played."},
     {q:"Is ownership taken into account?",
      a:"Yes — <b>ownership now factors into the rating</b>. Heavily-owned \"template\" players are safer picks (owning them protects your rank and avoids scary weeks), so they get a nudge: about <b>+12% at 39%+ owned (must-have)</b>, <b>+7% at 27%+</b>, <b>+3% at 15%+</b>, and no change below that (differentials aren't penalised — they're just not boosted). This flows through the Rating column, Rate My Team and the transfer suggestions, where a template pick shows a <b>📈 template</b> tag."},
+    {q:"Why is the xGI here different to the one on the Premier League / FPL site?",
+     a:"It's the <b>same underlying stat</b> — it was just shown as a <b>rate</b>, not a total. FPL's <b>Expected Goal Involvements</b> is the <b>season total</b> (xG + xA added up so far). The Stats table now has an <b>xGI</b> column that shows exactly that total, so it <b>matches FPL</b>. The separate <b>xGI90</b> column is the same thing <b>per 90 minutes</b> (total ÷ minutes × 90) — a rate that's better for spotting who's in form regardless of how many games they've played, so it's what the <b>Player Insights</b> and the template <b>goal-threat</b> check use. Neither was ever \"last game only\" — both cover the whole season so far. Quick check: xGI90 × (minutes ÷ 90) = the season total. (Note: this is FPL/Opta data from the official API. The separate <b>Understat</b> feed is a second, independent xG model and can be down or read slightly differently — it's only used for the extra insight views, not this column.)"},
     {q:"Do I have to click ▶ 'assume he starts' on every player?",
      a:"<b>No — not any more.</b> The projection now judges minutes against the games <b>actually played so far</b>, not a full 38-game season, so a player who's <b>started every game</b> is treated as a nailed starter automatically (an ever-present projects at ~100% of full straight away). Earlier, two games in, even a certain starter looked like a rotation risk because 180 minutes is tiny next to a whole season — which forced you to hand-flag everyone. The <b>▶</b> toggle is now only for the odd case the data <b>can't</b> see yet: a new signing, or a backup you expect to start because someone's injured. Tap it to force a full-minutes projection for those; everyone else is handled for you."},
     {q:"Why do penalty and set-piece takers rank higher?",
@@ -2396,7 +2406,8 @@
     const stats=[
       ['Pts', info.points], ['Per match', fmt(info.ppg)], ['Form', fmt(info.form)], ['Own%', fmt(info.owned)],
       ['Mins', info.mins], ['Goals', info.goals], ['Assists', info.assists], ['CS', info.clean_sheets],
-      ['xGI90', fmt(info.xgi90)], ['ICT', fmt(info.ict)], ['Bonus', info.bonus], ['xPts/GW', xNextGw],
+      ['xGI', info.xgi_tot!=null?info.xgi_tot.toFixed(2):'—'], ['xGI/90', fmt(info.xgi90)],
+      ['ICT', fmt(info.ict)], ['Bonus', info.bonus], ['xPts/GW', xNextGw],
     ];
     html += `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(64px,1fr));gap:6px;margin-bottom:14px">`
       + stats.map(s=>pill(s[0], s[1])).join('')
