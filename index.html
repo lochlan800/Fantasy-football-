@@ -358,6 +358,7 @@
         <tbody>
           <tr><td><b>⭐ Premiums (£9m+)</b></td><td>2–3</td><td>Your captain rotation and points ceiling — attacking mids &amp; a top forward. This is where you spend big.</td></tr>
           <tr><td><b>💥 Goal threat (high xGI/90)</b></td><td>5–6</td><td>Players genuinely creating &amp; getting chances — the engine of your score.</td></tr>
+          <tr><td><b>🟢 Good fixture runs</b></td><td>most of your XI</td><td>The single biggest short-term signal. The builder scores every pick by their <b>next 6 gameweeks</b>' difficulty (doubles help, blanks hurt), so a great player on a brutal run drops and an in-form team with a green run rises — even your captain.</td></tr>
           <tr><td><b>🎯 Penalty / set-piece takers</b></td><td>4+</td><td>An extra, reliable route to points every week — ideally your premiums are on them.</td></tr>
           <tr><td><b>📈 Template picks (30%+ owned)</b></td><td>6+</td><td>The players most top managers own — owning them protects your rank and avoids scary weeks.</td></tr>
           <tr><td><b>💷 Budget enablers (≤£4.5m)</b></td><td>4–5</td><td>Cheap nailed players (your bench + 1–2 starters) that free up the cash for the premiums.</td></tr>
@@ -1542,13 +1543,32 @@
   // Builds the optimal legal 15 to a winning blueprint: premiums up top, value
   // enablers at the back, weighted for goal threat, set-pieces, form and template
   // ownership. Then shows how the squad breaks down against the target ratios.
+  // Average fixture "swing" factor over the next N gameweeks for a team, using the
+  // same 0.16-per-step model as the projection: 1.0 = neutral, >1 = good run (easy
+  // games / doubles), <1 = bad run (hard games / blanks). Fixtures are huge, so the
+  // template builder weights every pick by this — good runs rise, bad runs fall.
+  function fixtureFactor(short, fromGw, n){
+    if(!_seasonGws) return 1;
+    const tg = _seasonGws[short]; if(!tg) return 1;
+    let sum = 0, weeks = 0;
+    for(let gw=fromGw; gw<fromGw+n && gw<=38; gw++){
+      const games = tg[gw] || []; weeks++;
+      games.forEach(g => { sum += (1 + 0.16*(3 - g.diff)); });   // doubles add up, blanks add 0
+    }
+    return weeks ? sum/weeks : 1;
+  }
   function buildTemplateSquad(){
     if(!_playersDb) return null;
+    const fromGw = (_season && _season.current_gw) || 1;
     const pool = {GK:[],DEF:[],MID:[],FWD:[]};
-    _playersDb.players.filter(p=>p.avail && Number(p.price)>0).forEach(p=>{ if(pool[p.pos]) pool[p.pos].push(Object.assign({}, p)); });
+    _playersDb.players.filter(p=>p.avail && Number(p.price)>0).forEach(p=>{
+      if(pool[p.pos]){ p._fix = fixtureFactor(p.team, fromGw, 6); pool[p.pos].push(Object.assign({}, p)); }
+    });
     // A "template" is what the best managers actually own, so ownership is the main
-    // driver (reliable even early season), with the blended rating as a tiebreak.
-    const tScore = p => (Number(p.owned)||0) + (Number(p.rating)||0)*4;
+    // driver (reliable even early season), with the blended rating as a tiebreak —
+    // then the whole score is scaled by the next 6 gameweeks' fixtures, because who
+    // you own matters far less if they've got a brutal run.
+    const tScore = p => ((Number(p.owned)||0) + (Number(p.rating)||0)*4) * (p._fix||1);
     Object.keys(pool).forEach(k=> pool[k].sort((a,b)=> tScore(b) - tScore(a)));
     const need = {GK:2, DEF:5, MID:5, FWD:3};
     // starters get the money (premiums), the 4 bench slots stay cheap
@@ -1581,7 +1601,7 @@
     const cap = attackers[0], vice = attackers[1];
     const players = all.map(p=>({pos:p.pos, name:p.name, price:p.price, team:p.team,
       captain:p===cap, vice:p===vice, starting:!bench.has(p),
-      xgi90:p.xgi90, form:p.form, owned:p.owned, pens:p.pens, setpiece:p.setpiece}));
+      xgi90:p.xgi90, form:p.form, owned:p.owned, pens:p.pens, setpiece:p.setpiece, fix:p._fix}));
     return { players, budget_spent: spent };
   }
   function templateBreakdown(v){
@@ -1592,10 +1612,12 @@
     const budg  = cnt(p=> Number(p.price) <= 4.5);
     const tmpl  = cnt(p=> (Number(p.owned)||0) >= 30);
     const prem  = cnt(p=> Number(p.price) >= 9);
+    const goodFix = cnt(p=> p.starting!==false && (Number(p.fix)||1) >= 1.05);   // starters on a good run
     const row = (label,val,target,ok)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--border);font-size:13.5px"><span>${label}</span><span><b style="color:${ok?'var(--accent)':'var(--gold)'}">${val}</b> <span style="color:var(--muted);font-size:12px">aim ${target}</span></span></div>`;
     return `<div class="card"><h3>🧩 Template make-up</h3>
       <p style="margin-top:0;color:var(--muted);font-size:13px">How these 15 break down against the winning blueprint (green = on target):</p>
       ${row('💥 Goal threat (xGI/90 ≥ 0.4)', highX, '5–6', highX>=5)}
+      ${row('🟢 Starters on a good fixture run (next 6)', goodFix, '6+', goodFix>=6)}
       ${row('🎯 On penalties / set-pieces', setp, '4+', setp>=4)}
       ${row('🔥 In good form', form, '4+', form>=4)}
       ${row('💷 Budget enablers (≤ £4.5m)', budg, '4–5', budg>=4)}
@@ -1608,10 +1630,14 @@
     const disp = document.getElementById('autoPickDisplay');
     disp.innerHTML = '<div class="card" style="color:var(--muted)">Building the template team…</div>';
     ensureDb(() => {
-      const v = buildTemplateSquad();
-      if(!v || v.players.length < 15){ disp.innerHTML = '<div class="card" style="color:var(--muted)">Couldn\'t build a full squad from the data.</div>'; return; }
-      renderAutoPick(v);
-      disp.insertAdjacentHTML('beforeend', templateBreakdown(v));
+      // load season fixtures first so picks are weighted by each team's upcoming run
+      const build = () => {
+        const v = buildTemplateSquad();
+        if(!v || v.players.length < 15){ disp.innerHTML = '<div class="card" style="color:var(--muted)">Couldn\'t build a full squad from the data.</div>'; return; }
+        renderAutoPick(v);
+        disp.insertAdjacentHTML('beforeend', templateBreakdown(v));
+      };
+      ensureSeason(build, build);   // build even if fixtures fail to load (fixtureFactor falls back to 1)
     }, () => { disp.innerHTML = '<div class="card" style="color:var(--muted)">Player data not loaded yet — run the <b>Update FPL data</b> workflow, then reload.</div>'; });
   }
 
@@ -2213,7 +2239,7 @@
     {q:"What is the ⋯ Info button on the pitch for?",
      a:"On the Squad Builder pitch, the button in the <b>top-right corner</b> opens a menu to show an extra stat <b>under every player</b>: their <b>fixture difficulty for the next 3 gameweeks</b> (colour-coded opponents) or their <b>ownership %</b>. Pick one and it applies to all your players; choose <b>Off</b> to hide it again. Your choice is saved."},
     {q:"What is the 🧩 Template team and how is it built?",
-     a:"In <b>Squad Builder → ⚡ Auto-Pick → 🧩 Template</b>, the app builds a <b>proven-shape £100m squad</b> from the live stats. It follows the winning <b>blueprint ratios</b>: 5–6 goal-threat players (high xGI/90), 4+ penalty/set-piece takers, some in-form players, 6+ template picks (30%+ owned for rank safety), 4–5 budget enablers (≤£4.5m) to fund a cheap playing bench, and 2–3 premiums up top for your captain and ceiling. It keeps a legal squad (2·5·5·3, max 3 per club, ≤£100m), captains your best premium, and shows a <b>🧩 Template make-up</b> card scoring the 15 against each target (green = on target). Tap <b>⬇ Use this as my team</b> to copy it into My Team, then tweak it. See <b>📖 Guide → 🧩 The optimal squad blueprint</b> for the ratios it aims at. Early season the picks are ownership-led (data is small-sample), sharpening as real games are played."},
+     a:"In <b>Squad Builder → ⚡ Auto-Pick → 🧩 Template</b>, the app builds a <b>proven-shape £100m squad</b> from the live stats. It follows the winning <b>blueprint ratios</b>: 5–6 goal-threat players (high xGI/90), 4+ penalty/set-piece takers, some in-form players, 6+ template picks (30%+ owned for rank safety), 4–5 budget enablers (≤£4.5m) to fund a cheap playing bench, and 2–3 premiums up top for your captain and ceiling. It keeps a legal squad (2·5·5·3, max 3 per club, ≤£100m), captains your best premium, and shows a <b>🧩 Template make-up</b> card scoring the 15 against each target (green = on target). Tap <b>⬇ Use this as my team</b> to copy it into My Team, then tweak it. <b>Fixtures matter hugely, so every pick is weighted by their next 6 gameweeks' difficulty</b> — a good player on a brutal run drops down and a team on a green run (or a double gameweek) rises up, right down to who gets the armband. See <b>📖 Guide → 🧩 The optimal squad blueprint</b> for the ratios it aims at. Early season the picks are ownership-led (performance data is small-sample), sharpening as real games are played."},
   ];
   function renderFaq(){
     const box=document.getElementById('faqBody'); if(!box) return;

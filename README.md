@@ -122,11 +122,13 @@ it against the latest team news before your deadline.
 The web tool now also includes:
 - **🧩 Template team builder** — in **🧮 Squad Builder → ⚡ Auto-Pick**, the **🧩 Template**
   strategy builds a proven-shape £100m squad straight from the live stats: it picks the
-  actual template players (weighted by ownership + rating), keeps a legal 2·5·5·3 / max-3-
-  per-club / ≤£100m squad with a cheap playing bench, and captains your best premium. It
-  then shows a **🧩 Template make-up** card scoring the 15 against the winning ratios —
-  goal threat (xGI/90 ≥ 0.4), penalty/set-piece takers, in-form players, budget enablers,
-  template picks (30%+ owned) and premiums — with green ticks where it hits target. Tap
+  actual template players (weighted by ownership + rating **and each team's next-6-gameweek
+  fixture run** — good runs and doubles rise, brutal runs and blanks fall, right down to
+  the captain), keeps a legal 2·5·5·3 / max-3-per-club / ≤£100m squad with a cheap playing
+  bench, and captains your best premium. It then shows a **🧩 Template make-up** card
+  scoring the 15 against the winning ratios — goal threat (xGI/90 ≥ 0.4), **starters on a
+  good fixture run**, penalty/set-piece takers, in-form players, budget enablers, template
+  picks (30%+ owned) and premiums — with green ticks where it hits target. Tap
   **⬇ Use this as my team** to copy it into My Team. The **🧩 The optimal squad blueprint**
   card on **📖 Guide → Core Strategy** explains the ratios it's built to.
 - **❓ Questions tab** — a searchable Q&A that answers common questions about how the
