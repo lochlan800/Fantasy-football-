@@ -2607,14 +2607,21 @@
   const own = p => Number(p.owned).toFixed(1)+'%';
   // Early-season fallbacks built live from the player data, so these views still show
   // something before the auto-generated insights file has enough games to populate.
+  // xG views on a per-90 basis (xGI90): expected goal involvement per 90 vs the
+  // actual goals+assists per 90, ranked by chance-creation rate.
   function clientDueHaul(over){
     if(!_playersDb) return [];
     return _playersDb.players
-      .filter(p => p.avail && (p.mins||0) >= 45 && p.pos!=='GK')
-      .map(p => { const exp=(Number(p.xgi90)||0)*(p.mins/90), act=(p.goals||0)+(p.assists||0);
-        return {name:p.name,pos:p.pos,team:p.team,price:p.price,owned:p.owned,xgi:exp.toFixed(1),actual:act,gap:(over?act-exp:exp-act).toFixed(1),_g:exp-act}; })
-      .filter(x => over ? x._g <= -0.4 : x._g >= 0.4)
-      .sort((a,b) => over ? a._g-b._g : b._g-a._g)
+      .filter(p => p.avail && (p.mins||0) >= 90 && p.pos!=='GK')
+      .map(p => {
+        const per90 = 90 / Math.max(p.mins, 1);
+        const x90 = Number(p.xgi90) || 0;                 // expected G+A per 90
+        const a90 = ((p.goals||0)+(p.assists||0)) * per90; // actual G+A per 90
+        return {name:p.name,pos:p.pos,team:p.team,price:p.price,owned:p.owned,
+          _x:x90, _a:a90, xgi:x90.toFixed(2), actual:a90.toFixed(2), gap:Math.abs(x90-a90).toFixed(2)};
+      })
+      .filter(x => over ? (x._a - x._x) >= 0.15 : (x._x >= 0.30 && x._x - x._a >= 0.10))
+      .sort((a,b) => over ? (b._a-b._x)-(a._a-a._x) : b._x - a._x)   // most threatening / most over-performing first
       .slice(0,20);
   }
   function clientDifferentials(){
@@ -2627,16 +2634,16 @@
   }
   const INSIGHT_VIEWS = {
     under: {
-      title:'💎 Due a haul — big xG, few goals so far',
-      note:'These players are creating chances but haven\'t been rewarded yet. History says the goals are coming — buy them <b>before</b> everyone else does.',
-      get:d=>(d.xg_under&&d.xg_under.length)?d.xg_under:clientDueHaul(false),
-      cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'xG+xA',f:p=>p.xgi},{h:'Actual G+A',f:p=>p.actual},{h:'Gap',f:p=>'<span class="pill green">+'+p.gap+'</span>'},{h:'Own',f:own}]
+      title:'💎 Due a haul — high xGI/90, not scoring yet',
+      note:'Ranked by <b>xGI90</b> — expected goals + assists <b>per 90 minutes</b>. These players are creating/getting the chances but haven\'t been rewarded yet, so the goals are likely coming. Buy them <b>before</b> everyone else does. (Per-90 is noisy in small samples — check minutes early season.)',
+      get:d=>clientDueHaul(false),
+      cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'xGI/90',f:p=>'<span class="pill blue">'+p.xgi+'</span>'},{h:'G+A /90',f:p=>p.actual},{h:'Gap /90',f:p=>'<span class="pill green">+'+p.gap+'</span>'},{h:'Own',f:own}]
     },
     over: {
-      title:'⚠️ Riding their luck — scoring above xG',
-      note:'These have scored more than their chances suggest. Great <em>if</em> it lasts, but the numbers say a cold spell may be coming — think about selling near the peak.',
-      get:d=>(d.xg_over&&d.xg_over.length)?d.xg_over:clientDueHaul(true),
-      cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'xG+xA',f:p=>p.xgi},{h:'Actual G+A',f:p=>p.actual},{h:'Over by',f:p=>'<span class="pill red">+'+p.gap+'</span>'},{h:'Own',f:own}]
+      title:'⚠️ Riding their luck — scoring above xGI/90',
+      note:'Their actual goals+assists <b>per 90</b> is running ahead of their <b>xGI90</b>. Great <em>while</em> it lasts, but the numbers say a cold spell may be coming — think about selling near the peak.',
+      get:d=>clientDueHaul(true),
+      cols:[{h:'Player',f:nameCell},{h:'£m',f:money},{h:'xGI/90',f:p=>'<span class="pill blue">'+p.xgi+'</span>'},{h:'G+A /90',f:p=>p.actual},{h:'Over by /90',f:p=>'<span class="pill red">+'+p.gap+'</span>'},{h:'Own',f:own}]
     },
     penalties: {
       title:'🎯 Penalty takers — every club\'s 1st & 2nd choice',
