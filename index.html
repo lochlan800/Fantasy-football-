@@ -2593,6 +2593,8 @@
   // ---------- Player Insights (reads insights-data.json) ----------
   let _insights = null;
   let _insightView = 'penalties';   // always populated; "due a haul" etc. fill in once games are played
+  let _xgPos = 'ALL';               // position filter for the xG (due-a-haul / riding-luck) views
+  function setXgPos(pos){ _xgPos = pos; showInsight(_insightView); }
   const POS_PILL = {GK:'blue', DEF:'green', MID:'gold', FWD:'purple'};
   function tbl(rows, cols){
     if(!rows || !rows.length) return '<p style="color:var(--muted)">Nothing stands out yet — it\'s only a game or two into the season, so this needs a few more gameweeks of data before the pattern is meaningful. Check back soon.</p>';
@@ -2608,7 +2610,7 @@
   function clientDueHaul(over){
     if(!_playersDb) return [];
     return _playersDb.players
-      .filter(p => p.avail && (p.mins||0) >= 45 && (p.pos==='MID'||p.pos==='FWD'))
+      .filter(p => p.avail && (p.mins||0) >= 45 && p.pos!=='GK')
       .map(p => { const exp=(Number(p.xgi90)||0)*(p.mins/90), act=(p.goals||0)+(p.assists||0);
         return {name:p.name,pos:p.pos,team:p.team,price:p.price,owned:p.owned,xgi:exp.toFixed(1),actual:act,gap:(over?act-exp:exp-act).toFixed(1),_g:exp-act}; })
       .filter(x => over ? x._g <= -0.4 : x._g >= 0.4)
@@ -2766,6 +2768,14 @@
       if(view === 'price'){ body.innerHTML = renderPrice(d); return; }
       if(view === 'nailed'){ body.innerHTML = renderNailed(d); filterNailed(''); return; }
       const v = INSIGHT_VIEWS[view];
+      // the xG views get a position filter (defenders create & score too)
+      if(view === 'under' || view === 'over'){
+        let rows = v.get(d);
+        if(_xgPos !== 'ALL') rows = rows.filter(p => p.pos === _xgPos);
+        const btns = ['ALL','DEF','MID','FWD'].map(pp => `<button class="btn ${_xgPos===pp?'':'ghost'}" style="padding:5px 12px;font-size:12.5px" onclick="setXgPos('${pp}')">${pp==='ALL'?'All':pp}</button>`).join(' ');
+        body.innerHTML = `<div class="card"><h3>${v.title}</h3><div class="callout blue" style="margin-top:0">${v.note}</div><div class="row-actions" style="margin:0 0 10px">${btns}</div>${tbl(rows, v.cols)}</div>`;
+        return;
+      }
       body.innerHTML = `<div class="card"><h3>${v.title}</h3><div class="callout blue" style="margin-top:0">${v.note}</div>${tbl(v.get(d), v.cols)}</div>`;
     };
     const proceed = () => {
