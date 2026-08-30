@@ -132,8 +132,11 @@ The web tool now also includes:
   **⬇ Use this as my team** to copy it into My Team. You can also grade **your own team**
   against the same blueprint (fixture row included): on the **🧮 My Team** tab tap
   **🧩 Check my make-up** and it scores your actual 15, so reds show exactly where you're
-  light. The **🧩 The optimal squad blueprint** card on **📖 Guide → Core Strategy**
-  explains the ratios it's built to.
+  light. It names what you're short of at the top, and each row is **tap-to-expand** — open
+  one to see which of your players cover that category plus a shortlist of the **top players
+  to add** for it (best available, minutes-filtered so it never suggests a cameo). The
+  **🧩 The optimal squad blueprint** card on **📖 Guide → Core Strategy** explains the
+  ratios it's built to.
 - **❓ Questions tab** — a searchable Q&A that answers common questions about how the
   app works and what its numbers mean (xPts vs xTot, the 0–100 Rating, the World Cup
   flag, chip halves, why a player isn't showing, cross-device saving, and more). New
