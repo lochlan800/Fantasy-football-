@@ -577,7 +577,7 @@
       <h3>🧭 The tools — what each part of the app does</h3>
       <table>
         <tbody>
-          <tr><td><b>🧮 Squad Builder</b></td><td>Your team on a pitch. Tap <b>＋</b> to add a player (with <b>⚙ Filter</b> for club &amp; price), tap a name or <b>📊</b> to see their full card, drag-swap to substitute, and use the <b>◀ ▶</b> gameweek stepper to plan each week. <b>▶</b> = "assume he starts", <b style="color:var(--red)">🌍</b> = World Cup returnee.</td></tr>
+          <tr><td><b>🧮 Squad Builder</b></td><td>Your team on a pitch. Tap <b>＋</b> to add a player (with <b>⚙ Filter</b> for club &amp; price), tap a name or <b>📊</b> to see their full card, drag-swap to substitute, and use the <b>◀ ▶</b> gameweek stepper to plan each week. The per-player <b>▶</b> = "assume he starts" — only needed for a new signing or an unexpected starter the data can't see yet, since nailed regulars are now projected as starters automatically. <b style="color:var(--red)">🌍</b> = World Cup returnee.</td></tr>
           <tr><td><b>⭐ Rate my team</b></td><td>Scores your XI out of 100 and tells you <b>how to raise it</b> — the single moves that lift your score most (same price, or spending your <b>bank</b>), plus advice tailored to the <b>chips</b> you've planned.</td></tr>
           <tr><td><b>📊 Player card</b></td><td>Tap any player (pitch or Stats row) for their price, every stat, their 0–100 rating explained, and a <b>bar chart of projected points for all 38 gameweeks</b> with each fixture's difficulty.</td></tr>
           <tr><td><b>🗺 Planner Board</b></td><td>A wide, laptop-friendly board: every team's fixtures colour-coded (drag to reorder, your teams starred), a <b>🎴 chip-plan row</b>, and a <b>chip advisor</b> that reads your squad. Split-view shows two panels at once.</td></tr>
@@ -2064,11 +2064,16 @@
   }
   // Minutes gate for "does he actually play?" checks — scaled to the season stage so
   // that early on (when nobody has many minutes yet) it doesn't exclude everyone.
-  let _minsGate = 600, _seasonEarly = false;
+  let _minsGate = 600, _seasonEarly = false, _gamesPlayed = 38;
   function computeMinsGate(db){
     const maxMins = db.players.reduce((m,p)=> Math.max(m, p.mins||0), 0);
     _minsGate = maxMins >= 1500 ? 600 : maxMins >= 600 ? 300 : maxMins >= 200 ? 90 : 0;
     _seasonEarly = maxMins < 900;
+    // How many league games have actually been played so far — an ever-present's
+    // start count, cross-checked against the biggest minutes tally. Used so the
+    // projection judges "is he a starter?" against games played, not a full 38.
+    const maxStarts = db.players.reduce((m,p)=> Math.max(m, p.starts||0), 0);
+    _gamesPlayed = Math.max(1, maxStarts, Math.round(maxMins/90));
   }
   function ensureDb(cb, onFail){
     if(_playersDb){ cb(_playersDb); return; }
@@ -2268,6 +2273,8 @@
      a:"When a new season starts the data resets and everyone's minutes go back near zero. The Stats table used to default to a \"500+ minutes\" filter, which then hid <b>everyone</b>. It now <b>auto-adjusts the minutes filter to the season stage</b> (low early on) so players always show, and the transfer suggestions use a season-aware minutes gate too. An <b>Early season</b> note reminds you the numbers are small-sample until a few gameweeks are played."},
     {q:"Is ownership taken into account?",
      a:"Yes — <b>ownership now factors into the rating</b>. Heavily-owned \"template\" players are safer picks (owning them protects your rank and avoids scary weeks), so they get a nudge: about <b>+12% at 39%+ owned (must-have)</b>, <b>+7% at 27%+</b>, <b>+3% at 15%+</b>, and no change below that (differentials aren't penalised — they're just not boosted). This flows through the Rating column, Rate My Team and the transfer suggestions, where a template pick shows a <b>📈 template</b> tag."},
+    {q:"Do I have to click ▶ 'assume he starts' on every player?",
+     a:"<b>No — not any more.</b> The projection now judges minutes against the games <b>actually played so far</b>, not a full 38-game season, so a player who's <b>started every game</b> is treated as a nailed starter automatically (an ever-present projects at ~100% of full straight away). Earlier, two games in, even a certain starter looked like a rotation risk because 180 minutes is tiny next to a whole season — which forced you to hand-flag everyone. The <b>▶</b> toggle is now only for the odd case the data <b>can't</b> see yet: a new signing, or a backup you expect to start because someone's injured. Tap it to force a full-minutes projection for those; everyone else is handled for you."},
     {q:"Why do penalty and set-piece takers rank higher?",
      a:"They get a <b>projection boost</b> (penalties ×1.12, set-pieces ×1.06) because they have an extra, reliable route to points. It flows through the pitch, the Stats xPts/xTot and the card, so nailed takers rise up the rankings."},
     {q:"How do the chips work — how many do I get?",
@@ -3013,8 +3020,13 @@
     if(!info) return 0;
     const games = (teamGws && teamGws[gw]) || [];
     if(!games.length) return 0;                        // blank gameweek → no points
-    // "assume starts" → treat as a full-minutes nailed starter regardless of past minutes
-    const mconf = assumeStart ? 1.0 : (0.2 + 0.8 * Math.min(info.mins||0, 1800) / 1800);
+    // "assume starts" → treat as a full-minutes nailed starter regardless of past minutes.
+    // Otherwise judge minutes against the games PLAYED SO FAR (not a full 38), so an
+    // ever-present reads as nailed from game 1 instead of looking like a rotation risk
+    // all season — you shouldn't have to hand-flag every obvious starter early on.
+    const played = _gamesPlayed || 38;
+    const share = Math.min((info.mins||0) / (played * 90), 1);   // 1.0 = has played every minute
+    const mconf = assumeStart ? 1.0 : (0.35 + 0.65 * share);
     // set-piece & penalty takers have an extra, reliable route to points — reward it
     const spBoost = (info.pens ? 1.12 : 1) * (info.setpiece ? 1.06 : 1);
     let pts = 0;
