@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 84.7,
+      "budget_spent": 89.2,
       "captain_id": 547,
       "vice_id": 72,
       "players": [
@@ -133,6 +133,18 @@
           "setpiece": true
         },
         {
+          "id": 12,
+          "name": "Saka",
+          "team": "ARS",
+          "pos": "MID",
+          "price": 9.5,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": true,
+          "setpiece": true
+        },
+        {
           "id": 154,
           "name": "Palmer",
           "team": "CHE",
@@ -143,18 +155,6 @@
           "vice": false,
           "pens": true,
           "setpiece": true
-        },
-        {
-          "id": 243,
-          "name": "Alcaraz",
-          "team": "EVE",
-          "pos": "MID",
-          "price": 5.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
         },
         {
           "id": 165,
@@ -236,6 +236,18 @@
           "setpiece": true
         },
         {
+          "id": 8,
+          "name": "Calafiori",
+          "team": "ARS",
+          "pos": "DEF",
+          "price": 5.6,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
+        },
+        {
           "id": 279,
           "name": "Ajayi",
           "team": "HUL",
@@ -246,18 +258,6 @@
           "vice": false,
           "pens": false,
           "setpiece": false
-        },
-        {
-          "id": 449,
-          "name": "Hall",
-          "team": "NEW",
-          "pos": "DEF",
-          "price": 5.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
         },
         {
           "id": 173,
@@ -320,23 +320,23 @@
           "setpiece": true
         },
         {
-          "id": 399,
-          "name": "Cherki",
-          "team": "MCI",
+          "id": 12,
+          "name": "Saka",
+          "team": "ARS",
           "pos": "MID",
-          "price": 7.6,
+          "price": 9.5,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": false,
+          "pens": true,
           "setpiece": true
         },
         {
-          "id": 427,
-          "name": "Mbeumo",
-          "team": "MUN",
+          "id": 86,
+          "name": "Lewis-Potter",
+          "team": "BRE",
           "pos": "MID",
-          "price": 8.0,
+          "price": 5.5,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 84.7,
+  "budget_spent": 89.2,
   "captain_id": 547,
   "vice_id": 72,
   "players": [
@@ -694,6 +694,18 @@
       "setpiece": true
     },
     {
+      "id": 12,
+      "name": "Saka",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 9.5,
+      "starting": true,
+      "captain": false,
+      "vice": false,
+      "pens": true,
+      "setpiece": true
+    },
+    {
       "id": 154,
       "name": "Palmer",
       "team": "CHE",
@@ -704,18 +716,6 @@
       "vice": false,
       "pens": true,
       "setpiece": true
-    },
-    {
-      "id": 243,
-      "name": "Alcaraz",
-      "team": "EVE",
-      "pos": "MID",
-      "price": 5.0,
-      "starting": true,
-      "captain": false,
-      "vice": false,
-      "pens": false,
-      "setpiece": false
     },
     {
       "id": 165,
