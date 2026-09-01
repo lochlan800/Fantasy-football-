@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 89.2,
+      "budget_spent": 89.3,
       "captain_id": 547,
       "vice_id": 72,
       "players": [
@@ -53,7 +53,7 @@
           "name": "Ajayi",
           "team": "HUL",
           "pos": "DEF",
-          "price": 4.0,
+          "price": 4.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 99.9,
+      "budget_spent": 99.1,
       "captain_id": 547,
       "vice_id": 426,
       "players": [
@@ -228,7 +228,7 @@
           "name": "De Cuyper",
           "team": "BHA",
           "pos": "DEF",
-          "price": 4.6,
+          "price": 4.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -252,7 +252,7 @@
           "name": "Ajayi",
           "team": "HUL",
           "pos": "DEF",
-          "price": 4.0,
+          "price": 4.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -260,12 +260,12 @@
           "setpiece": false
         },
         {
-          "id": 173,
-          "name": "Thomas",
-          "team": "COV",
+          "id": 277,
+          "name": "Egan",
+          "team": "HUL",
           "pos": "DEF",
           "price": 4.0,
-          "starting": false,
+          "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
@@ -332,16 +332,16 @@
           "setpiece": true
         },
         {
-          "id": 86,
-          "name": "Lewis-Potter",
-          "team": "BRE",
+          "id": 605,
+          "name": "Yalcouy\u00e9",
+          "team": "BHA",
           "pos": "MID",
-          "price": 5.5,
-          "starting": true,
+          "price": 4.5,
+          "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
           "id": 165,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 78.6,
+      "budget_spent": 78.7,
       "captain_id": 547,
       "vice_id": 72,
       "players": [
@@ -427,7 +427,7 @@
           "name": "Ajayi",
           "team": "HUL",
           "pos": "DEF",
-          "price": 4.0,
+          "price": 4.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 89.2,
+  "budget_spent": 89.3,
   "captain_id": 547,
   "vice_id": 72,
   "players": [
@@ -614,7 +614,7 @@
       "name": "Ajayi",
       "team": "HUL",
       "pos": "DEF",
-      "price": 4.0,
+      "price": 4.1,
       "starting": true,
       "captain": false,
       "vice": false,
