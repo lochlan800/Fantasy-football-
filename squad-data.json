@@ -85,8 +85,8 @@
           "setpiece": true
         },
         {
-          "id": 174,
-          "name": "Kitching",
+          "id": 175,
+          "name": "van Ewijk",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -272,8 +272,8 @@
           "setpiece": false
         },
         {
-          "id": 174,
-          "name": "Kitching",
+          "id": 175,
+          "name": "van Ewijk",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -382,16 +382,16 @@
       ]
     },
     "value": {
-      "budget_spent": 79.8,
+      "budget_spent": 80.4,
       "captain_id": 547,
       "vice_id": 72,
       "players": [
         {
-          "id": 385,
-          "name": "Trafford",
-          "team": "LEE",
+          "id": 572,
+          "name": "Tzolakis",
+          "team": "HUL",
           "pos": "GK",
-          "price": 5.0,
+          "price": 4.5,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -435,18 +435,6 @@
           "setpiece": false
         },
         {
-          "id": 586,
-          "name": "Mendy",
-          "team": "HUL",
-          "pos": "DEF",
-          "price": 4.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
-        },
-        {
           "id": 229,
           "name": "Tarkowski",
           "team": "EVE",
@@ -459,8 +447,20 @@
           "setpiece": false
         },
         {
-          "id": 174,
-          "name": "Kitching",
+          "id": 449,
+          "name": "Hall",
+          "team": "NEW",
+          "pos": "DEF",
+          "price": 5.1,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
+        },
+        {
+          "id": 175,
+          "name": "van Ewijk",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -646,8 +646,8 @@
       "setpiece": true
     },
     {
-      "id": 174,
-      "name": "Kitching",
+      "id": 175,
+      "name": "van Ewijk",
       "team": "COV",
       "pos": "DEF",
       "price": 4.0,
