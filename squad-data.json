@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 99.3,
+      "budget_spent": 99.4,
       "captain_id": 547,
       "vice_id": 426,
       "players": [
@@ -240,7 +240,7 @@
           "name": "Calafiori",
           "team": "ARS",
           "pos": "DEF",
-          "price": 5.6,
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
