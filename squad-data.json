@@ -495,18 +495,6 @@
           "setpiece": false
         },
         {
-          "id": 426,
-          "name": "B.Fernandes",
-          "team": "MUN",
-          "pos": "MID",
-          "price": 12.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": true,
-          "setpiece": true
-        },
-        {
           "id": 367,
           "name": "Gakpo",
           "team": "LIV",
@@ -516,6 +504,18 @@
           "captain": false,
           "vice": false,
           "pens": false,
+          "setpiece": true
+        },
+        {
+          "id": 426,
+          "name": "B.Fernandes",
+          "team": "MUN",
+          "pos": "MID",
+          "price": 12.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": true,
           "setpiece": true
         },
         {
