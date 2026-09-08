@@ -187,7 +187,13 @@ The web tool now also includes:
     **First half (GW1–19)** or **Second half (GW20–38)** — to plan each half of the
     chip cycle at once; DGW and blanks are marked. You can also **drag any team by its
     ⠿ handle** to slot it in front of another and build your own row order (saved
-    between visits); a one-tap **↺ reset** puts it back to easiest-run-first.
+    between visits); a one-tap **↺ reset** puts it back to easiest-run-first. A
+    **Colour by** toggle switches the whole grid between **🎨 fixture difficulty** and
+    **🥅 predicted goals conceded** — in goals-conceded mode each cell shows how many
+    goals that team is forecast to concede that gameweek (from team attack/defence
+    strength + home/away; lower = greener = meaner defence) and the grid re-sorts with
+    the **tightest defences at the top**, so it's a fast way to find where the clean
+    sheets are coming for defenders and keepers. (Appears once the data workflow has run.)
   - **🎴 Chip advisor (built around your team)** — reads **your squad's** real fixtures
     and projected points across the season and tells you the best gameweek for each
     chip *for your team*: Bench Boost in **your** biggest double gameweek, Triple

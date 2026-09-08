@@ -581,7 +581,7 @@
           <tr><td><b>🧮 Squad Builder</b></td><td>Your team on a pitch. Tap <b>＋</b> to add a player (with <b>⚙ Filter</b> for club &amp; price), tap a name or <b>📊</b> to see their full card, drag-swap to substitute, and use the <b>◀ ▶</b> gameweek stepper to plan each week. The per-player <b>▶</b> = "assume he starts" — only needed for a new signing or an unexpected starter the data can't see yet, since nailed regulars are now projected as starters automatically. <b style="color:var(--red)">🌍</b> = World Cup returnee.</td></tr>
           <tr><td><b>⭐ Rate my team</b></td><td>Scores your XI out of 100 and tells you <b>how to raise it</b> — the single moves that lift your score most (same price, or spending your <b>bank</b>), plus advice tailored to the <b>chips</b> you've planned.</td></tr>
           <tr><td><b>📊 Player card</b></td><td>Tap any player (pitch or Stats row) for their price, every stat, their 0–100 rating explained, and a <b>bar chart of projected points for all 38 gameweeks</b> with each fixture's difficulty.</td></tr>
-          <tr><td><b>🗺 Planner Board</b></td><td>A wide, laptop-friendly board: every team's fixtures colour-coded (drag to reorder, your teams starred), a <b>🎴 chip-plan row</b>, and a <b>chip advisor</b> that reads your squad. Split-view shows two panels at once.</td></tr>
+          <tr><td><b>🗺 Planner Board</b></td><td>A wide, laptop-friendly board: every team's fixtures colour-coded (drag to reorder, your teams starred), a <b>🎴 chip-plan row</b>, and a <b>chip advisor</b> that reads your squad. Split-view shows two panels at once. A <b>Colour by</b> toggle switches the grid between <b>fixture difficulty</b> and <b>🥅 predicted goals conceded</b> per gameweek (find the meanest defences for clean sheets).</td></tr>
           <tr><td><b>📆 Season Planner</b></td><td>Your projected points across all 38 gameweeks, with chip dropdowns and <b>📌 pinned notes</b> per gameweek (they also show on the Planner Board grid).</td></tr>
           <tr><td><b>🔄 Rotations</b></td><td>Best pairs of cheap teams to own one player from each and rotate — ranked to favour genuine week-to-week alternation, not clustered fixtures.</td></tr>
           <tr><td><b>🎴 Chips</b></td><td>You get <b>each chip twice</b> — one per half (they reset at GW20). Set a chip's gameweek anywhere (Chip Planner, Season Planner, Planner Board or pitch) and it <b>syncs everywhere</b>.</td></tr>
@@ -2340,6 +2340,8 @@
      a:"When a new season starts the data resets and everyone's minutes go back near zero. The Stats table used to default to a \"500+ minutes\" filter, which then hid <b>everyone</b>. It now <b>auto-adjusts the minutes filter to the season stage</b> (low early on) so players always show, and the transfer suggestions use a season-aware minutes gate too. An <b>Early season</b> note reminds you the numbers are small-sample until a few gameweeks are played."},
     {q:"Is ownership taken into account?",
      a:"Yes — <b>ownership now factors into the rating</b>. Heavily-owned \"template\" players are safer picks (owning them protects your rank and avoids scary weeks), so they get a nudge: about <b>+12% at 39%+ owned (must-have)</b>, <b>+7% at 27%+</b>, <b>+3% at 15%+</b>, and no change below that (differentials aren't penalised — they're just not boosted). This flows through the Rating column, Rate My Team and the transfer suggestions, where a template pick shows a <b>📈 template</b> tag."},
+    {q:"Can it predict what teams will concede over the next few gameweeks?",
+     a:"Yes — on the <b>🗺 Planner Board</b> fixtures grid there's a <b>Colour by</b> toggle. Switch it to <b>🥅 Goals conceded</b> and every gameweek cell shows the <b>predicted goals that team will concede</b> that week (our model from each team's attack/defence strength and home/away). <b>Lower = greener = a meaner defence</b>, and the grid re-sorts with the <b>tightest defences at the top</b> — so it's a fast way to find where the <b>clean sheets are coming</b> for picking defenders and keepers, across whatever window you've set (next 6/8/10/12, a half, or the whole season). Switch back to <b>🎨 Difficulty</b> for the usual FDR colours. (It appears once the <b>Update FPL data</b> workflow has run — until then the toggle shows a reminder and keeps the difficulty view.)"},
     {q:"What is xGC (expected goals conceded) and who is it for?",
      a:"<b>Expected goals conceded</b> — how many goals a player's team was <em>expected</em> to let in while he was on the pitch. It's a <b>defence and goalkeeper</b> stat, and <b>lower is better</b>: a low xGC means a mean defence, so <b>clean sheets and save points are likely coming</b> — it's the defensive flip side of xGI. Use it to pick defenders and keepers (sort the Stats table by <b>xGC</b>, lowest first, and target their cheap nailed defenders before a good run), and to spot when a defender you own has a <b>high, rising</b> xGC — a sign the clean sheets may be about to dry up. The Stats table has <b>xGC</b> (season total, matches FPL) and <b>xGC90</b> (per 90), and both show on the player card. <b>Note:</b> it appears once the <b>Update FPL data</b> workflow has run — until then it reads \"—\", because unlike xGI there's nothing already in the data to rebuild it from."},
     {q:"Why is the xGI here different to the one on the Premier League / FPL site?",
@@ -3390,6 +3392,18 @@
   // ---------- Planner Board (wide / laptop) ----------
   let _boardSub = 'fixtures', _boardSplit = false, _boardLeft = 'fixtures', _boardRight = 'chips';
   let _boardOrder = store.get('fpl_board_order', null);   // custom team order (array of shorts) or null
+  let _gridMetric = store.get('fpl_grid_metric', 'fdr');  // 'fdr' = difficulty, 'xgc' = predicted goals conceded
+  function setGridMetric(m){ _gridMetric = m; store.set('fpl_grid_metric', m); renderBoard(); }
+  // colour a predicted goals-conceded value (per match; lower = meaner defence = better)
+  function xgcColour(v){
+    if(v==null) return null;
+    if(v<=0.85) return {bg:'#0e8a3e', fg:'#fff'};
+    if(v<=1.10) return {bg:'#37d67a', fg:'#06210f'};
+    if(v<=1.40) return {bg:'#5a6472', fg:'#fff'};
+    if(v<=1.80) return {bg:'#ff8a5c', fg:'#3a1400'};
+    return {bg:'#ff5c73', fg:'#3a0009'};
+  }
+  const seasonHasXgc = season => !!(season && season.teams && season.teams.some(t=> Object.values(t.gws||{}).some(gm=> (gm||[]).some(x=> x && x.xgc!=null))));
   // Drag-to-reorder the team rows in the fixtures grid.
   let _dragShort = null;
   function boardDragStart(e, short){ _dragShort = short; e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; try{ e.dataTransfer.setData('text/plain', short); }catch(_){} }
@@ -3468,8 +3482,10 @@
   function renderFixturesGrid(season){
     const gws = boardGws(season);
     const mine = ownedShorts();
+    const hasXgc = seasonHasXgc(season);
+    const xgcMode = _gridMetric==='xgc' && hasXgc;
     const rows = season.teams.map(t=>{
-      let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{ s+=x.diff; n++; }));
+      let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{ s += xgcMode?(x.xgc||0):x.diff; n++; }));
       return { t, avg: n? s/n : 99, played:n, mine: mine.has((t.short||'').toUpperCase()) };
     });
     if(_boardOrder && _boardOrder.length){                 // your custom drag order wins
@@ -3493,16 +3509,26 @@
                : `<button class="btn ghost" onclick="editGwNote(${g}, renderBoard)" title="Add a note" style="padding:1px 5px;font-size:11px;opacity:.45">📌</button>`)
             + `</td>`; }).join('') + `</tr>`;
     const body = chipRow + noteRow + rows.map(({t,avg,played,mine})=>{
-      const avgCol = avg<2.6?'var(--accent)':avg>3.4?'var(--red)':'var(--gold)';
+      const avgCol = xgcMode
+        ? (avg<1.0?'var(--accent)':avg>1.5?'var(--red)':'var(--gold)')
+        : (avg<2.6?'var(--accent)':avg>3.4?'var(--red)':'var(--gold)');
       const rowStyle = mine ? ' style="background:rgba(255,210,63,.07)"' : '';
       const dragAttrs = ` data-short="${t.short}" draggable="true" ondragstart="boardDragStart(event,'${t.short}')" ondragover="boardDragOver(event)" ondragleave="boardDragLeave(event)" ondrop="boardDrop(event,'${t.short}')" ondragend="boardDragEnd(event)"`;
       let cells = `<td class="team"${mine?' style="color:var(--gold)"':''}><span class="drag-handle" title="Drag to reorder">⠿</span>${mine?'⭐ ':''}${escapeHtml(t.short)}</td><td style="text-align:center;font-weight:800;color:${avgCol}">${played?avg.toFixed(2):'—'}</td>`;
       gws.forEach(g=>{
         const games = t.gws[g] || [];
         if(!games.length){ cells += `<td class="blank" style="${rb(g)}">–</td>`; return; }
-        const d = Math.round(games.reduce((a,x)=>a+x.diff,0)/games.length);
         const inner = games.map(x=>`${escapeHtml(x.opp)} (${x.venue})`).join('<br>');
-        cells += `<td class="fx" style="${rb(g)}background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'}">${inner}<br><small>${d}${games.length>1?' • DGW':''}</small></td>`;
+        if(xgcMode){
+          const vals = games.map(x=>x.xgc).filter(v=>v!=null);
+          const xg = vals.length ? vals.reduce((a,v)=>a+v,0)/vals.length : null;
+          const col = xgcColour(xg) || {bg:'#5a6472', fg:'#fff'};
+          const label = xg!=null ? xg.toFixed(2) : '—';
+          cells += `<td class="fx" style="${rb(g)}background:${col.bg};color:${col.fg}">${inner}<br><small>${label}${games.length>1?' • DGW':''}</small></td>`;
+        } else {
+          const d = Math.round(games.reduce((a,x)=>a+x.diff,0)/games.length);
+          cells += `<td class="fx" style="${rb(g)}background:${DIFF_BG[d]||'#5a6472'};color:${DIFF_FG[d]||'#fff'}">${inner}<br><small>${d}${games.length>1?' • DGW':''}</small></td>`;
+        }
       });
       return `<tr${dragAttrs}${rowStyle}>${cells}</tr>`;
     }).join('');
@@ -3511,8 +3537,23 @@
       : `<b>Drag a team</b> by its ⠿ handle to slot it in front of another and build your own order. `;
     const yourNote = mine.size ? `<b>⭐ Your teams</b> (${[...mine].join(', ')}) are highlighted. ` : `Add players in the <b>Squad Builder</b> and your teams get starred here. `;
     const resetNote = gws.includes(CHIP_RESET_GW) ? ` The <b>🔁 gold line at GW${CHIP_RESET_GW}</b> is where your chips reset for the second half.` : '';
-    return `<div class="card"><h3>📅 Every team's fixtures <span class="tag">${boardWinLabel()}</span></h3>
-      <div class="callout blue" style="margin-top:0">${orderNote}${yourNote}${_boardOrder&&_boardOrder.length?'':'All 20 teams, <b>easiest run at the top</b>. '}Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. Use the <b>🎴 Chip plan</b> row to mark which gameweek you'll play each chip, and the <b>📌 Notes</b> row to pin a reminder to any gameweek — both save and sync with the Season Planner and your pitch. Each chip can only be used once per half.${resetNote} <b>DGW</b> = double, <b>–</b> = blank.</div>
+    const btn = (m,label) => `<button class="btn ${_gridMetric===m?'':'ghost'}" onclick="setGridMetric('${m}')" style="padding:4px 10px;font-size:12px">${label}</button>`;
+    const toggle = `<div class="row-actions" style="margin:0;align-items:center;gap:6px">
+        <span style="color:var(--muted);font-size:12px">Colour by:</span>
+        ${btn('fdr','🎨 Difficulty')}${btn('xgc','🥅 Goals conceded')}</div>`;
+    const metricNote = xgcMode
+      ? `Each cell shows the <b>predicted goals that team will concede</b> that gameweek (our model from team attack/defence strength + home/away). <b>Lower = greener = a meaner defence</b>, so it's where the <b>clean sheets are likely</b> — great for picking defenders &amp; keepers. Sorted <b>tightest defence at the top</b>.`
+      : `Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. Switch <b>Colour by</b> to <b>🥅 Goals conceded</b> to forecast how leaky each team is instead.`;
+    const xgcUnavailNote = (_gridMetric==='xgc' && !hasXgc)
+      ? `<div class="callout" style="border-color:var(--gold);margin:0 0 10px"><b>🥅 Goals-conceded forecast isn't in your data yet.</b> Run the <b>Update FPL data</b> workflow (GitHub → Actions) and reload — until then this shows the difficulty view.</div>`
+      : '';
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <h3 style="margin:0">📅 Every team's fixtures <span class="tag">${boardWinLabel()}</span></h3>
+        ${toggle}
+      </div>
+      ${xgcUnavailNote}
+      <div class="callout blue" style="margin-top:10px">${orderNote}${yourNote}${_boardOrder&&_boardOrder.length?'':(xgcMode?'All 20 teams, <b>meanest defence at the top</b>. ':'All 20 teams, <b>easiest run at the top</b>. ')}${metricNote} Use the <b>🎴 Chip plan</b> row to mark which gameweek you'll play each chip, and the <b>📌 Notes</b> row to pin a reminder to any gameweek — both save and sync with the Season Planner and your pitch.${resetNote} <b>DGW</b> = double, <b>–</b> = blank.</div>
       ${chipHalfSummaryHtml()}
       <div style="overflow-x:auto"><table class="fixgrid"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div></div>`;
   }

@@ -286,6 +286,21 @@ def build_season_matrix(boot, fixtures):
     short = {t["id"]: t["short_name"] for t in boot["teams"]}
     full = {t["id"]: t["name"] for t in boot["teams"]}
     max_gw = max([ev["id"] for ev in boot["events"]], default=38)
+    # Predicted goals conceded per fixture — same model the clean-sheet % uses:
+    #   gc = league_avg × (opponent attack / avg attack) × (avg defence / our defence)
+    # Lets the fixtures grid forecast how leaky each team looks each gameweek.
+    st, AVG_ATT, AVG_DEF = team_strengths(boot)
+    LG_GOALS = 1.35
+    have_strengths = AVG_ATT > 500 and AVG_DEF > 500 and any((st[t]["att_h"] or 0) > 100 for t in st)
+    def pred_gc(def_tid, opp_tid, home):
+        if not have_strengths or def_tid not in st or opp_tid not in st:
+            return None
+        our_def = st[def_tid]["def_h"] if home else st[def_tid]["def_a"]
+        opp_att = st[opp_tid]["att_a"] if home else st[opp_tid]["att_h"]
+        if not (our_def and opp_att):
+            return None
+        gc = LG_GOALS * (opp_att / AVG_ATT) * (AVG_DEF / our_def)
+        return round(min(max(gc, 0.15), 4.0), 2)
     per_team = {tid: {} for tid in short}
     for fx in fixtures:
         ev = fx["event"]
@@ -293,9 +308,9 @@ def build_season_matrix(boot, fixtures):
             continue
         h, a = fx["team_h"], fx["team_a"]
         per_team.setdefault(h, {}).setdefault(ev, []).append(
-            {"opp": short.get(a, "?"), "venue": "H", "diff": fx["team_h_difficulty"]})
+            {"opp": short.get(a, "?"), "venue": "H", "diff": fx["team_h_difficulty"], "xgc": pred_gc(h, a, True)})
         per_team.setdefault(a, {}).setdefault(ev, []).append(
-            {"opp": short.get(h, "?"), "venue": "A", "diff": fx["team_a_difficulty"]})
+            {"opp": short.get(h, "?"), "venue": "A", "diff": fx["team_a_difficulty"], "xgc": pred_gc(a, h, False)})
     teams = []
     for tid in short:
         teams.append({"short": short[tid], "name": full[tid],
