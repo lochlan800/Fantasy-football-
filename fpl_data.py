@@ -124,6 +124,8 @@ def build_players(boot):
             # --- underlying / predictive stats ---
             "xgi90": _f(e.get("expected_goal_involvements_per_90")),  # xG + xA per 90
             "xgi_total": _f(e.get("expected_goal_involvements")),      # season xG + xA
+            "xgc90": _f(e.get("expected_goals_conceded_per_90")),      # expected goals conceded per 90
+            "xgc_total": _f(e.get("expected_goals_conceded")),         # season expected goals conceded
             "gi_actual": (e.get("goals_scored", 0) + e.get("assists", 0)),  # actual G+A
             "dc90": _f(dc90),                                         # defensive actions per 90
             "pens": (e.get("penalties_order") == 1),                  # first-choice pen taker
@@ -530,6 +532,8 @@ def write_players_db(players, ranking, boot, fixtures):
             "mins": p["minutes"], "starts": p.get("starts", 0),
             "owned": p["owned"], "form": p["form"], "xgi90": round(p["xgi90"], 2),
             "xgi_total": round(p["xgi_total"], 2),             # season xG+xA total (matches FPL's "Expected Goal Involvements")
+            "xgc90": round(p["xgc90"], 2),                     # expected goals conceded per 90
+            "xgc_total": round(p["xgc_total"], 2),             # season expected goals conceded (matches FPL)
             "rating": player_rating(p, team_diff, w) if avail else 0.0,
             "xpts": xpts.get(p["id"], 0.0),                    # projected points / gameweek
             "cs": (int(cs) if cs is not None else None),        # team clean-sheet % (for GK/DEF)
