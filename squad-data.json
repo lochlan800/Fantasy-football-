@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 100.0,
+      "budget_spent": 98.9,
       "captain_id": 547,
       "vice_id": 426,
       "players": [
@@ -228,7 +228,7 @@
           "name": "De Cuyper",
           "team": "BHA",
           "pos": "DEF",
-          "price": 4.7,
+          "price": 4.8,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -332,11 +332,11 @@
           "setpiece": true
         },
         {
-          "id": 427,
-          "name": "Mbeumo",
-          "team": "MUN",
+          "id": 15,
+          "name": "\u00d8degaard",
+          "team": "ARS",
           "pos": "MID",
-          "price": 7.9,
+          "price": 6.6,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -360,7 +360,7 @@
           "name": "Isak",
           "team": "LIV",
           "pos": "FWD",
-          "price": 9.0,
+          "price": 9.1,
           "starting": true,
           "captain": false,
           "vice": false,
