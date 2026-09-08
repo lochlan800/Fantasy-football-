@@ -2341,7 +2341,7 @@
     {q:"Is ownership taken into account?",
      a:"Yes — <b>ownership now factors into the rating</b>. Heavily-owned \"template\" players are safer picks (owning them protects your rank and avoids scary weeks), so they get a nudge: about <b>+12% at 39%+ owned (must-have)</b>, <b>+7% at 27%+</b>, <b>+3% at 15%+</b>, and no change below that (differentials aren't penalised — they're just not boosted). This flows through the Rating column, Rate My Team and the transfer suggestions, where a template pick shows a <b>📈 template</b> tag."},
     {q:"Can it predict what teams will concede over the next few gameweeks?",
-     a:"Yes — on the <b>🗺 Planner Board</b> fixtures grid there's a <b>Colour by</b> toggle. Switch it to <b>🥅 Goals conceded</b> and every gameweek cell shows the <b>predicted goals that team will concede</b> that week (our model from each team's attack/defence strength and home/away). <b>Lower = greener = a meaner defence</b>, and the grid re-sorts with the <b>tightest defences at the top</b> — so it's a fast way to find where the <b>clean sheets are coming</b> for picking defenders and keepers, across whatever window you've set (next 6/8/10/12, a half, or the whole season). Switch back to <b>🎨 Difficulty</b> for the usual FDR colours. (It appears once the <b>Update FPL data</b> workflow has run — until then the toggle shows a reminder and keeps the difficulty view.)"},
+     a:"Yes — on the <b>🗺 Planner Board</b> fixtures grid there's a <b>Colour by</b> toggle. Switch it to <b>🥅 Goals conceded</b> and every gameweek cell shows the <b>predicted goals that team will concede</b> that week (our model from each team's attack/defence strength and home/away). <b>Lower = greener = a meaner defence</b>, and the grid re-sorts with the <b>tightest defences at the top</b> — so it's a fast way to find where the <b>clean sheets are coming</b> for picking defenders and keepers, across whatever window you've set (next 6/8/10/12, a half, or the whole season). Switch back to <b>🎨 Difficulty</b> for the usual FDR colours. It works right away — the numbers start as an <b>estimate from fixture difficulty</b> and sharpen into the full <b>team-strength model</b> (each team's real attack/defence rating) once the <b>Update FPL data</b> workflow has run."},
     {q:"What is xGC (expected goals conceded) and who is it for?",
      a:"<b>Expected goals conceded</b> — how many goals a player's team was <em>expected</em> to let in while he was on the pitch. It's a <b>defence and goalkeeper</b> stat, and <b>lower is better</b>: a low xGC means a mean defence, so <b>clean sheets and save points are likely coming</b> — it's the defensive flip side of xGI. Use it to pick defenders and keepers (sort the Stats table by <b>xGC</b>, lowest first, and target their cheap nailed defenders before a good run), and to spot when a defender you own has a <b>high, rising</b> xGC — a sign the clean sheets may be about to dry up. The Stats table has <b>xGC</b> (season total, matches FPL) and <b>xGC90</b> (per 90), and both show on the player card. <b>Note:</b> it appears once the <b>Update FPL data</b> workflow has run — until then it reads \"—\", because unlike xGI there's nothing already in the data to rebuild it from."},
     {q:"Why is the xGI here different to the one on the Premier League / FPL site?",
@@ -3404,6 +3404,10 @@
     return {bg:'#ff5c73', fg:'#3a0009'};
   }
   const seasonHasXgc = season => !!(season && season.teams && season.teams.some(t=> Object.values(t.gws||{}).some(gm=> (gm||[]).some(x=> x && x.xgc!=null))));
+  // Estimate goals conceded from fixture difficulty (1 easy → 5 hard) when the precise
+  // team-strength forecast isn't in the data yet, so the view always shows something.
+  const estGcFromDiff = d => +(0.7 + (Math.max(1, Math.min(5, d||3)) - 1) * 0.4).toFixed(2);
+  const cellGc = x => (x && x.xgc!=null) ? x.xgc : estGcFromDiff(x && x.diff);
   // Drag-to-reorder the team rows in the fixtures grid.
   let _dragShort = null;
   function boardDragStart(e, short){ _dragShort = short; e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; try{ e.dataTransfer.setData('text/plain', short); }catch(_){} }
@@ -3482,10 +3486,10 @@
   function renderFixturesGrid(season){
     const gws = boardGws(season);
     const mine = ownedShorts();
-    const hasXgc = seasonHasXgc(season);
-    const xgcMode = _gridMetric==='xgc' && hasXgc;
+    const preciseXgc = seasonHasXgc(season);   // true = real strength-based forecast in the data
+    const xgcMode = _gridMetric==='xgc';        // always available (falls back to a difficulty estimate)
     const rows = season.teams.map(t=>{
-      let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{ s += xgcMode?(x.xgc||0):x.diff; n++; }));
+      let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{ s += xgcMode?cellGc(x):x.diff; n++; }));
       return { t, avg: n? s/n : 99, played:n, mine: mine.has((t.short||'').toUpperCase()) };
     });
     if(_boardOrder && _boardOrder.length){                 // your custom drag order wins
@@ -3520,7 +3524,7 @@
         if(!games.length){ cells += `<td class="blank" style="${rb(g)}">–</td>`; return; }
         const inner = games.map(x=>`${escapeHtml(x.opp)} (${x.venue})`).join('<br>');
         if(xgcMode){
-          const vals = games.map(x=>x.xgc).filter(v=>v!=null);
+          const vals = games.map(cellGc).filter(v=>v!=null);
           const xg = vals.length ? vals.reduce((a,v)=>a+v,0)/vals.length : null;
           const col = xgcColour(xg) || {bg:'#5a6472', fg:'#fff'};
           const label = xg!=null ? xg.toFixed(2) : '—';
@@ -3542,11 +3546,9 @@
         <span style="color:var(--muted);font-size:12px">Colour by:</span>
         ${btn('fdr','🎨 Difficulty')}${btn('xgc','🥅 Goals conceded')}</div>`;
     const metricNote = xgcMode
-      ? `Each cell shows the <b>predicted goals that team will concede</b> that gameweek (our model from team attack/defence strength + home/away). <b>Lower = greener = a meaner defence</b>, so it's where the <b>clean sheets are likely</b> — great for picking defenders &amp; keepers. Sorted <b>tightest defence at the top</b>.`
+      ? `Each cell shows the <b>predicted goals that team will concede</b> that gameweek. <b>Lower = greener = a meaner defence</b>, so it's where the <b>clean sheets are likely</b> — great for picking defenders &amp; keepers. Sorted <b>tightest defence at the top</b>. ${preciseXgc ? 'This is the precise model (team attack/defence strength + home/away).' : '<b>Estimated from fixture difficulty</b> for now — it sharpens into the full strength-based model once the <b>Update FPL data</b> workflow has run.'}`
       : `Each cell is that gameweek's opponent, (H)ome/(A)way and difficulty <b>1 (green, easy) → 5 (red, hard)</b>. Switch <b>Colour by</b> to <b>🥅 Goals conceded</b> to forecast how leaky each team is instead.`;
-    const xgcUnavailNote = (_gridMetric==='xgc' && !hasXgc)
-      ? `<div class="callout" style="border-color:var(--gold);margin:0 0 10px"><b>🥅 Goals-conceded forecast isn't in your data yet.</b> Run the <b>Update FPL data</b> workflow (GitHub → Actions) and reload — until then this shows the difficulty view.</div>`
-      : '';
+    const xgcUnavailNote = '';
     return `<div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
         <h3 style="margin:0">📅 Every team's fixtures <span class="tag">${boardWinLabel()}</span></h3>

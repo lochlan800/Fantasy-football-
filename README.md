@@ -193,7 +193,9 @@ The web tool now also includes:
     goals that team is forecast to concede that gameweek (from team attack/defence
     strength + home/away; lower = greener = meaner defence) and the grid re-sorts with
     the **tightest defences at the top**, so it's a fast way to find where the clean
-    sheets are coming for defenders and keepers. (Appears once the data workflow has run.)
+    sheets are coming for defenders and keepers. It works right away (numbers estimated
+    from fixture difficulty) and sharpens into the full team-strength model once the data
+    workflow has run.
   - **🎴 Chip advisor (built around your team)** — reads **your squad's** real fixtures
     and projected points across the season and tells you the best gameweek for each
     chip *for your team*: Bench Boost in **your** biggest double gameweek, Triple
