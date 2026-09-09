@@ -3525,7 +3525,12 @@
       let s=0,n=0; gws.forEach(g=>(t.gws[g]||[]).forEach(x=>{ s += xgcMode?gcOf(x,t.short):x.diff; n++; }));
       return { t, avg: n? s/n : 99, played:n, mine: mine.has((t.short||'').toUpperCase()) };
     });
-    if(_boardOrder && _boardOrder.length){                 // your custom drag order wins
+    if(xgcMode){
+      // pure ranking: least likely → most likely to concede over the chosen window
+      // (your teams stay starred but aren't pinned, and the drag order is ignored, so
+      // it's a clean league-wide concede table for the weeks you've selected)
+      rows.sort((a,b)=> (a.avg - b.avg) || (b.mine - a.mine));
+    } else if(_boardOrder && _boardOrder.length){          // your custom drag order wins
       const ix = sh => { const i=_boardOrder.indexOf(sh); return i<0 ? 999 : i; };
       rows.sort((a,b)=> (ix(a.t.short)-ix(b.t.short)) || (b.mine-a.mine) || (a.avg-b.avg));
     } else {
@@ -3569,9 +3574,11 @@
       });
       return `<tr${dragAttrs}${rowStyle}>${cells}</tr>`;
     }).join('');
-    const orderNote = _boardOrder && _boardOrder.length
-      ? `<b>Custom order</b> — <a href="#" onclick="resetBoardOrder();return false" style="color:var(--accent)">↺ reset to easiest-run</a>. `
-      : `<b>Drag a team</b> by its ⠿ handle to slot it in front of another and build your own order. `;
+    const orderNote = xgcMode
+      ? `<b>Ranked by predicted goals conceded</b> across your selected weeks — <b>least likely to concede at the top</b>, most likely at the bottom. `
+      : (_boardOrder && _boardOrder.length
+        ? `<b>Custom order</b> — <a href="#" onclick="resetBoardOrder();return false" style="color:var(--accent)">↺ reset to easiest-run</a>. `
+        : `<b>Drag a team</b> by its ⠿ handle to slot it in front of another and build your own order. `);
     const yourNote = mine.size ? `<b>⭐ Your teams</b> (${[...mine].join(', ')}) are highlighted. ` : `Add players in the <b>Squad Builder</b> and your teams get starred here. `;
     const resetNote = gws.includes(CHIP_RESET_GW) ? ` The <b>🔁 gold line at GW${CHIP_RESET_GW}</b> is where your chips reset for the second half.` : '';
     const btn = (m,label) => `<button class="btn ${_gridMetric===m?'':'ghost'}" onclick="setGridMetric('${m}')" style="padding:4px 10px;font-size:12px">${label}</button>`;

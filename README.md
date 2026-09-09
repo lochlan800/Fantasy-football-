@@ -192,10 +192,12 @@ The web tool now also includes:
     **🥅 predicted goals conceded** — in goals-conceded mode each cell shows how many
     goals that team is forecast to concede that gameweek (from team attack/defence
     strength + home/away; lower = greener = meaner defence) and the grid re-sorts with
-    the **tightest defences at the top**, so it's a fast way to find where the clean
-    sheets are coming for defenders and keepers. It works right away (numbers estimated
-    from fixture difficulty) and sharpens into the full team-strength model once the data
-    workflow has run.
+    the **tightest defences at the top** — a pure league-wide ranking by predicted goals
+    conceded across **whatever gameweek window you've selected** (your own teams are still
+    starred but aren't pinned, so the order is a clean concede table). A fast way to find
+    where the clean sheets are coming for defenders and keepers. It works right away
+    (numbers from each team's own expected goals conceded so far, nudged by the fixture)
+    and sharpens into the full team-strength model once the data workflow has run.
   - **🎴 Chip advisor (built around your team)** — reads **your squad's** real fixtures
     and projected points across the season and tells you the best gameweek for each
     chip *for your team*: Bench Boost in **your** biggest double gameweek, Triple
