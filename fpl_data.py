@@ -293,17 +293,16 @@ def build_season_matrix(boot, fixtures):
     LG_GOALS = 1.35
     have_strengths = AVG_ATT > 500 and AVG_DEF > 500 and any((st[t]["att_h"] or 0) > 100 for t in st)
     def pred_gc(def_tid, opp_tid, home, diff):
-        # Precise model when FPL team strengths are available…
+        # Only the precise model here — team defence vs opponent attack, home/away.
+        # If FPL hasn't published team strengths yet, return None and let the app fall
+        # back to each team's own keeper xGC (a real per-team signal) rather than baking
+        # in a difficulty-only estimate that would just re-rank teams by fixture ease.
         if have_strengths and def_tid in st and opp_tid in st:
             our_def = st[def_tid]["def_h"] if home else st[def_tid]["def_a"]
             opp_att = st[opp_tid]["att_a"] if home else st[opp_tid]["att_h"]
             if our_def and opp_att:
                 gc = LG_GOALS * (opp_att / AVG_ATT) * (AVG_DEF / our_def)
                 return round(min(max(gc, 0.15), 4.0), 2)
-        # …otherwise fall back to an estimate from the official fixture difficulty,
-        # so the grid always has a goals-conceded number to show.
-        if diff:
-            return round(0.7 + (min(max(diff, 1), 5) - 1) * 0.4, 2)
         return None
     per_team = {tid: {} for tid in short}
     for fx in fixtures:

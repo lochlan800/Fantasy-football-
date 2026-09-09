@@ -2341,7 +2341,7 @@
     {q:"Is ownership taken into account?",
      a:"Yes — <b>ownership now factors into the rating</b>. Heavily-owned \"template\" players are safer picks (owning them protects your rank and avoids scary weeks), so they get a nudge: about <b>+12% at 39%+ owned (must-have)</b>, <b>+7% at 27%+</b>, <b>+3% at 15%+</b>, and no change below that (differentials aren't penalised — they're just not boosted). This flows through the Rating column, Rate My Team and the transfer suggestions, where a template pick shows a <b>📈 template</b> tag."},
     {q:"Can it predict what teams will concede over the next few gameweeks?",
-     a:"Yes — on the <b>🗺 Planner Board</b> fixtures grid there's a <b>Colour by</b> toggle. Switch it to <b>🥅 Goals conceded</b> and every gameweek cell shows the <b>predicted goals that team will concede</b> that week (our model from each team's attack/defence strength and home/away). <b>Lower = greener = a meaner defence</b>, and the grid re-sorts with the <b>tightest defences at the top</b> — so it's a fast way to find where the <b>clean sheets are coming</b> for picking defenders and keepers, across whatever window you've set (next 6/8/10/12, a half, or the whole season). Switch back to <b>🎨 Difficulty</b> for the usual FDR colours. It works right away — the numbers come from <b>each team's own expected goals conceded so far</b> (their keeper's xGC/90), nudged by how hard each fixture is, so a genuinely strong defence (e.g. Arsenal) stays green even in a tricky week — unlike plain difficulty. It upgrades to the full team-strength model automatically once the <b>Update FPL data</b> workflow has run."},
+     a:"Yes — on the <b>🗺 Planner Board</b> fixtures grid there's a <b>Colour by</b> toggle. Switch it to <b>🥅 Goals conceded</b> and every gameweek cell shows the <b>predicted goals that team will concede</b> that week (our model from each team's attack/defence strength and home/away). <b>Lower = greener = a meaner defence</b>, and the grid re-sorts with the <b>tightest defences at the top</b> — so it's a fast way to find where the <b>clean sheets are coming</b> for picking defenders and keepers, across whatever window you've set (next 6/8/10/12, a half, or the whole season). Switch back to <b>🎨 Difficulty</b> for the usual FDR colours. It works right away — the numbers come from <b>each team's own expected goals conceded so far</b> (their keeper's xGC/90), nudged by how hard each fixture is, so a genuinely strong defence (e.g. Arsenal) stays green even in a tricky week — unlike plain difficulty. It upgrades to the full team-strength model automatically once the <b>Update FPL data</b> workflow has run. <b>Early-season caveat:</b> with only a few games played, this reflects each team's <b>expected goals conceded so far</b>, which depends partly on <b>who they've faced</b> — so a side that's played weak attacks can look better than their reputation (and vice-versa). It settles toward true defensive quality as more games are played."},
     {q:"What is xGC (expected goals conceded) and who is it for?",
      a:"<b>Expected goals conceded</b> — how many goals a player's team was <em>expected</em> to let in while he was on the pitch. It's a <b>defence and goalkeeper</b> stat, and <b>lower is better</b>: a low xGC means a mean defence, so <b>clean sheets and save points are likely coming</b> — it's the defensive flip side of xGI. Use it to pick defenders and keepers (sort the Stats table by <b>xGC</b>, lowest first, and target their cheap nailed defenders before a good run), and to spot when a defender you own has a <b>high, rising</b> xGC — a sign the clean sheets may be about to dry up. The Stats table has <b>xGC</b> (season total, matches FPL) and <b>xGC90</b> (per 90), and both show on the player card. <b>Note:</b> it appears once the <b>Update FPL data</b> workflow has run — until then it reads \"—\", because unlike xGI there's nothing already in the data to rebuild it from."},
     {q:"Why is the xGI here different to the one on the Premier League / FPL site?",
@@ -3404,6 +3404,26 @@
     return {bg:'#ff5c73', fg:'#3a0009'};
   }
   const seasonHasXgc = season => !!(season && season.teams && season.teams.some(t=> Object.values(t.gws||{}).some(gm=> (gm||[]).some(x=> x && x.xgc!=null))));
+  // An earlier data build stored a difficulty-only fallback in xgc (a pure function of
+  // FDR), which would rank teams by fixture ease, not defence. Detect that shape so we
+  // ignore it and use the real per-team keeper model instead. Real strength-model xgc
+  // varies between teams on the same difficulty, so it won't match this formula.
+  function xgcIsDifficultyFallback(season){
+    let any = false;
+    if(!(season && season.teams)) return false;
+    for(const t of season.teams){
+      for(const gm of Object.values(t.gws||{})){
+        for(const x of (gm||[])){
+          if(x && x.xgc!=null){
+            any = true;
+            const expected = +(0.7 + (Math.min(Math.max(x.diff||3,1),5) - 1) * 0.4).toFixed(2);
+            if(Math.abs(x.xgc - expected) > 0.011) return false;   // a genuine, defence-specific value
+          }
+        }
+      }
+    }
+    return any;   // every stored xgc matched the FDR-only formula → it's the fallback
+  }
   // Estimate goals conceded from fixture difficulty (1 easy → 5 hard) — the last-resort
   // fallback when we have neither the strength model nor any player data.
   const estGcFromDiff = d => +(0.7 + (Math.max(1, Math.min(5, d||3)) - 1) * 0.4).toFixed(2);
@@ -3501,7 +3521,9 @@
   function renderFixturesGrid(season){
     const gws = boardGws(season);
     const mine = ownedShorts();
-    const preciseXgc = seasonHasXgc(season);   // true = real strength-based forecast in the data
+    // real strength-model xgc in the data — but NOT the old difficulty-only fallback,
+    // which we ignore in favour of each team's actual keeper xGC below
+    const preciseXgc = seasonHasXgc(season) && !xgcIsDifficultyFallback(season);
     const xgcMode = _gridMetric==='xgc';        // always available (falls back to estimates)
     // goals-conceded value for one game of team `short`:
     //  1) the precise strength model if the data carries it, else
@@ -3512,7 +3534,7 @@
     const kgAvg = kgVals.length ? kgVals.reduce((a,b)=>a+b,0)/kgVals.length : 1.3;
     const haveKeeper = kgVals.length > 0;
     const gcOf = (x, short) => {
-      if(x && x.xgc!=null) return x.xgc;
+      if(preciseXgc && x && x.xgc!=null) return x.xgc;   // trust xgc only if it's the real model
       if(haveKeeper){
         const base = kg[(short||'').toUpperCase()];
         const rate = (base!=null ? base : kgAvg) * (1 + 0.14 * ((x&&x.diff||3) - 3));
