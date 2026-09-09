@@ -8,9 +8,9 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 90.8,
-      "captain_id": 547,
-      "vice_id": 72,
+      "budget_spent": 94.2,
+      "captain_id": 72,
+      "vice_id": 647,
       "players": [
         {
           "id": 572,
@@ -97,26 +97,14 @@
           "setpiece": false
         },
         {
-          "id": 547,
-          "name": "Mundle",
-          "team": "SUN",
-          "pos": "MID",
-          "price": 4.9,
-          "starting": true,
-          "captain": true,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
-        },
-        {
           "id": 72,
           "name": "Gannon-Doak",
           "team": "BOU",
           "pos": "MID",
           "price": 4.9,
           "starting": true,
-          "captain": false,
-          "vice": true,
+          "captain": true,
+          "vice": false,
           "pens": false,
           "setpiece": false
         },
@@ -128,7 +116,7 @@
           "price": 5.5,
           "starting": true,
           "captain": false,
-          "vice": false,
+          "vice": true,
           "pens": false,
           "setpiece": false
         },
@@ -145,15 +133,27 @@
           "setpiece": true
         },
         {
-          "id": 367,
-          "name": "Gakpo",
-          "team": "LIV",
+          "id": 69,
+          "name": "Scott",
+          "team": "BOU",
           "pos": "MID",
-          "price": 7.2,
+          "price": 6.0,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
+          "setpiece": true
+        },
+        {
+          "id": 12,
+          "name": "Saka",
+          "team": "ARS",
+          "pos": "MID",
+          "price": 9.5,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": true,
           "setpiece": true
         },
         {
@@ -195,9 +195,9 @@
       ]
     },
     "attacking": {
-      "budget_spent": 98.9,
-      "captain_id": 547,
-      "vice_id": 426,
+      "budget_spent": 99.7,
+      "captain_id": 426,
+      "vice_id": 411,
       "players": [
         {
           "id": 572,
@@ -284,39 +284,15 @@
           "setpiece": false
         },
         {
-          "id": 547,
-          "name": "Mundle",
-          "team": "SUN",
-          "pos": "MID",
-          "price": 4.9,
-          "starting": true,
-          "captain": true,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
-        },
-        {
           "id": 426,
           "name": "B.Fernandes",
           "team": "MUN",
           "pos": "MID",
           "price": 12.0,
           "starting": true,
-          "captain": false,
-          "vice": true,
-          "pens": true,
-          "setpiece": true
-        },
-        {
-          "id": 367,
-          "name": "Gakpo",
-          "team": "LIV",
-          "pos": "MID",
-          "price": 7.2,
-          "starting": true,
-          "captain": false,
+          "captain": true,
           "vice": false,
-          "pens": false,
+          "pens": true,
           "setpiece": true
         },
         {
@@ -332,11 +308,35 @@
           "setpiece": true
         },
         {
+          "id": 427,
+          "name": "Mbeumo",
+          "team": "MUN",
+          "pos": "MID",
+          "price": 7.9,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
+        },
+        {
           "id": 15,
           "name": "\u00d8degaard",
           "team": "ARS",
           "pos": "MID",
           "price": 6.6,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
+        },
+        {
+          "id": 98,
+          "name": "Janelt",
+          "team": "BRE",
+          "pos": "MID",
+          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -351,7 +351,7 @@
           "price": 15.5,
           "starting": true,
           "captain": false,
-          "vice": false,
+          "vice": true,
           "pens": true,
           "setpiece": false
         },
@@ -382,9 +382,9 @@
       ]
     },
     "value": {
-      "budget_spent": 84.8,
-      "captain_id": 547,
-      "vice_id": 72,
+      "budget_spent": 89.7,
+      "captain_id": 72,
+      "vice_id": 647,
       "players": [
         {
           "id": 572,
@@ -471,26 +471,14 @@
           "setpiece": false
         },
         {
-          "id": 547,
-          "name": "Mundle",
-          "team": "SUN",
-          "pos": "MID",
-          "price": 4.9,
-          "starting": true,
-          "captain": true,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
-        },
-        {
           "id": 72,
           "name": "Gannon-Doak",
           "team": "BOU",
           "pos": "MID",
           "price": 4.9,
           "starting": true,
-          "captain": false,
-          "vice": true,
+          "captain": true,
+          "vice": false,
           "pens": false,
           "setpiece": false
         },
@@ -502,21 +490,9 @@
           "price": 5.5,
           "starting": true,
           "captain": false,
-          "vice": false,
+          "vice": true,
           "pens": false,
           "setpiece": false
-        },
-        {
-          "id": 367,
-          "name": "Gakpo",
-          "team": "LIV",
-          "pos": "MID",
-          "price": 7.2,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
         },
         {
           "id": 69,
@@ -529,6 +505,30 @@
           "vice": false,
           "pens": false,
           "setpiece": true
+        },
+        {
+          "id": 426,
+          "name": "B.Fernandes",
+          "team": "MUN",
+          "pos": "MID",
+          "price": 12.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": true,
+          "setpiece": true
+        },
+        {
+          "id": 243,
+          "name": "Alcaraz",
+          "team": "EVE",
+          "pos": "MID",
+          "price": 5.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
         },
         {
           "id": 411,
@@ -569,9 +569,9 @@
       ]
     }
   },
-  "budget_spent": 90.8,
-  "captain_id": 547,
-  "vice_id": 72,
+  "budget_spent": 94.2,
+  "captain_id": 72,
+  "vice_id": 647,
   "players": [
     {
       "id": 572,
@@ -658,26 +658,14 @@
       "setpiece": false
     },
     {
-      "id": 547,
-      "name": "Mundle",
-      "team": "SUN",
-      "pos": "MID",
-      "price": 4.9,
-      "starting": true,
-      "captain": true,
-      "vice": false,
-      "pens": false,
-      "setpiece": false
-    },
-    {
       "id": 72,
       "name": "Gannon-Doak",
       "team": "BOU",
       "pos": "MID",
       "price": 4.9,
       "starting": true,
-      "captain": false,
-      "vice": true,
+      "captain": true,
+      "vice": false,
       "pens": false,
       "setpiece": false
     },
@@ -689,7 +677,7 @@
       "price": 5.5,
       "starting": true,
       "captain": false,
-      "vice": false,
+      "vice": true,
       "pens": false,
       "setpiece": false
     },
@@ -706,15 +694,27 @@
       "setpiece": true
     },
     {
-      "id": 367,
-      "name": "Gakpo",
-      "team": "LIV",
+      "id": 69,
+      "name": "Scott",
+      "team": "BOU",
       "pos": "MID",
-      "price": 7.2,
+      "price": 6.0,
       "starting": true,
       "captain": false,
       "vice": false,
       "pens": false,
+      "setpiece": true
+    },
+    {
+      "id": 12,
+      "name": "Saka",
+      "team": "ARS",
+      "pos": "MID",
+      "price": 9.5,
+      "starting": true,
+      "captain": false,
+      "vice": false,
+      "pens": true,
       "setpiece": true
     },
     {
