@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 94.2,
+      "budget_spent": 94.4,
       "captain_id": 72,
       "vice_id": 647,
       "players": [
@@ -53,7 +53,7 @@
           "name": "Mendy",
           "team": "HUL",
           "pos": "DEF",
-          "price": 4.0,
+          "price": 4.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -137,7 +137,7 @@
           "name": "Scott",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.0,
+          "price": 6.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 99.7,
+      "budget_spent": 99.8,
       "captain_id": 426,
       "vice_id": 411,
       "players": [
@@ -324,7 +324,7 @@
           "name": "\u00d8degaard",
           "team": "ARS",
           "pos": "MID",
-          "price": 6.6,
+          "price": 6.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 89.7,
+      "budget_spent": 89.9,
       "captain_id": 72,
       "vice_id": 647,
       "players": [
@@ -427,7 +427,7 @@
           "name": "Mendy",
           "team": "HUL",
           "pos": "DEF",
-          "price": 4.0,
+          "price": 4.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -499,7 +499,7 @@
           "name": "Scott",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.0,
+          "price": 6.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 94.2,
+  "budget_spent": 94.4,
   "captain_id": 72,
   "vice_id": 647,
   "players": [
@@ -614,7 +614,7 @@
       "name": "Mendy",
       "team": "HUL",
       "pos": "DEF",
-      "price": 4.0,
+      "price": 4.1,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -698,7 +698,7 @@
       "name": "Scott",
       "team": "BOU",
       "pos": "MID",
-      "price": 6.0,
+      "price": 6.1,
       "starting": true,
       "captain": false,
       "vice": false,
