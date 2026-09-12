@@ -8,16 +8,16 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 94.5,
-      "captain_id": 72,
-      "vice_id": 647,
+      "budget_spent": 87.7,
+      "captain_id": 647,
+      "vice_id": 72,
       "players": [
         {
-          "id": 572,
-          "name": "Tzolakis",
-          "team": "HUL",
+          "id": 1,
+          "name": "Raya",
+          "team": "ARS",
           "pos": "GK",
-          "price": 4.6,
+          "price": 6.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -37,11 +37,11 @@
           "setpiece": false
         },
         {
-          "id": 277,
-          "name": "Egan",
-          "team": "HUL",
+          "id": 147,
+          "name": "Tosin",
+          "team": "TOT",
           "pos": "DEF",
-          "price": 4.1,
+          "price": 4.4,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -49,8 +49,8 @@
           "setpiece": false
         },
         {
-          "id": 586,
-          "name": "Mendy",
+          "id": 277,
+          "name": "Egan",
           "team": "HUL",
           "pos": "DEF",
           "price": 4.1,
@@ -73,16 +73,16 @@
           "setpiece": false
         },
         {
-          "id": 449,
-          "name": "Hall",
-          "team": "NEW",
+          "id": 173,
+          "name": "Thomas",
+          "team": "COV",
           "pos": "DEF",
-          "price": 5.2,
-          "starting": true,
+          "price": 4.0,
+          "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
           "id": 175,
@@ -97,11 +97,11 @@
           "setpiece": false
         },
         {
-          "id": 72,
-          "name": "Gannon-Doak",
-          "team": "BOU",
+          "id": 647,
+          "name": "Osorio",
+          "team": "CRY",
           "pos": "MID",
-          "price": 4.9,
+          "price": 5.5,
           "starting": true,
           "captain": true,
           "vice": false,
@@ -109,28 +109,16 @@
           "setpiece": false
         },
         {
-          "id": 647,
-          "name": "Osorio",
-          "team": "CRY",
+          "id": 72,
+          "name": "Gannon-Doak",
+          "team": "BOU",
           "pos": "MID",
-          "price": 5.5,
+          "price": 4.9,
           "starting": true,
           "captain": false,
           "vice": true,
           "pens": false,
           "setpiece": false
-        },
-        {
-          "id": 426,
-          "name": "B.Fernandes",
-          "team": "MUN",
-          "pos": "MID",
-          "price": 12.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": true,
-          "setpiece": true
         },
         {
           "id": 69,
@@ -145,16 +133,40 @@
           "setpiece": true
         },
         {
-          "id": 12,
-          "name": "Saka",
-          "team": "ARS",
+          "id": 68,
+          "name": "Tavernier",
+          "team": "BOU",
           "pos": "MID",
-          "price": 9.5,
+          "price": 6.0,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": true,
+          "pens": false,
           "setpiece": true
+        },
+        {
+          "id": 98,
+          "name": "Janelt",
+          "team": "BRE",
+          "pos": "MID",
+          "price": 5.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
+        },
+        {
+          "id": 165,
+          "name": "Jo\u00e3o Pedro",
+          "team": "CHE",
+          "pos": "FWD",
+          "price": 7.7,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
         },
         {
           "id": 411,
@@ -166,18 +178,6 @@
           "captain": false,
           "vice": false,
           "pens": true,
-          "setpiece": false
-        },
-        {
-          "id": 169,
-          "name": "Mheuka",
-          "team": "CHE",
-          "pos": "FWD",
-          "price": 4.5,
-          "starting": false,
-          "captain": false,
-          "vice": false,
-          "pens": false,
           "setpiece": false
         },
         {
@@ -197,7 +197,7 @@
     "attacking": {
       "budget_spent": 100.0,
       "captain_id": 426,
-      "vice_id": 411,
+      "vice_id": 480,
       "players": [
         {
           "id": 572,
@@ -224,11 +224,11 @@
           "setpiece": false
         },
         {
-          "id": 115,
-          "name": "De Cuyper",
-          "team": "BHA",
+          "id": 305,
+          "name": "Davis",
+          "team": "IPS",
           "pos": "DEF",
-          "price": 4.8,
+          "price": 4.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -236,16 +236,16 @@
           "setpiece": true
         },
         {
-          "id": 279,
-          "name": "Ajayi",
+          "id": 282,
+          "name": "Giles",
           "team": "HUL",
           "pos": "DEF",
-          "price": 4.2,
+          "price": 4.0,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": false
+          "setpiece": true
         },
         {
           "id": 277,
@@ -296,6 +296,18 @@
           "setpiece": true
         },
         {
+          "id": 480,
+          "name": "Gibbs-White",
+          "team": "NFO",
+          "pos": "MID",
+          "price": 7.9,
+          "starting": true,
+          "captain": false,
+          "vice": true,
+          "pens": true,
+          "setpiece": true
+        },
+        {
           "id": 12,
           "name": "Saka",
           "team": "ARS",
@@ -305,18 +317,6 @@
           "captain": false,
           "vice": false,
           "pens": true,
-          "setpiece": true
-        },
-        {
-          "id": 427,
-          "name": "Mbeumo",
-          "team": "MUN",
-          "pos": "MID",
-          "price": 7.9,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
           "setpiece": true
         },
         {
@@ -332,16 +332,16 @@
           "setpiece": true
         },
         {
-          "id": 15,
-          "name": "\u00d8degaard",
-          "team": "ARS",
+          "id": 605,
+          "name": "Yalcouy\u00e9",
+          "team": "BHA",
           "pos": "MID",
-          "price": 6.7,
-          "starting": true,
+          "price": 4.5,
+          "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
           "id": 411,
@@ -351,17 +351,17 @@
           "price": 15.5,
           "starting": true,
           "captain": false,
-          "vice": true,
+          "vice": false,
           "pens": true,
           "setpiece": false
         },
         {
-          "id": 169,
-          "name": "Mheuka",
+          "id": 165,
+          "name": "Jo\u00e3o Pedro",
           "team": "CHE",
           "pos": "FWD",
-          "price": 4.5,
-          "starting": false,
+          "price": 7.7,
+          "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
@@ -382,9 +382,9 @@
       ]
     },
     "value": {
-      "budget_spent": 89.9,
-      "captain_id": 72,
-      "vice_id": 647,
+      "budget_spent": 76.8,
+      "captain_id": 647,
+      "vice_id": 72,
       "players": [
         {
           "id": 572,
@@ -411,11 +411,11 @@
           "setpiece": false
         },
         {
-          "id": 277,
-          "name": "Egan",
-          "team": "HUL",
+          "id": 147,
+          "name": "Tosin",
+          "team": "TOT",
           "pos": "DEF",
-          "price": 4.1,
+          "price": 4.4,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -423,8 +423,8 @@
           "setpiece": false
         },
         {
-          "id": 586,
-          "name": "Mendy",
+          "id": 277,
+          "name": "Egan",
           "team": "HUL",
           "pos": "DEF",
           "price": 4.1,
@@ -447,11 +447,11 @@
           "setpiece": false
         },
         {
-          "id": 449,
-          "name": "Hall",
-          "team": "NEW",
+          "id": 472,
+          "name": "Murillo",
+          "team": "NFO",
           "pos": "DEF",
-          "price": 5.2,
+          "price": 5.5,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -471,11 +471,11 @@
           "setpiece": false
         },
         {
-          "id": 72,
-          "name": "Gannon-Doak",
-          "team": "BOU",
+          "id": 647,
+          "name": "Osorio",
+          "team": "CRY",
           "pos": "MID",
-          "price": 4.9,
+          "price": 5.5,
           "starting": true,
           "captain": true,
           "vice": false,
@@ -483,11 +483,11 @@
           "setpiece": false
         },
         {
-          "id": 647,
-          "name": "Osorio",
-          "team": "CRY",
+          "id": 72,
+          "name": "Gannon-Doak",
+          "team": "BOU",
           "pos": "MID",
-          "price": 5.5,
+          "price": 4.9,
           "starting": true,
           "captain": false,
           "vice": true,
@@ -507,39 +507,39 @@
           "setpiece": true
         },
         {
-          "id": 426,
-          "name": "B.Fernandes",
-          "team": "MUN",
+          "id": 98,
+          "name": "Janelt",
+          "team": "BRE",
           "pos": "MID",
-          "price": 12.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": true,
-          "setpiece": true
-        },
-        {
-          "id": 243,
-          "name": "Alcaraz",
-          "team": "EVE",
-          "pos": "MID",
-          "price": 4.9,
+          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": false
+          "setpiece": true
         },
         {
-          "id": 411,
-          "name": "Haaland",
-          "team": "MCI",
-          "pos": "FWD",
-          "price": 15.5,
+          "id": 68,
+          "name": "Tavernier",
+          "team": "BOU",
+          "pos": "MID",
+          "price": 6.0,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": true,
+          "pens": false,
+          "setpiece": true
+        },
+        {
+          "id": 165,
+          "name": "Jo\u00e3o Pedro",
+          "team": "CHE",
+          "pos": "FWD",
+          "price": 7.7,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
           "setpiece": false
         },
         {
@@ -569,16 +569,16 @@
       ]
     }
   },
-  "budget_spent": 94.5,
-  "captain_id": 72,
-  "vice_id": 647,
+  "budget_spent": 87.7,
+  "captain_id": 647,
+  "vice_id": 72,
   "players": [
     {
-      "id": 572,
-      "name": "Tzolakis",
-      "team": "HUL",
+      "id": 1,
+      "name": "Raya",
+      "team": "ARS",
       "pos": "GK",
-      "price": 4.6,
+      "price": 6.0,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -598,11 +598,11 @@
       "setpiece": false
     },
     {
-      "id": 277,
-      "name": "Egan",
-      "team": "HUL",
+      "id": 147,
+      "name": "Tosin",
+      "team": "TOT",
       "pos": "DEF",
-      "price": 4.1,
+      "price": 4.4,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -610,8 +610,8 @@
       "setpiece": false
     },
     {
-      "id": 586,
-      "name": "Mendy",
+      "id": 277,
+      "name": "Egan",
       "team": "HUL",
       "pos": "DEF",
       "price": 4.1,
@@ -634,16 +634,16 @@
       "setpiece": false
     },
     {
-      "id": 449,
-      "name": "Hall",
-      "team": "NEW",
+      "id": 173,
+      "name": "Thomas",
+      "team": "COV",
       "pos": "DEF",
-      "price": 5.2,
-      "starting": true,
+      "price": 4.0,
+      "starting": false,
       "captain": false,
       "vice": false,
       "pens": false,
-      "setpiece": true
+      "setpiece": false
     },
     {
       "id": 175,
@@ -658,11 +658,11 @@
       "setpiece": false
     },
     {
-      "id": 72,
-      "name": "Gannon-Doak",
-      "team": "BOU",
+      "id": 647,
+      "name": "Osorio",
+      "team": "CRY",
       "pos": "MID",
-      "price": 4.9,
+      "price": 5.5,
       "starting": true,
       "captain": true,
       "vice": false,
@@ -670,28 +670,16 @@
       "setpiece": false
     },
     {
-      "id": 647,
-      "name": "Osorio",
-      "team": "CRY",
+      "id": 72,
+      "name": "Gannon-Doak",
+      "team": "BOU",
       "pos": "MID",
-      "price": 5.5,
+      "price": 4.9,
       "starting": true,
       "captain": false,
       "vice": true,
       "pens": false,
       "setpiece": false
-    },
-    {
-      "id": 426,
-      "name": "B.Fernandes",
-      "team": "MUN",
-      "pos": "MID",
-      "price": 12.0,
-      "starting": true,
-      "captain": false,
-      "vice": false,
-      "pens": true,
-      "setpiece": true
     },
     {
       "id": 69,
@@ -706,16 +694,40 @@
       "setpiece": true
     },
     {
-      "id": 12,
-      "name": "Saka",
-      "team": "ARS",
+      "id": 68,
+      "name": "Tavernier",
+      "team": "BOU",
       "pos": "MID",
-      "price": 9.5,
+      "price": 6.0,
       "starting": true,
       "captain": false,
       "vice": false,
-      "pens": true,
+      "pens": false,
       "setpiece": true
+    },
+    {
+      "id": 98,
+      "name": "Janelt",
+      "team": "BRE",
+      "pos": "MID",
+      "price": 5.0,
+      "starting": true,
+      "captain": false,
+      "vice": false,
+      "pens": false,
+      "setpiece": true
+    },
+    {
+      "id": 165,
+      "name": "Jo\u00e3o Pedro",
+      "team": "CHE",
+      "pos": "FWD",
+      "price": 7.7,
+      "starting": true,
+      "captain": false,
+      "vice": false,
+      "pens": false,
+      "setpiece": false
     },
     {
       "id": 411,
@@ -727,18 +739,6 @@
       "captain": false,
       "vice": false,
       "pens": true,
-      "setpiece": false
-    },
-    {
-      "id": 169,
-      "name": "Mheuka",
-      "team": "CHE",
-      "pos": "FWD",
-      "price": 4.5,
-      "starting": false,
-      "captain": false,
-      "vice": false,
-      "pens": false,
       "setpiece": false
     },
     {
