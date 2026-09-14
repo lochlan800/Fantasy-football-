@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 91.9,
+      "budget_spent": 92.0,
       "captain_id": 647,
       "vice_id": 12,
       "players": [
@@ -65,7 +65,7 @@
           "name": "Tarkowski",
           "team": "EVE",
           "pos": "DEF",
-          "price": 6.0,
+          "price": 6.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -85,9 +85,9 @@
           "setpiece": false
         },
         {
-          "id": 175,
-          "name": "van Ewijk",
-          "team": "COV",
+          "id": 66,
+          "name": "Soler",
+          "team": "BOU",
           "pos": "DEF",
           "price": 4.0,
           "starting": false,
@@ -195,16 +195,16 @@
       ]
     },
     "attacking": {
-      "budget_spent": 99.6,
+      "budget_spent": 99.7,
       "captain_id": 411,
       "vice_id": 12,
       "players": [
         {
-          "id": 1,
-          "name": "Raya",
-          "team": "ARS",
+          "id": 58,
+          "name": "Forster",
+          "team": "BOU",
           "pos": "GK",
-          "price": 6.0,
+          "price": 4.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -236,6 +236,18 @@
           "setpiece": true
         },
         {
+          "id": 391,
+          "name": "Gvardiol",
+          "team": "MCI",
+          "pos": "DEF",
+          "price": 5.7,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
+        },
+        {
           "id": 305,
           "name": "Davis",
           "team": "IPS",
@@ -262,18 +274,6 @@
         {
           "id": 173,
           "name": "Thomas",
-          "team": "COV",
-          "pos": "DEF",
-          "price": 4.0,
-          "starting": false,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
-        },
-        {
-          "id": 175,
-          "name": "van Ewijk",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -332,15 +332,15 @@
           "setpiece": true
         },
         {
-          "id": 68,
-          "name": "Tavernier",
-          "team": "BOU",
+          "id": 154,
+          "name": "Palmer",
+          "team": "CHE",
           "pos": "MID",
-          "price": 6.0,
+          "price": 9.7,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": false,
+          "pens": true,
           "setpiece": true
         },
         {
@@ -356,12 +356,12 @@
           "setpiece": false
         },
         {
-          "id": 165,
-          "name": "Jo\u00e3o Pedro",
+          "id": 169,
+          "name": "Mheuka",
           "team": "CHE",
           "pos": "FWD",
-          "price": 7.8,
-          "starting": true,
+          "price": 4.5,
+          "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 90.2,
+      "budget_spent": 90.4,
       "captain_id": 647,
       "vice_id": 72,
       "players": [
@@ -439,7 +439,7 @@
           "name": "Tarkowski",
           "team": "EVE",
           "pos": "DEF",
-          "price": 6.0,
+          "price": 6.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -451,7 +451,7 @@
           "name": "Gvardiol",
           "team": "MCI",
           "pos": "DEF",
-          "price": 5.6,
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -459,8 +459,8 @@
           "setpiece": false
         },
         {
-          "id": 175,
-          "name": "van Ewijk",
+          "id": 173,
+          "name": "Thomas",
           "team": "COV",
           "pos": "DEF",
           "price": 4.0,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 91.9,
+  "budget_spent": 92.0,
   "captain_id": 647,
   "vice_id": 12,
   "players": [
@@ -626,7 +626,7 @@
       "name": "Tarkowski",
       "team": "EVE",
       "pos": "DEF",
-      "price": 6.0,
+      "price": 6.1,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -646,9 +646,9 @@
       "setpiece": false
     },
     {
-      "id": 175,
-      "name": "van Ewijk",
-      "team": "COV",
+      "id": 66,
+      "name": "Soler",
+      "team": "BOU",
       "pos": "DEF",
       "price": 4.0,
       "starting": false,
