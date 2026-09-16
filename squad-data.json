@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 99.0,
+      "budget_spent": 99.3,
       "captain_id": 411,
       "vice_id": 12,
       "players": [
@@ -260,21 +260,21 @@
           "setpiece": true
         },
         {
-          "id": 173,
-          "name": "Thomas",
-          "team": "COV",
+          "id": 282,
+          "name": "Giles",
+          "team": "HUL",
           "pos": "DEF",
           "price": 4.0,
-          "starting": false,
+          "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": false
+          "setpiece": true
         },
         {
-          "id": 66,
-          "name": "Soler",
-          "team": "BOU",
+          "id": 173,
+          "name": "Thomas",
+          "team": "COV",
           "pos": "DEF",
           "price": 4.0,
           "starting": false,
@@ -332,15 +332,15 @@
           "setpiece": true
         },
         {
-          "id": 68,
-          "name": "Tavernier",
-          "team": "BOU",
+          "id": 154,
+          "name": "Palmer",
+          "team": "CHE",
           "pos": "MID",
-          "price": 6.1,
+          "price": 9.7,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": false,
+          "pens": true,
           "setpiece": true
         },
         {
@@ -356,21 +356,21 @@
           "setpiece": false
         },
         {
-          "id": 165,
-          "name": "Jo\u00e3o Pedro",
-          "team": "CHE",
+          "id": 321,
+          "name": "Walle Egeli",
+          "team": "IPS",
           "pos": "FWD",
-          "price": 7.8,
-          "starting": true,
+          "price": 4.5,
+          "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
           "setpiece": false
         },
         {
-          "id": 321,
-          "name": "Walle Egeli",
-          "team": "IPS",
+          "id": 272,
+          "name": "Kusi-Asare",
+          "team": "FUL",
           "pos": "FWD",
           "price": 4.5,
           "starting": false,
