@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 99.3,
+      "budget_spent": 99.4,
       "captain_id": 411,
       "vice_id": 12,
       "players": [
@@ -228,7 +228,7 @@
           "name": "De Cuyper",
           "team": "BHA",
           "pos": "DEF",
-          "price": 4.8,
+          "price": 4.9,
           "starting": true,
           "captain": false,
           "vice": false,
