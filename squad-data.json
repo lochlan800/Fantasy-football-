@@ -8,9 +8,9 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 89.5,
+      "budget_spent": 89.9,
       "captain_id": 647,
-      "vice_id": 12,
+      "vice_id": 100,
       "players": [
         {
           "id": 1,
@@ -73,11 +73,11 @@
           "setpiece": false
         },
         {
-          "id": 330,
-          "name": "Bogle",
-          "team": "LEE",
+          "id": 391,
+          "name": "Gvardiol",
+          "team": "MCI",
           "pos": "DEF",
-          "price": 4.6,
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -109,16 +109,16 @@
           "setpiece": false
         },
         {
-          "id": 12,
-          "name": "Saka",
-          "team": "ARS",
+          "id": 100,
+          "name": "Carvalho",
+          "team": "BRE",
           "pos": "MID",
-          "price": 9.5,
+          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": true,
-          "pens": true,
-          "setpiece": true
+          "pens": false,
+          "setpiece": false
         },
         {
           "id": 72,
@@ -133,11 +133,11 @@
           "setpiece": false
         },
         {
-          "id": 124,
-          "name": "Gro\u00df",
-          "team": "BHA",
+          "id": 12,
+          "name": "Saka",
+          "team": "ARS",
           "pos": "MID",
-          "price": 5.7,
+          "price": 9.5,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -145,16 +145,16 @@
           "setpiece": true
         },
         {
-          "id": 69,
-          "name": "Scott",
-          "team": "BOU",
+          "id": 94,
+          "name": "Schade",
+          "team": "BRE",
           "pos": "MID",
           "price": 6.1,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
           "id": 411,
@@ -195,16 +195,16 @@
       ]
     },
     "attacking": {
-      "budget_spent": 99.6,
-      "captain_id": 411,
-      "vice_id": 12,
+      "budget_spent": 99.4,
+      "captain_id": 100,
+      "vice_id": 411,
       "players": [
         {
-          "id": 572,
-          "name": "Tzolakis",
-          "team": "HUL",
+          "id": 1,
+          "name": "Raya",
+          "team": "ARS",
           "pos": "GK",
-          "price": 4.6,
+          "price": 6.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -248,28 +248,28 @@
           "setpiece": false
         },
         {
-          "id": 305,
-          "name": "Davis",
-          "team": "IPS",
+          "id": 391,
+          "name": "Gvardiol",
+          "team": "MCI",
           "pos": "DEF",
-          "price": 4.0,
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
-          "id": 282,
-          "name": "Giles",
-          "team": "HUL",
+          "id": 308,
+          "name": "Furlong",
+          "team": "IPS",
           "pos": "DEF",
-          "price": 4.0,
-          "starting": true,
+          "price": 3.9,
+          "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
           "id": 66,
@@ -284,23 +284,23 @@
           "setpiece": false
         },
         {
+          "id": 100,
+          "name": "Carvalho",
+          "team": "BRE",
+          "pos": "MID",
+          "price": 5.0,
+          "starting": true,
+          "captain": true,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
+        },
+        {
           "id": 12,
           "name": "Saka",
           "team": "ARS",
           "pos": "MID",
           "price": 9.5,
-          "starting": true,
-          "captain": false,
-          "vice": true,
-          "pens": true,
-          "setpiece": true
-        },
-        {
-          "id": 124,
-          "name": "Gro\u00df",
-          "team": "BHA",
-          "pos": "MID",
-          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -320,11 +320,11 @@
           "setpiece": true
         },
         {
-          "id": 480,
-          "name": "Gibbs-White",
-          "team": "NFO",
+          "id": 124,
+          "name": "Gro\u00df",
+          "team": "BHA",
           "pos": "MID",
-          "price": 8.0,
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -332,11 +332,11 @@
           "setpiece": true
         },
         {
-          "id": 154,
-          "name": "Palmer",
-          "team": "CHE",
+          "id": 480,
+          "name": "Gibbs-White",
+          "team": "NFO",
           "pos": "MID",
-          "price": 9.7,
+          "price": 8.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -350,7 +350,19 @@
           "pos": "FWD",
           "price": 15.6,
           "starting": true,
-          "captain": true,
+          "captain": false,
+          "vice": true,
+          "pens": true,
+          "setpiece": false
+        },
+        {
+          "id": 346,
+          "name": "Calvert-Lewin",
+          "team": "LEE",
+          "pos": "FWD",
+          "price": 6.0,
+          "starting": true,
+          "captain": false,
           "vice": false,
           "pens": true,
           "setpiece": false
@@ -366,32 +378,20 @@
           "vice": false,
           "pens": false,
           "setpiece": false
-        },
-        {
-          "id": 272,
-          "name": "Kusi-Asare",
-          "team": "FUL",
-          "pos": "FWD",
-          "price": 4.5,
-          "starting": false,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
         }
       ]
     },
     "value": {
-      "budget_spent": 89.5,
+      "budget_spent": 85.1,
       "captain_id": 647,
-      "vice_id": 72,
+      "vice_id": 98,
       "players": [
         {
-          "id": 1,
-          "name": "Raya",
-          "team": "ARS",
+          "id": 572,
+          "name": "Tzolakis",
+          "team": "HUL",
           "pos": "GK",
-          "price": 6.0,
+          "price": 4.6,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -447,11 +447,11 @@
           "setpiece": false
         },
         {
-          "id": 330,
-          "name": "Bogle",
-          "team": "LEE",
+          "id": 391,
+          "name": "Gvardiol",
+          "team": "MCI",
           "pos": "DEF",
-          "price": 4.6,
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -483,6 +483,18 @@
           "setpiece": false
         },
         {
+          "id": 98,
+          "name": "Janelt",
+          "team": "BRE",
+          "pos": "MID",
+          "price": 5.0,
+          "starting": true,
+          "captain": false,
+          "vice": true,
+          "pens": false,
+          "setpiece": true
+        },
+        {
           "id": 72,
           "name": "Gannon-Doak",
           "team": "BOU",
@@ -490,7 +502,19 @@
           "price": 4.9,
           "starting": true,
           "captain": false,
-          "vice": true,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
+        },
+        {
+          "id": 94,
+          "name": "Schade",
+          "team": "BRE",
+          "pos": "MID",
+          "price": 6.1,
+          "starting": true,
+          "captain": false,
+          "vice": false,
           "pens": false,
           "setpiece": false
         },
@@ -504,30 +528,6 @@
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
-        },
-        {
-          "id": 12,
-          "name": "Saka",
-          "team": "ARS",
-          "pos": "MID",
-          "price": 9.5,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": true,
-          "setpiece": true
-        },
-        {
-          "id": 124,
-          "name": "Gro\u00df",
-          "team": "BHA",
-          "pos": "MID",
-          "price": 5.7,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": true,
           "setpiece": true
         },
         {
@@ -569,9 +569,9 @@
       ]
     }
   },
-  "budget_spent": 89.5,
+  "budget_spent": 89.9,
   "captain_id": 647,
-  "vice_id": 12,
+  "vice_id": 100,
   "players": [
     {
       "id": 1,
@@ -634,11 +634,11 @@
       "setpiece": false
     },
     {
-      "id": 330,
-      "name": "Bogle",
-      "team": "LEE",
+      "id": 391,
+      "name": "Gvardiol",
+      "team": "MCI",
       "pos": "DEF",
-      "price": 4.6,
+      "price": 5.7,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -670,16 +670,16 @@
       "setpiece": false
     },
     {
-      "id": 12,
-      "name": "Saka",
-      "team": "ARS",
+      "id": 100,
+      "name": "Carvalho",
+      "team": "BRE",
       "pos": "MID",
-      "price": 9.5,
+      "price": 5.0,
       "starting": true,
       "captain": false,
       "vice": true,
-      "pens": true,
-      "setpiece": true
+      "pens": false,
+      "setpiece": false
     },
     {
       "id": 72,
@@ -694,11 +694,11 @@
       "setpiece": false
     },
     {
-      "id": 124,
-      "name": "Gro\u00df",
-      "team": "BHA",
+      "id": 12,
+      "name": "Saka",
+      "team": "ARS",
       "pos": "MID",
-      "price": 5.7,
+      "price": 9.5,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -706,16 +706,16 @@
       "setpiece": true
     },
     {
-      "id": 69,
-      "name": "Scott",
-      "team": "BOU",
+      "id": 94,
+      "name": "Schade",
+      "team": "BRE",
       "pos": "MID",
       "price": 6.1,
       "starting": true,
       "captain": false,
       "vice": false,
       "pens": false,
-      "setpiece": true
+      "setpiece": false
     },
     {
       "id": 411,
