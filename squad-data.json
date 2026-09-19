@@ -25,9 +25,9 @@
           "setpiece": false
         },
         {
-          "id": 111,
-          "name": "Steele",
-          "team": "BHA",
+          "id": 661,
+          "name": "Balcombe",
+          "team": "BRE",
           "pos": "GK",
           "price": 4.0,
           "starting": false,
@@ -85,9 +85,9 @@
           "setpiece": false
         },
         {
-          "id": 66,
-          "name": "Soler",
-          "team": "BOU",
+          "id": 38,
+          "name": "A.Garc\u00eda",
+          "team": "AVL",
           "pos": "DEF",
           "price": 4.0,
           "starting": false,
@@ -212,9 +212,9 @@
           "setpiece": false
         },
         {
-          "id": 111,
-          "name": "Steele",
-          "team": "BHA",
+          "id": 661,
+          "name": "Balcombe",
+          "team": "BRE",
           "pos": "GK",
           "price": 4.0,
           "starting": false,
@@ -272,9 +272,9 @@
           "setpiece": false
         },
         {
-          "id": 66,
-          "name": "Soler",
-          "team": "BOU",
+          "id": 38,
+          "name": "A.Garc\u00eda",
+          "team": "AVL",
           "pos": "DEF",
           "price": 4.0,
           "starting": false,
@@ -399,9 +399,9 @@
           "setpiece": false
         },
         {
-          "id": 111,
-          "name": "Steele",
-          "team": "BHA",
+          "id": 661,
+          "name": "Balcombe",
+          "team": "BRE",
           "pos": "GK",
           "price": 4.0,
           "starting": false,
@@ -459,9 +459,9 @@
           "setpiece": false
         },
         {
-          "id": 66,
-          "name": "Soler",
-          "team": "BOU",
+          "id": 38,
+          "name": "A.Garc\u00eda",
+          "team": "AVL",
           "pos": "DEF",
           "price": 4.0,
           "starting": false,
@@ -586,9 +586,9 @@
       "setpiece": false
     },
     {
-      "id": 111,
-      "name": "Steele",
-      "team": "BHA",
+      "id": 661,
+      "name": "Balcombe",
+      "team": "BRE",
       "pos": "GK",
       "price": 4.0,
       "starting": false,
@@ -646,9 +646,9 @@
       "setpiece": false
     },
     {
-      "id": 66,
-      "name": "Soler",
-      "team": "BOU",
+      "id": 38,
+      "name": "A.Garc\u00eda",
+      "team": "AVL",
       "pos": "DEF",
       "price": 4.0,
       "starting": false,
