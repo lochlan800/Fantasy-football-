@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 87.6,
+      "budget_spent": 88.8,
       "captain_id": 647,
       "vice_id": 124,
       "players": [
@@ -145,16 +145,16 @@
           "setpiece": true
         },
         {
-          "id": 72,
-          "name": "Gannon-Doak",
+          "id": 69,
+          "name": "Scott",
           "team": "BOU",
           "pos": "MID",
-          "price": 4.9,
+          "price": 6.1,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": false
+          "setpiece": true
         },
         {
           "id": 411,
@@ -195,9 +195,9 @@
       ]
     },
     "attacking": {
-      "budget_spent": 98.7,
+      "budget_spent": 98.3,
       "captain_id": 100,
-      "vice_id": 124,
+      "vice_id": 411,
       "players": [
         {
           "id": 572,
@@ -248,6 +248,18 @@
           "setpiece": true
         },
         {
+          "id": 330,
+          "name": "Bogle",
+          "team": "LEE",
+          "pos": "DEF",
+          "price": 4.6,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
+        },
+        {
           "id": 449,
           "name": "Hall",
           "team": "NEW",
@@ -258,18 +270,6 @@
           "vice": false,
           "pens": false,
           "setpiece": true
-        },
-        {
-          "id": 308,
-          "name": "Furlong",
-          "team": "IPS",
-          "pos": "DEF",
-          "price": 3.9,
-          "starting": false,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
         },
         {
           "id": 38,
@@ -303,7 +303,7 @@
           "price": 5.8,
           "starting": true,
           "captain": false,
-          "vice": true,
+          "vice": false,
           "pens": true,
           "setpiece": true
         },
@@ -351,19 +351,7 @@
           "price": 15.6,
           "starting": true,
           "captain": false,
-          "vice": false,
-          "pens": true,
-          "setpiece": false
-        },
-        {
-          "id": 249,
-          "name": "Barry",
-          "team": "EVE",
-          "pos": "FWD",
-          "price": 5.6,
-          "starting": true,
-          "captain": false,
-          "vice": false,
+          "vice": true,
           "pens": true,
           "setpiece": false
         },
@@ -378,11 +366,23 @@
           "vice": false,
           "pens": false,
           "setpiece": false
+        },
+        {
+          "id": 272,
+          "name": "Kusi-Asare",
+          "team": "FUL",
+          "pos": "FWD",
+          "price": 4.5,
+          "starting": false,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
         }
       ]
     },
     "value": {
-      "budget_spent": 84.1,
+      "budget_spent": 85.3,
       "captain_id": 647,
       "vice_id": 124,
       "players": [
@@ -495,6 +495,18 @@
           "setpiece": true
         },
         {
+          "id": 69,
+          "name": "Scott",
+          "team": "BOU",
+          "pos": "MID",
+          "price": 6.1,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
+        },
+        {
           "id": 98,
           "name": "Janelt",
           "team": "BRE",
@@ -505,18 +517,6 @@
           "vice": false,
           "pens": false,
           "setpiece": true
-        },
-        {
-          "id": 72,
-          "name": "Gannon-Doak",
-          "team": "BOU",
-          "pos": "MID",
-          "price": 4.9,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
         },
         {
           "id": 94,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 87.6,
+  "budget_spent": 88.8,
   "captain_id": 647,
   "vice_id": 124,
   "players": [
@@ -706,16 +706,16 @@
       "setpiece": true
     },
     {
-      "id": 72,
-      "name": "Gannon-Doak",
+      "id": 69,
+      "name": "Scott",
       "team": "BOU",
       "pos": "MID",
-      "price": 4.9,
+      "price": 6.1,
       "starting": true,
       "captain": false,
       "vice": false,
       "pens": false,
-      "setpiece": false
+      "setpiece": true
     },
     {
       "id": 411,
