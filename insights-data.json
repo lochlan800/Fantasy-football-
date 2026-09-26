@@ -161,7 +161,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 28.4,
+      "owned": 28.5,
       "form": 11.2,
       "xgi": 2.6,
       "actual": 7,
@@ -172,7 +172,7 @@
       "team": "BHA",
       "pos": "FWD",
       "price": 5.6,
-      "owned": 3.8,
+      "owned": 3.9,
       "form": 6.8,
       "xgi": 1.4,
       "actual": 5,
@@ -260,7 +260,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 6.1,
-      "owned": 5.7,
+      "owned": 5.8,
       "form": 7.0,
       "xgi": 1.1,
       "actual": 3,
@@ -292,7 +292,7 @@
       "name": "De Cuyper",
       "team": "BHA",
       "pos": "DEF",
-      "price": 4.9,
+      "price": 5.0,
       "owned": 27.6,
       "form": 5.2,
       "xgi": 2.2,
@@ -357,7 +357,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 28.4,
+      "owned": 28.5,
       "form": 11.2,
       "choice": "1st",
       "duties": "Penalties, Free-kicks, Corners"
@@ -497,7 +497,7 @@
       "team": "LEE",
       "pos": "FWD",
       "price": 6.0,
-      "owned": 24.9,
+      "owned": 24.8,
       "form": 5.2,
       "choice": "1st",
       "duties": "Penalties"
@@ -537,7 +537,7 @@
       "team": "MCI",
       "pos": "FWD",
       "price": 15.6,
-      "owned": 73.7,
+      "owned": 73.8,
       "form": 9.2,
       "choice": "1st",
       "duties": "Penalties"
@@ -568,7 +568,7 @@
       "team": "AVL",
       "pos": "DEF",
       "price": 4.4,
-      "owned": 4.9,
+      "owned": 4.8,
       "form": 1.8,
       "duties": "Corners"
     },
@@ -577,7 +577,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 28.4,
+      "owned": 28.5,
       "form": 11.2,
       "duties": "Penalties, Free-kicks, Corners"
     },
@@ -721,7 +721,7 @@
       "team": "NEW",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 17.1,
+      "owned": 17.2,
       "form": 7.0,
       "duties": "Free-kicks, Corners"
     },
@@ -762,12 +762,12 @@
       "duties": "Pens (2nd), Corners"
     },
     {
-      "name": "Robertson",
+      "name": "Fernandes",
       "team": "TOT",
-      "pos": "DEF",
-      "price": 4.4,
-      "owned": 2.5,
-      "form": 3.5,
+      "pos": "MID",
+      "price": 5.7,
+      "owned": 0.8,
+      "form": 1.5,
       "duties": "Corners"
     }
   ],
@@ -792,7 +792,7 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 8.0,
-      "owned": 22.8,
+      "owned": 22.7,
       "form": 5.0,
       "minutes": 450,
       "rating": "nailed",
@@ -942,7 +942,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 28.4,
+      "owned": 28.5,
       "form": 11.2,
       "minutes": 450,
       "rating": "nailed",
@@ -1107,7 +1107,7 @@
       "team": "IPS",
       "pos": "DEF",
       "price": 4.0,
-      "owned": 12.8,
+      "owned": 12.7,
       "form": 2.5,
       "minutes": 450,
       "rating": "nailed",
@@ -1257,7 +1257,7 @@
       "team": "MCI",
       "pos": "DEF",
       "price": 6.0,
-      "owned": 18.3,
+      "owned": 18.2,
       "form": 5.0,
       "minutes": 450,
       "rating": "nailed",
@@ -1287,7 +1287,7 @@
       "team": "MCI",
       "pos": "FWD",
       "price": 15.6,
-      "owned": 73.7,
+      "owned": 73.8,
       "form": 9.2,
       "minutes": 450,
       "rating": "nailed",
@@ -1527,7 +1527,7 @@
       "team": "NEW",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 17.1,
+      "owned": 17.2,
       "form": 7.0,
       "minutes": 449,
       "rating": "nailed",
@@ -1587,7 +1587,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 6.1,
-      "owned": 5.7,
+      "owned": 5.8,
       "form": 7.0,
       "minutes": 446,
       "rating": "nailed",
@@ -2036,7 +2036,7 @@
       "name": "De Cuyper",
       "team": "BHA",
       "pos": "DEF",
-      "price": 4.9,
+      "price": 5.0,
       "owned": 27.6,
       "form": 5.2,
       "minutes": 423,
@@ -2082,7 +2082,7 @@
       "team": "LEE",
       "pos": "FWD",
       "price": 6.0,
-      "owned": 24.9,
+      "owned": 24.8,
       "form": 5.2,
       "minutes": 419,
       "rating": "nailed",
@@ -2292,7 +2292,7 @@
       "team": "LIV",
       "pos": "MID",
       "price": 7.3,
-      "owned": 5.8,
+      "owned": 5.7,
       "form": 4.0,
       "minutes": 402,
       "rating": "nailed",
@@ -2532,7 +2532,7 @@
       "team": "MCI",
       "pos": "MID",
       "price": 5.8,
-      "owned": 6.8,
+      "owned": 6.7,
       "form": 3.2,
       "minutes": 385,
       "rating": "nailed",
@@ -2779,7 +2779,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 6.1,
-      "owned": 5.7,
+      "owned": 5.8,
       "form": 7.0,
       "dc90": 12.1
     },
@@ -2835,7 +2835,7 @@
       "team": "MCI",
       "pos": "FWD",
       "price": 15.6,
-      "owned": 73.7,
+      "owned": 73.8,
       "form": 9.2
     },
     {
@@ -2883,7 +2883,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 28.4,
+      "owned": 28.5,
       "form": 11.2
     },
     {
@@ -2898,7 +2898,7 @@
       "name": "De Cuyper",
       "team": "BHA",
       "pos": "DEF",
-      "price": 4.9,
+      "price": 5.0,
       "owned": 27.6,
       "form": 5.2
     },
@@ -2915,7 +2915,7 @@
       "team": "LEE",
       "pos": "FWD",
       "price": 6.0,
-      "owned": 24.9,
+      "owned": 24.8,
       "form": 5.2
     },
     {
@@ -2923,7 +2923,7 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 8.0,
-      "owned": 22.8,
+      "owned": 22.7,
       "form": 5.0
     },
     {
@@ -2967,7 +2967,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 6.1,
-      "owned": 5.7,
+      "owned": 5.8,
       "form": 7.0,
       "xgi90": 0.21
     },
@@ -2976,7 +2976,7 @@
       "team": "BHA",
       "pos": "FWD",
       "price": 5.6,
-      "owned": 3.8,
+      "owned": 3.9,
       "form": 6.8,
       "xgi90": 0.36
     },
@@ -3077,9 +3077,9 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 28.4,
+      "owned": 28.5,
       "form": 11.2,
-      "net": 731718,
+      "net": 738812,
       "cost_change": 0.1
     },
     {
@@ -3089,7 +3089,7 @@
       "price": 6.2,
       "owned": 11.2,
       "form": 9.0,
-      "net": 339040,
+      "net": 343073,
       "cost_change": 0.1
     },
     {
@@ -3097,29 +3097,29 @@
       "team": "BHA",
       "pos": "FWD",
       "price": 5.6,
-      "owned": 3.8,
+      "owned": 3.9,
       "form": 6.8,
-      "net": 268607,
+      "net": 272108,
       "cost_change": 0.1
     },
     {
       "name": "De Cuyper",
       "team": "BHA",
       "pos": "DEF",
-      "price": 4.9,
+      "price": 5.0,
       "owned": 27.6,
       "form": 5.2,
-      "net": 259444,
-      "cost_change": 0.0
+      "net": 263282,
+      "cost_change": 0.1
     },
     {
       "name": "Hall",
       "team": "NEW",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 17.1,
+      "owned": 17.2,
       "form": 7.0,
-      "net": 210745,
+      "net": 213012,
       "cost_change": 0.1
     },
     {
@@ -3129,7 +3129,7 @@
       "price": 6.1,
       "owned": 16.2,
       "form": 9.2,
-      "net": 182475,
+      "net": 185153,
       "cost_change": 0.0
     },
     {
@@ -3139,7 +3139,7 @@
       "price": 6.1,
       "owned": 5.6,
       "form": 6.5,
-      "net": 130416,
+      "net": 131715,
       "cost_change": 0.1
     },
     {
@@ -3149,7 +3149,7 @@
       "price": 4.7,
       "owned": 12.7,
       "form": 6.0,
-      "net": 97704,
+      "net": 98558,
       "cost_change": 0.1
     },
     {
@@ -3159,7 +3159,7 @@
       "price": 4.6,
       "owned": 7.0,
       "form": 9.0,
-      "net": 89836,
+      "net": 91063,
       "cost_change": 0.0
     },
     {
@@ -3169,7 +3169,7 @@
       "price": 5.7,
       "owned": 26.7,
       "form": 7.0,
-      "net": 87439,
+      "net": 88193,
       "cost_change": 0.0
     },
     {
@@ -3179,7 +3179,7 @@
       "price": 6.1,
       "owned": 42.2,
       "form": 6.0,
-      "net": 74490,
+      "net": 75050,
       "cost_change": 0.1
     },
     {
@@ -3189,7 +3189,7 @@
       "price": 7.7,
       "owned": 40.4,
       "form": 5.2,
-      "net": 66069,
+      "net": 67419,
       "cost_change": 0.0
     },
     {
@@ -3199,7 +3199,7 @@
       "price": 5.5,
       "owned": 2.5,
       "form": 4.2,
-      "net": 60203,
+      "net": 61103,
       "cost_change": 0.0
     },
     {
@@ -3207,9 +3207,9 @@
       "team": "MCI",
       "pos": "FWD",
       "price": 15.6,
-      "owned": 73.7,
+      "owned": 73.8,
       "form": 9.2,
-      "net": 52242,
+      "net": 52864,
       "cost_change": 0.0
     }
   ],
@@ -3221,7 +3221,7 @@
       "price": 7.0,
       "owned": 32.9,
       "form": 3.0,
-      "net": -163520,
+      "net": -165577,
       "cost_change": 0.0
     },
     {
@@ -3231,7 +3231,7 @@
       "price": 11.9,
       "owned": 38.6,
       "form": 7.2,
-      "net": -146545,
+      "net": -147442,
       "cost_change": -0.1
     },
     {
@@ -3241,7 +3241,7 @@
       "price": 5.6,
       "owned": 10.0,
       "form": 2.0,
-      "net": -124042,
+      "net": -125050,
       "cost_change": -0.1
     },
     {
@@ -3251,7 +3251,7 @@
       "price": 6.3,
       "owned": 12.2,
       "form": 2.5,
-      "net": -120935,
+      "net": -121773,
       "cost_change": -0.1
     },
     {
@@ -3261,7 +3261,7 @@
       "price": 7.9,
       "owned": 20.6,
       "form": 5.8,
-      "net": -89048,
+      "net": -89761,
       "cost_change": 0.0
     },
     {
@@ -3271,7 +3271,7 @@
       "price": 4.5,
       "owned": 17.3,
       "form": 4.0,
-      "net": -87726,
+      "net": -88440,
       "cost_change": 0.0
     },
     {
@@ -3279,9 +3279,9 @@
       "team": "LEE",
       "pos": "FWD",
       "price": 6.0,
-      "owned": 24.9,
+      "owned": 24.8,
       "form": 5.2,
-      "net": -72365,
+      "net": -73207,
       "cost_change": 0.0
     },
     {
@@ -3291,7 +3291,7 @@
       "price": 4.3,
       "owned": 7.7,
       "form": 2.0,
-      "net": -69126,
+      "net": -69657,
       "cost_change": -0.1
     },
     {
@@ -3301,7 +3301,7 @@
       "price": 4.8,
       "owned": 8.7,
       "form": 2.2,
-      "net": -66568,
+      "net": -67213,
       "cost_change": -0.1
     },
     {
@@ -3311,7 +3311,7 @@
       "price": 6.3,
       "owned": 11.0,
       "form": 1.0,
-      "net": -60468,
+      "net": -61146,
       "cost_change": -0.1
     },
     {
@@ -3319,9 +3319,9 @@
       "team": "MCI",
       "pos": "MID",
       "price": 5.8,
-      "owned": 6.8,
+      "owned": 6.7,
       "form": 3.2,
-      "net": -57559,
+      "net": -58155,
       "cost_change": -0.1
     },
     {
@@ -3331,7 +3331,7 @@
       "price": 6.2,
       "owned": 18.7,
       "form": 2.8,
-      "net": -55230,
+      "net": -55131,
       "cost_change": 0.0
     },
     {
@@ -3339,9 +3339,9 @@
       "team": "IPS",
       "pos": "DEF",
       "price": 4.0,
-      "owned": 12.8,
+      "owned": 12.7,
       "form": 2.5,
-      "net": -44170,
+      "net": -44771,
       "cost_change": 0.0
     },
     {
@@ -3349,9 +3349,9 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 8.0,
-      "owned": 22.8,
+      "owned": 22.7,
       "form": 5.0,
-      "net": -39532,
+      "net": -39935,
       "cost_change": 0.0
     }
   ],
@@ -3371,7 +3371,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 28.4,
+      "owned": 28.5,
       "form": 11.2,
       "val": 8.1,
       "points": 47
@@ -3380,10 +3380,10 @@
       "name": "De Cuyper",
       "team": "BHA",
       "pos": "DEF",
-      "price": 4.9,
+      "price": 5.0,
       "owned": 27.6,
       "form": 5.2,
-      "val": 7.8,
+      "val": 7.6,
       "points": 38
     },
     {
@@ -3512,7 +3512,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 28.4,
+      "owned": 28.5,
       "form": 11.2,
       "val": 1.9
     },
@@ -3602,7 +3602,7 @@
       "team": "NEW",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 17.1,
+      "owned": 17.2,
       "form": 7.0,
       "val": 1.3
     },
@@ -3620,7 +3620,7 @@
       "team": "BHA",
       "pos": "FWD",
       "price": 5.6,
-      "owned": 3.8,
+      "owned": 3.9,
       "form": 6.8,
       "val": 1.2
     }
