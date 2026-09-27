@@ -169,9 +169,9 @@
           "setpiece": false
         },
         {
-          "id": 272,
-          "name": "Kusi-Asare",
-          "team": "FUL",
+          "id": 321,
+          "name": "Walle Egeli",
+          "team": "IPS",
           "pos": "FWD",
           "price": 4.5,
           "starting": false,
@@ -181,9 +181,9 @@
           "setpiece": false
         },
         {
-          "id": 382,
-          "name": "Danns",
-          "team": "LIV",
+          "id": 272,
+          "name": "Kusi-Asare",
+          "team": "FUL",
           "pos": "FWD",
           "price": 4.5,
           "starting": false,
@@ -195,16 +195,16 @@
       ]
     },
     "attacking": {
-      "budget_spent": 100.0,
+      "budget_spent": 98.5,
       "captain_id": 100,
       "vice_id": 124,
       "players": [
         {
-          "id": 667,
-          "name": "Wright",
-          "team": "AVL",
+          "id": 572,
+          "name": "Tzolakis",
+          "team": "HUL",
           "pos": "GK",
-          "price": 4.0,
+          "price": 4.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -236,6 +236,18 @@
           "setpiece": false
         },
         {
+          "id": 449,
+          "name": "Hall",
+          "team": "NEW",
+          "pos": "DEF",
+          "price": 5.3,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
+        },
+        {
           "id": 330,
           "name": "Bogle",
           "team": "LEE",
@@ -248,28 +260,16 @@
           "setpiece": false
         },
         {
-          "id": 305,
-          "name": "Davis",
-          "team": "IPS",
+          "id": 115,
+          "name": "De Cuyper",
+          "team": "BHA",
           "pos": "DEF",
-          "price": 4.0,
+          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
           "setpiece": true
-        },
-        {
-          "id": 539,
-          "name": "O'Nien",
-          "team": "SUN",
-          "pos": "DEF",
-          "price": 3.9,
-          "starting": false,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
         },
         {
           "id": 38,
@@ -356,21 +356,21 @@
           "setpiece": false
         },
         {
-          "id": 379,
-          "name": "Isak",
-          "team": "LIV",
+          "id": 321,
+          "name": "Walle Egeli",
+          "team": "IPS",
           "pos": "FWD",
-          "price": 9.1,
-          "starting": true,
+          "price": 4.5,
+          "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
           "setpiece": false
         },
         {
-          "id": 382,
-          "name": "Danns",
-          "team": "LIV",
+          "id": 272,
+          "name": "Kusi-Asare",
+          "team": "FUL",
           "pos": "FWD",
           "price": 4.5,
           "starting": false,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 85.7,
+      "budget_spent": 85.6,
       "captain_id": 647,
       "vice_id": 124,
       "players": [
@@ -459,11 +459,11 @@
           "setpiece": true
         },
         {
-          "id": 38,
-          "name": "A.Garc\u00eda",
-          "team": "AVL",
+          "id": 539,
+          "name": "O'Nien",
+          "team": "SUN",
           "pos": "DEF",
-          "price": 4.0,
+          "price": 3.9,
           "starting": false,
           "captain": false,
           "vice": false,
@@ -543,9 +543,9 @@
           "setpiece": false
         },
         {
-          "id": 272,
-          "name": "Kusi-Asare",
-          "team": "FUL",
+          "id": 321,
+          "name": "Walle Egeli",
+          "team": "IPS",
           "pos": "FWD",
           "price": 4.5,
           "starting": false,
@@ -555,9 +555,9 @@
           "setpiece": false
         },
         {
-          "id": 382,
-          "name": "Danns",
-          "team": "LIV",
+          "id": 272,
+          "name": "Kusi-Asare",
+          "team": "FUL",
           "pos": "FWD",
           "price": 4.5,
           "starting": false,
@@ -730,9 +730,9 @@
       "setpiece": false
     },
     {
-      "id": 272,
-      "name": "Kusi-Asare",
-      "team": "FUL",
+      "id": 321,
+      "name": "Walle Egeli",
+      "team": "IPS",
       "pos": "FWD",
       "price": 4.5,
       "starting": false,
@@ -742,9 +742,9 @@
       "setpiece": false
     },
     {
-      "id": 382,
-      "name": "Danns",
-      "team": "LIV",
+      "id": 272,
+      "name": "Kusi-Asare",
+      "team": "FUL",
       "pos": "FWD",
       "price": 4.5,
       "starting": false,
