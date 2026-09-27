@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 98.5,
+      "budget_spent": 99.2,
       "captain_id": 100,
       "vice_id": 124,
       "players": [
@@ -260,16 +260,16 @@
           "setpiece": false
         },
         {
-          "id": 115,
-          "name": "De Cuyper",
-          "team": "BHA",
+          "id": 391,
+          "name": "Gvardiol",
+          "team": "MCI",
           "pos": "DEF",
-          "price": 5.0,
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
           "id": 38,
