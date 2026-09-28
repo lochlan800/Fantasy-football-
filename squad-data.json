@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 98.2,
+      "budget_spent": 97.9,
       "captain_id": 100,
       "vice_id": 124,
       "players": [
@@ -236,18 +236,6 @@
           "setpiece": false
         },
         {
-          "id": 449,
-          "name": "Hall",
-          "team": "NEW",
-          "pos": "DEF",
-          "price": 5.3,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
-        },
-        {
           "id": 330,
           "name": "Bogle",
           "team": "LEE",
@@ -270,6 +258,18 @@
           "vice": false,
           "pens": false,
           "setpiece": false
+        },
+        {
+          "id": 115,
+          "name": "De Cuyper",
+          "team": "BHA",
+          "pos": "DEF",
+          "price": 5.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
         },
         {
           "id": 38,
