@@ -8,16 +8,16 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 91.5,
+      "budget_spent": 92.3,
       "captain_id": 124,
       "vice_id": 647,
       "players": [
         {
-          "id": 572,
-          "name": "Tzolakis",
-          "team": "HUL",
+          "id": 350,
+          "name": "A.Becker",
+          "team": "LIV",
           "pos": "GK",
-          "price": 4.7,
+          "price": 5.5,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -195,16 +195,16 @@
       ]
     },
     "attacking": {
-      "budget_spent": 99.2,
+      "budget_spent": 98.2,
       "captain_id": 100,
       "vice_id": 124,
       "players": [
         {
-          "id": 572,
-          "name": "Tzolakis",
-          "team": "HUL",
+          "id": 350,
+          "name": "A.Becker",
+          "team": "LIV",
           "pos": "GK",
-          "price": 4.7,
+          "price": 5.5,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -332,16 +332,16 @@
           "setpiece": true
         },
         {
-          "id": 480,
-          "name": "Gibbs-White",
-          "team": "NFO",
+          "id": 94,
+          "name": "Schade",
+          "team": "BRE",
           "pos": "MID",
-          "price": 8.0,
+          "price": 6.2,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": true,
-          "setpiece": true
+          "pens": false,
+          "setpiece": false
         },
         {
           "id": 411,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 85.6,
+      "budget_spent": 84.6,
       "captain_id": 647,
       "vice_id": 124,
       "players": [
@@ -507,11 +507,11 @@
           "setpiece": false
         },
         {
-          "id": 69,
-          "name": "Scott",
-          "team": "BOU",
+          "id": 98,
+          "name": "Janelt",
+          "team": "BRE",
           "pos": "MID",
-          "price": 6.1,
+          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -519,11 +519,11 @@
           "setpiece": true
         },
         {
-          "id": 98,
-          "name": "Janelt",
-          "team": "BRE",
+          "id": 286,
+          "name": "Belloumi",
+          "team": "HUL",
           "pos": "MID",
-          "price": 5.0,
+          "price": 5.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -569,16 +569,16 @@
       ]
     }
   },
-  "budget_spent": 91.5,
+  "budget_spent": 92.3,
   "captain_id": 124,
   "vice_id": 647,
   "players": [
     {
-      "id": 572,
-      "name": "Tzolakis",
-      "team": "HUL",
+      "id": 350,
+      "name": "A.Becker",
+      "team": "LIV",
       "pos": "GK",
-      "price": 4.7,
+      "price": 5.5,
       "starting": true,
       "captain": false,
       "vice": false,
