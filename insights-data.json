@@ -172,7 +172,7 @@
       "team": "BHA",
       "pos": "FWD",
       "price": 5.6,
-      "owned": 4.1,
+      "owned": 4.2,
       "form": 7.3,
       "xgi": 1.4,
       "actual": 5,
@@ -281,7 +281,7 @@
       "name": "Tarkowski",
       "team": "EVE",
       "pos": "DEF",
-      "price": 6.1,
+      "price": 6.2,
       "owned": 16.5,
       "form": 8.3,
       "xgi": 0.2,
@@ -962,7 +962,7 @@
       "name": "Richards",
       "team": "CRY",
       "pos": "DEF",
-      "price": 5.0,
+      "price": 4.9,
       "owned": 0.6,
       "form": 3.7,
       "minutes": 450,
@@ -992,7 +992,7 @@
       "name": "Tarkowski",
       "team": "EVE",
       "pos": "DEF",
-      "price": 6.1,
+      "price": 6.2,
       "owned": 16.5,
       "form": 8.3,
       "minutes": 450,
@@ -2659,7 +2659,7 @@
       "name": "Richards",
       "team": "CRY",
       "pos": "DEF",
-      "price": 5.0,
+      "price": 4.9,
       "owned": 0.6,
       "form": 3.7,
       "dc90": 10.8
@@ -2985,7 +2985,7 @@
       "team": "BHA",
       "pos": "FWD",
       "price": 5.6,
-      "owned": 4.1,
+      "owned": 4.2,
       "form": 7.3,
       "xgi90": 0.36
     },
@@ -3070,7 +3070,7 @@
       "price": 5.8,
       "owned": 28.9,
       "form": 10.7,
-      "net": 773060,
+      "net": 776286,
       "cost_change": 0.1
     },
     {
@@ -3080,7 +3080,7 @@
       "price": 6.2,
       "owned": 11.5,
       "form": 8.7,
-      "net": 364017,
+      "net": 366084,
       "cost_change": 0.1
     },
     {
@@ -3088,9 +3088,9 @@
       "team": "BHA",
       "pos": "FWD",
       "price": 5.6,
-      "owned": 4.1,
+      "owned": 4.2,
       "form": 7.3,
-      "net": 291216,
+      "net": 293181,
       "cost_change": 0.1
     },
     {
@@ -3100,7 +3100,7 @@
       "price": 5.0,
       "owned": 27.8,
       "form": 7.0,
-      "net": 276356,
+      "net": 277697,
       "cost_change": 0.1
     },
     {
@@ -3110,18 +3110,18 @@
       "price": 5.3,
       "owned": 17.3,
       "form": 5.7,
-      "net": 223496,
+      "net": 224608,
       "cost_change": 0.1
     },
     {
       "name": "Tarkowski",
       "team": "EVE",
       "pos": "DEF",
-      "price": 6.1,
+      "price": 6.2,
       "owned": 16.5,
       "form": 8.3,
-      "net": 210668,
-      "cost_change": 0.0
+      "net": 211927,
+      "cost_change": 0.1
     },
     {
       "name": "Barnes",
@@ -3130,7 +3130,7 @@
       "price": 6.1,
       "owned": 5.7,
       "form": 7.7,
-      "net": 140193,
+      "net": 141128,
       "cost_change": 0.1
     },
     {
@@ -3140,7 +3140,7 @@
       "price": 4.7,
       "owned": 12.8,
       "form": 4.7,
-      "net": 102749,
+      "net": 103109,
       "cost_change": 0.1
     },
     {
@@ -3150,7 +3150,7 @@
       "price": 4.6,
       "owned": 7.2,
       "form": 11.3,
-      "net": 97558,
+      "net": 98251,
       "cost_change": 0.0
     },
     {
@@ -3160,7 +3160,7 @@
       "price": 5.7,
       "owned": 26.8,
       "form": 7.7,
-      "net": 91747,
+      "net": 91971,
       "cost_change": 0.0
     },
     {
@@ -3170,7 +3170,7 @@
       "price": 6.1,
       "owned": 42.3,
       "form": 6.0,
-      "net": 78265,
+      "net": 78627,
       "cost_change": 0.1
     },
     {
@@ -3180,7 +3180,7 @@
       "price": 7.7,
       "owned": 40.5,
       "form": 5.3,
-      "net": 76420,
+      "net": 77381,
       "cost_change": 0.0
     },
     {
@@ -3190,7 +3190,7 @@
       "price": 5.5,
       "owned": 2.6,
       "form": 5.0,
-      "net": 68183,
+      "net": 68984,
       "cost_change": 0.0
     },
     {
@@ -3200,7 +3200,7 @@
       "price": 9.5,
       "owned": 13.7,
       "form": 4.0,
-      "net": 60684,
+      "net": 61636,
       "cost_change": 0.0
     }
   ],
@@ -3212,7 +3212,7 @@
       "price": 7.0,
       "owned": 32.8,
       "form": 2.7,
-      "net": -174812,
+      "net": -175939,
       "cost_change": 0.0
     },
     {
@@ -3222,7 +3222,7 @@
       "price": 11.9,
       "owned": 38.5,
       "form": 2.0,
-      "net": -152045,
+      "net": -152377,
       "cost_change": -0.1
     },
     {
@@ -3232,7 +3232,7 @@
       "price": 5.6,
       "owned": 9.9,
       "form": 1.3,
-      "net": -129643,
+      "net": -130078,
       "cost_change": -0.1
     },
     {
@@ -3242,7 +3242,7 @@
       "price": 6.3,
       "owned": 12.2,
       "form": 3.3,
-      "net": -126017,
+      "net": -126417,
       "cost_change": -0.1
     },
     {
@@ -3252,7 +3252,7 @@
       "price": 4.5,
       "owned": 17.3,
       "form": 5.0,
-      "net": -92248,
+      "net": -92596,
       "cost_change": 0.0
     },
     {
@@ -3262,7 +3262,7 @@
       "price": 7.9,
       "owned": 20.6,
       "form": 4.0,
-      "net": -92233,
+      "net": -92478,
       "cost_change": 0.0
     },
     {
@@ -3272,7 +3272,7 @@
       "price": 6.0,
       "owned": 24.8,
       "form": 4.3,
-      "net": -74470,
+      "net": -74737,
       "cost_change": 0.0
     },
     {
@@ -3282,7 +3282,7 @@
       "price": 4.3,
       "owned": 7.7,
       "form": 2.0,
-      "net": -72397,
+      "net": -72627,
       "cost_change": -0.1
     },
     {
@@ -3292,7 +3292,7 @@
       "price": 4.8,
       "owned": 8.6,
       "form": 1.7,
-      "net": -69914,
+      "net": -70142,
       "cost_change": -0.1
     },
     {
@@ -3302,7 +3302,7 @@
       "price": 6.3,
       "owned": 10.9,
       "form": 0.7,
-      "net": -64510,
+      "net": -64798,
       "cost_change": -0.1
     },
     {
@@ -3312,7 +3312,7 @@
       "price": 5.8,
       "owned": 6.7,
       "form": 3.0,
-      "net": -60977,
+      "net": -61244,
       "cost_change": -0.1
     },
     {
@@ -3322,7 +3322,7 @@
       "price": 6.2,
       "owned": 18.7,
       "form": 1.0,
-      "net": -53667,
+      "net": -53523,
       "cost_change": 0.0
     },
     {
@@ -3332,7 +3332,7 @@
       "price": 4.0,
       "owned": 12.7,
       "form": 2.7,
-      "net": -47783,
+      "net": -48044,
       "cost_change": 0.0
     },
     {
@@ -3342,7 +3342,7 @@
       "price": 8.0,
       "owned": 22.7,
       "form": 4.0,
-      "net": -41738,
+      "net": -41872,
       "cost_change": 0.0
     }
   ],
@@ -3391,10 +3391,10 @@
       "name": "Tarkowski",
       "team": "EVE",
       "pos": "DEF",
-      "price": 6.1,
+      "price": 6.2,
       "owned": 16.5,
       "form": 8.3,
-      "val": 7.0,
+      "val": 6.9,
       "points": 43
     },
     {
@@ -3580,15 +3580,6 @@
       "val": 1.4
     },
     {
-      "name": "Tarkowski",
-      "team": "EVE",
-      "pos": "DEF",
-      "price": 6.1,
-      "owned": 16.5,
-      "form": 8.3,
-      "val": 1.4
-    },
-    {
       "name": "Belloumi",
       "team": "HUL",
       "pos": "MID",
@@ -3614,6 +3605,15 @@
       "owned": 26.8,
       "form": 7.7,
       "val": 1.4
+    },
+    {
+      "name": "Verbruggen",
+      "team": "BHA",
+      "pos": "GK",
+      "price": 4.5,
+      "owned": 21.6,
+      "form": 5.7,
+      "val": 1.3
     }
   ]
 }
