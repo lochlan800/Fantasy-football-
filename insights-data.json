@@ -115,7 +115,7 @@
       "team": "LIV",
       "pos": "MID",
       "price": 7.0,
-      "owned": 32.8,
+      "owned": 32.7,
       "form": 2.7,
       "xgi": 2.2,
       "actual": 1,
@@ -517,7 +517,7 @@
       "team": "LIV",
       "pos": "MID",
       "price": 7.0,
-      "owned": 32.8,
+      "owned": 32.7,
       "form": 2.7,
       "choice": "1st",
       "duties": "Penalties, Free-kicks, Corners"
@@ -694,7 +694,7 @@
       "team": "LIV",
       "pos": "MID",
       "price": 7.0,
-      "owned": 32.8,
+      "owned": 32.7,
       "form": 2.7,
       "duties": "Penalties, Free-kicks, Corners"
     },
@@ -1698,7 +1698,7 @@
       "team": "LIV",
       "pos": "MID",
       "price": 7.0,
-      "owned": 32.8,
+      "owned": 32.7,
       "form": 2.7,
       "minutes": 440,
       "rating": "nailed",
@@ -2358,7 +2358,7 @@
       "team": "ARS",
       "pos": "MID",
       "price": 6.3,
-      "owned": 12.2,
+      "owned": 12.1,
       "form": 3.3,
       "minutes": 362,
       "rating": "sub_risk",
@@ -2866,7 +2866,7 @@
       "team": "LIV",
       "pos": "MID",
       "price": 7.0,
-      "owned": 32.8,
+      "owned": 32.7,
       "form": 2.7
     },
     {
@@ -3070,7 +3070,7 @@
       "price": 5.8,
       "owned": 29.0,
       "form": 10.7,
-      "net": 780492,
+      "net": 785343,
       "cost_change": 0.1
     },
     {
@@ -3080,7 +3080,7 @@
       "price": 6.2,
       "owned": 11.6,
       "form": 8.7,
-      "net": 368723,
+      "net": 371346,
       "cost_change": 0.1
     },
     {
@@ -3090,7 +3090,7 @@
       "price": 5.6,
       "owned": 4.2,
       "form": 7.3,
-      "net": 295525,
+      "net": 298027,
       "cost_change": 0.1
     },
     {
@@ -3100,7 +3100,7 @@
       "price": 5.0,
       "owned": 27.8,
       "form": 7.0,
-      "net": 279271,
+      "net": 280909,
       "cost_change": 0.1
     },
     {
@@ -3110,7 +3110,7 @@
       "price": 5.3,
       "owned": 17.3,
       "form": 5.7,
-      "net": 225954,
+      "net": 227396,
       "cost_change": 0.1
     },
     {
@@ -3120,7 +3120,7 @@
       "price": 6.2,
       "owned": 16.6,
       "form": 8.3,
-      "net": 213265,
+      "net": 214609,
       "cost_change": 0.1
     },
     {
@@ -3130,7 +3130,7 @@
       "price": 6.1,
       "owned": 5.7,
       "form": 7.7,
-      "net": 142205,
+      "net": 143363,
       "cost_change": 0.1
     },
     {
@@ -3140,7 +3140,7 @@
       "price": 4.7,
       "owned": 12.8,
       "form": 4.7,
-      "net": 103490,
+      "net": 103920,
       "cost_change": 0.1
     },
     {
@@ -3150,7 +3150,7 @@
       "price": 4.6,
       "owned": 7.2,
       "form": 11.3,
-      "net": 99226,
+      "net": 100236,
       "cost_change": 0.0
     },
     {
@@ -3160,7 +3160,17 @@
       "price": 5.7,
       "owned": 26.8,
       "form": 7.7,
-      "net": 92466,
+      "net": 92964,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Rogers",
+      "team": "CHE",
+      "pos": "MID",
+      "price": 7.7,
+      "owned": 40.5,
+      "form": 5.3,
+      "net": 79714,
       "cost_change": 0.0
     },
     {
@@ -3170,18 +3180,8 @@
       "price": 6.1,
       "owned": 42.3,
       "form": 6.0,
-      "net": 79082,
+      "net": 79489,
       "cost_change": 0.1
-    },
-    {
-      "name": "Rogers",
-      "team": "CHE",
-      "pos": "MID",
-      "price": 7.7,
-      "owned": 40.5,
-      "form": 5.3,
-      "net": 78507,
-      "cost_change": 0.0
     },
     {
       "name": "King",
@@ -3190,7 +3190,7 @@
       "price": 5.5,
       "owned": 2.6,
       "form": 5.0,
-      "net": 69836,
+      "net": 70807,
       "cost_change": 0.0
     },
     {
@@ -3200,7 +3200,7 @@
       "price": 9.5,
       "owned": 13.7,
       "form": 4.0,
-      "net": 62830,
+      "net": 64088,
       "cost_change": 0.0
     }
   ],
@@ -3210,9 +3210,9 @@
       "team": "LIV",
       "pos": "MID",
       "price": 7.0,
-      "owned": 32.8,
+      "owned": 32.7,
       "form": 2.7,
-      "net": -177497,
+      "net": -179020,
       "cost_change": 0.0
     },
     {
@@ -3222,7 +3222,7 @@
       "price": 11.9,
       "owned": 38.5,
       "form": 2.0,
-      "net": -152696,
+      "net": -152980,
       "cost_change": -0.1
     },
     {
@@ -3232,7 +3232,7 @@
       "price": 5.6,
       "owned": 9.9,
       "form": 1.3,
-      "net": -130644,
+      "net": -131275,
       "cost_change": -0.1
     },
     {
@@ -3240,9 +3240,9 @@
       "team": "ARS",
       "pos": "MID",
       "price": 6.3,
-      "owned": 12.2,
+      "owned": 12.1,
       "form": 3.3,
-      "net": -127610,
+      "net": -129195,
       "cost_change": -0.1
     },
     {
@@ -3252,7 +3252,7 @@
       "price": 4.5,
       "owned": 17.3,
       "form": 5.0,
-      "net": -93000,
+      "net": -93499,
       "cost_change": 0.0
     },
     {
@@ -3262,7 +3262,7 @@
       "price": 7.9,
       "owned": 20.6,
       "form": 4.0,
-      "net": -92798,
+      "net": -93159,
       "cost_change": 0.0
     },
     {
@@ -3272,7 +3272,7 @@
       "price": 6.0,
       "owned": 24.8,
       "form": 4.3,
-      "net": -74895,
+      "net": -75208,
       "cost_change": 0.0
     },
     {
@@ -3282,7 +3282,7 @@
       "price": 4.3,
       "owned": 7.7,
       "form": 2.0,
-      "net": -72907,
+      "net": -73197,
       "cost_change": -0.1
     },
     {
@@ -3292,7 +3292,7 @@
       "price": 4.8,
       "owned": 8.6,
       "form": 1.7,
-      "net": -70478,
+      "net": -70815,
       "cost_change": -0.1
     },
     {
@@ -3302,7 +3302,7 @@
       "price": 5.8,
       "owned": 6.7,
       "form": 3.0,
-      "net": -61538,
+      "net": -61894,
       "cost_change": -0.1
     },
     {
@@ -3312,7 +3312,7 @@
       "price": 6.2,
       "owned": 18.7,
       "form": 1.0,
-      "net": -53277,
+      "net": -53024,
       "cost_change": 0.0
     },
     {
@@ -3322,17 +3322,7 @@
       "price": 4.0,
       "owned": 12.7,
       "form": 2.7,
-      "net": -48323,
-      "cost_change": 0.0
-    },
-    {
-      "name": "Gabriel",
-      "team": "ARS",
-      "pos": "DEF",
-      "price": 8.0,
-      "owned": 22.7,
-      "form": 4.0,
-      "net": -41970,
+      "net": -48643,
       "cost_change": 0.0
     },
     {
@@ -3342,7 +3332,17 @@
       "price": 4.9,
       "owned": 9.9,
       "form": 2.7,
-      "net": -41858,
+      "net": -42113,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Gabriel",
+      "team": "ARS",
+      "pos": "DEF",
+      "price": 8.0,
+      "owned": 22.7,
+      "form": 4.0,
+      "net": -42103,
       "cost_change": 0.0
     }
   ],
