@@ -114,7 +114,7 @@
       "name": "Szoboszlai",
       "team": "LIV",
       "pos": "MID",
-      "price": 7.0,
+      "price": 6.9,
       "owned": 32.7,
       "form": 2.7,
       "xgi": 2.2,
@@ -161,7 +161,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 29.1,
+      "owned": 29.2,
       "form": 10.7,
       "xgi": 2.6,
       "actual": 7,
@@ -183,7 +183,7 @@
       "team": "BRE",
       "pos": "MID",
       "price": 6.2,
-      "owned": 11.6,
+      "owned": 11.7,
       "form": 8.7,
       "xgi": 1.8,
       "actual": 5,
@@ -357,7 +357,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 29.1,
+      "owned": 29.2,
       "form": 10.7,
       "choice": "1st",
       "duties": "Penalties, Free-kicks, Corners"
@@ -387,7 +387,7 @@
       "team": "BRE",
       "pos": "MID",
       "price": 6.2,
-      "owned": 11.6,
+      "owned": 11.7,
       "form": 8.7,
       "choice": "2nd",
       "duties": "Pens (2nd)"
@@ -516,7 +516,7 @@
       "name": "Szoboszlai",
       "team": "LIV",
       "pos": "MID",
-      "price": 7.0,
+      "price": 6.9,
       "owned": 32.7,
       "form": 2.7,
       "choice": "1st",
@@ -577,7 +577,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 29.1,
+      "owned": 29.2,
       "form": 10.7,
       "duties": "Penalties, Free-kicks, Corners"
     },
@@ -693,7 +693,7 @@
       "name": "Szoboszlai",
       "team": "LIV",
       "pos": "MID",
-      "price": 7.0,
+      "price": 6.9,
       "owned": 32.7,
       "form": 2.7,
       "duties": "Penalties, Free-kicks, Corners"
@@ -933,7 +933,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 29.1,
+      "owned": 29.2,
       "form": 10.7,
       "minutes": 450,
       "rating": "nailed",
@@ -1518,7 +1518,7 @@
       "team": "BRE",
       "pos": "MID",
       "price": 6.2,
-      "owned": 11.6,
+      "owned": 11.7,
       "form": 8.7,
       "minutes": 447,
       "rating": "nailed",
@@ -1697,7 +1697,7 @@
       "name": "Szoboszlai",
       "team": "LIV",
       "pos": "MID",
-      "price": 7.0,
+      "price": 6.9,
       "owned": 32.7,
       "form": 2.7,
       "minutes": 440,
@@ -2865,7 +2865,7 @@
       "name": "Szoboszlai",
       "team": "LIV",
       "pos": "MID",
-      "price": 7.0,
+      "price": 6.9,
       "owned": 32.7,
       "form": 2.7
     },
@@ -2874,7 +2874,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 29.1,
+      "owned": 29.2,
       "form": 10.7
     },
     {
@@ -3068,9 +3068,9 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 29.1,
+      "owned": 29.2,
       "form": 10.7,
-      "net": 792073,
+      "net": 797659,
       "cost_change": 0.1
     },
     {
@@ -3078,9 +3078,9 @@
       "team": "BRE",
       "pos": "MID",
       "price": 6.2,
-      "owned": 11.6,
+      "owned": 11.7,
       "form": 8.7,
-      "net": 374749,
+      "net": 377795,
       "cost_change": 0.1
     },
     {
@@ -3090,7 +3090,7 @@
       "price": 5.6,
       "owned": 4.3,
       "form": 7.3,
-      "net": 300857,
+      "net": 303570,
       "cost_change": 0.1
     },
     {
@@ -3100,7 +3100,7 @@
       "price": 5.0,
       "owned": 27.8,
       "form": 7.0,
-      "net": 282892,
+      "net": 284827,
       "cost_change": 0.1
     },
     {
@@ -3110,7 +3110,7 @@
       "price": 5.3,
       "owned": 17.4,
       "form": 5.7,
-      "net": 228971,
+      "net": 230669,
       "cost_change": 0.1
     },
     {
@@ -3120,7 +3120,7 @@
       "price": 6.2,
       "owned": 16.6,
       "form": 8.3,
-      "net": 216125,
+      "net": 217485,
       "cost_change": 0.1
     },
     {
@@ -3130,7 +3130,7 @@
       "price": 6.1,
       "owned": 5.8,
       "form": 7.7,
-      "net": 145044,
+      "net": 146393,
       "cost_change": 0.1
     },
     {
@@ -3140,7 +3140,7 @@
       "price": 4.7,
       "owned": 12.8,
       "form": 4.7,
-      "net": 104483,
+      "net": 104997,
       "cost_change": 0.1
     },
     {
@@ -3150,7 +3150,7 @@
       "price": 4.6,
       "owned": 7.3,
       "form": 11.3,
-      "net": 101295,
+      "net": 102298,
       "cost_change": 0.0
     },
     {
@@ -3160,7 +3160,7 @@
       "price": 5.7,
       "owned": 26.8,
       "form": 7.7,
-      "net": 93670,
+      "net": 94228,
       "cost_change": 0.0
     },
     {
@@ -3170,7 +3170,7 @@
       "price": 7.7,
       "owned": 40.5,
       "form": 5.3,
-      "net": 81341,
+      "net": 82768,
       "cost_change": 0.0
     },
     {
@@ -3180,7 +3180,7 @@
       "price": 6.1,
       "owned": 42.3,
       "form": 6.0,
-      "net": 80001,
+      "net": 80341,
       "cost_change": 0.1
     },
     {
@@ -3190,7 +3190,7 @@
       "price": 5.5,
       "owned": 2.6,
       "form": 5.0,
-      "net": 72442,
+      "net": 73624,
       "cost_change": 0.0
     },
     {
@@ -3200,7 +3200,7 @@
       "price": 9.5,
       "owned": 13.8,
       "form": 4.0,
-      "net": 65781,
+      "net": 68012,
       "cost_change": 0.0
     }
   ],
@@ -3209,11 +3209,11 @@
       "name": "Szoboszlai",
       "team": "LIV",
       "pos": "MID",
-      "price": 7.0,
+      "price": 6.9,
       "owned": 32.7,
       "form": 2.7,
-      "net": -182597,
-      "cost_change": 0.0
+      "net": -184502,
+      "cost_change": -0.1
     },
     {
       "name": "B.Fernandes",
@@ -3222,7 +3222,7 @@
       "price": 11.9,
       "owned": 38.5,
       "form": 2.0,
-      "net": -153415,
+      "net": -153876,
       "cost_change": -0.1
     },
     {
@@ -3232,7 +3232,7 @@
       "price": 5.6,
       "owned": 9.9,
       "form": 1.3,
-      "net": -131990,
+      "net": -132717,
       "cost_change": -0.1
     },
     {
@@ -3242,7 +3242,7 @@
       "price": 4.5,
       "owned": 17.2,
       "form": 5.0,
-      "net": -94059,
+      "net": -94630,
       "cost_change": 0.0
     },
     {
@@ -3252,7 +3252,7 @@
       "price": 7.9,
       "owned": 20.5,
       "form": 4.0,
-      "net": -93550,
+      "net": -93939,
       "cost_change": 0.0
     },
     {
@@ -3262,7 +3262,7 @@
       "price": 6.0,
       "owned": 24.8,
       "form": 4.3,
-      "net": -75562,
+      "net": -76064,
       "cost_change": 0.0
     },
     {
@@ -3272,7 +3272,7 @@
       "price": 4.3,
       "owned": 7.7,
       "form": 2.0,
-      "net": -73648,
+      "net": -74015,
       "cost_change": -0.1
     },
     {
@@ -3282,7 +3282,7 @@
       "price": 4.8,
       "owned": 8.6,
       "form": 1.7,
-      "net": -71230,
+      "net": -71621,
       "cost_change": -0.1
     },
     {
@@ -3292,7 +3292,7 @@
       "price": 5.8,
       "owned": 6.7,
       "form": 3.0,
-      "net": -62326,
+      "net": -62749,
       "cost_change": -0.1
     },
     {
@@ -3302,7 +3302,7 @@
       "price": 6.2,
       "owned": 18.7,
       "form": 1.0,
-      "net": -52719,
+      "net": -52436,
       "cost_change": 0.0
     },
     {
@@ -3312,7 +3312,7 @@
       "price": 4.0,
       "owned": 12.7,
       "form": 2.7,
-      "net": -49074,
+      "net": -49464,
       "cost_change": 0.0
     },
     {
@@ -3322,7 +3322,7 @@
       "price": 4.9,
       "owned": 9.9,
       "form": 2.7,
-      "net": -42436,
+      "net": -42749,
       "cost_change": 0.0
     },
     {
@@ -3332,7 +3332,7 @@
       "price": 8.0,
       "owned": 22.7,
       "form": 4.0,
-      "net": -42245,
+      "net": -42423,
       "cost_change": 0.0
     },
     {
@@ -3342,7 +3342,7 @@
       "price": 7.3,
       "owned": 5.7,
       "form": 4.0,
-      "net": -38596,
+      "net": -38716,
       "cost_change": 0.0
     }
   ],
@@ -3362,7 +3362,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 29.1,
+      "owned": 29.2,
       "form": 10.7,
       "val": 8.1,
       "points": 47
@@ -3432,7 +3432,7 @@
       "team": "BRE",
       "pos": "MID",
       "price": 6.2,
-      "owned": 11.6,
+      "owned": 11.7,
       "form": 8.7,
       "val": 6.3,
       "points": 39
@@ -3503,7 +3503,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.8,
-      "owned": 29.1,
+      "owned": 29.2,
       "form": 10.7,
       "val": 1.8
     },
@@ -3557,7 +3557,7 @@
       "team": "BRE",
       "pos": "MID",
       "price": 6.2,
-      "owned": 11.6,
+      "owned": 11.7,
       "form": 8.7,
       "val": 1.4
     },
