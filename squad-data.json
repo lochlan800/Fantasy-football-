@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 94.2,
+      "budget_spent": 92.5,
       "captain_id": 100,
       "vice_id": 124,
       "players": [
@@ -260,16 +260,16 @@
           "setpiece": true
         },
         {
-          "id": 391,
-          "name": "Gvardiol",
-          "team": "MCI",
+          "id": 305,
+          "name": "Davis",
+          "team": "IPS",
           "pos": "DEF",
-          "price": 5.7,
+          "price": 4.0,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": false
+          "setpiece": true
         },
         {
           "id": 38,
