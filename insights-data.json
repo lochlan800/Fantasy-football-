@@ -160,8 +160,8 @@
       "name": "Gro\u00df",
       "team": "BHA",
       "pos": "MID",
-      "price": 5.8,
-      "owned": 29.2,
+      "price": 5.9,
+      "owned": 29.3,
       "form": 10.7,
       "xgi": 2.6,
       "actual": 7,
@@ -172,7 +172,7 @@
       "team": "BHA",
       "pos": "FWD",
       "price": 5.6,
-      "owned": 4.3,
+      "owned": 4.4,
       "form": 7.3,
       "xgi": 1.4,
       "actual": 5,
@@ -356,8 +356,8 @@
       "name": "Gro\u00df",
       "team": "BHA",
       "pos": "MID",
-      "price": 5.8,
-      "owned": 29.2,
+      "price": 5.9,
+      "owned": 29.3,
       "form": 10.7,
       "choice": "1st",
       "duties": "Penalties, Free-kicks, Corners"
@@ -576,8 +576,8 @@
       "name": "Gro\u00df",
       "team": "BHA",
       "pos": "MID",
-      "price": 5.8,
-      "owned": 29.2,
+      "price": 5.9,
+      "owned": 29.3,
       "form": 10.7,
       "duties": "Penalties, Free-kicks, Corners"
     },
@@ -932,8 +932,8 @@
       "name": "Gro\u00df",
       "team": "BHA",
       "pos": "MID",
-      "price": 5.8,
-      "owned": 29.2,
+      "price": 5.9,
+      "owned": 29.3,
       "form": 10.7,
       "minutes": 450,
       "rating": "nailed",
@@ -1893,7 +1893,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.0,
-      "owned": 4.0,
+      "owned": 3.9,
       "form": 4.3,
       "minutes": 433,
       "rating": "nailed",
@@ -2873,8 +2873,8 @@
       "name": "Gro\u00df",
       "team": "BHA",
       "pos": "MID",
-      "price": 5.8,
-      "owned": 29.2,
+      "price": 5.9,
+      "owned": 29.3,
       "form": 10.7
     },
     {
@@ -2985,7 +2985,7 @@
       "team": "BHA",
       "pos": "FWD",
       "price": 5.6,
-      "owned": 4.3,
+      "owned": 4.4,
       "form": 7.3,
       "xgi90": 0.36
     },
@@ -3067,11 +3067,11 @@
       "name": "Gro\u00df",
       "team": "BHA",
       "pos": "MID",
-      "price": 5.8,
-      "owned": 29.2,
+      "price": 5.9,
+      "owned": 29.3,
       "form": 10.7,
-      "net": 802992,
-      "cost_change": 0.1
+      "net": 807446,
+      "cost_change": 0.2
     },
     {
       "name": "Schade",
@@ -3080,7 +3080,7 @@
       "price": 6.2,
       "owned": 11.7,
       "form": 8.7,
-      "net": 380394,
+      "net": 382887,
       "cost_change": 0.1
     },
     {
@@ -3088,9 +3088,9 @@
       "team": "BHA",
       "pos": "FWD",
       "price": 5.6,
-      "owned": 4.3,
+      "owned": 4.4,
       "form": 7.3,
-      "net": 305866,
+      "net": 308026,
       "cost_change": 0.1
     },
     {
@@ -3100,7 +3100,7 @@
       "price": 5.0,
       "owned": 27.9,
       "form": 7.0,
-      "net": 286529,
+      "net": 288215,
       "cost_change": 0.1
     },
     {
@@ -3110,7 +3110,7 @@
       "price": 5.3,
       "owned": 17.4,
       "form": 5.7,
-      "net": 232241,
+      "net": 233859,
       "cost_change": 0.1
     },
     {
@@ -3120,7 +3120,7 @@
       "price": 6.2,
       "owned": 16.7,
       "form": 8.3,
-      "net": 218779,
+      "net": 219885,
       "cost_change": 0.1
     },
     {
@@ -3130,7 +3130,7 @@
       "price": 6.1,
       "owned": 5.8,
       "form": 7.7,
-      "net": 147458,
+      "net": 148575,
       "cost_change": 0.1
     },
     {
@@ -3140,7 +3140,7 @@
       "price": 4.7,
       "owned": 12.8,
       "form": 4.7,
-      "net": 105484,
+      "net": 105865,
       "cost_change": 0.1
     },
     {
@@ -3150,7 +3150,7 @@
       "price": 4.6,
       "owned": 7.3,
       "form": 11.3,
-      "net": 103197,
+      "net": 104113,
       "cost_change": 0.0
     },
     {
@@ -3160,7 +3160,7 @@
       "price": 5.7,
       "owned": 26.9,
       "form": 7.7,
-      "net": 94779,
+      "net": 95060,
       "cost_change": 0.0
     },
     {
@@ -3170,7 +3170,7 @@
       "price": 7.7,
       "owned": 40.6,
       "form": 5.3,
-      "net": 84158,
+      "net": 85549,
       "cost_change": 0.0
     },
     {
@@ -3180,7 +3180,7 @@
       "price": 6.1,
       "owned": 42.3,
       "form": 6.0,
-      "net": 80416,
+      "net": 80617,
       "cost_change": 0.1
     },
     {
@@ -3190,7 +3190,7 @@
       "price": 5.5,
       "owned": 2.7,
       "form": 5.0,
-      "net": 74532,
+      "net": 75546,
       "cost_change": 0.0
     },
     {
@@ -3200,7 +3200,7 @@
       "price": 9.5,
       "owned": 13.8,
       "form": 4.0,
-      "net": 71353,
+      "net": 74164,
       "cost_change": 0.0
     }
   ],
@@ -3212,7 +3212,7 @@
       "price": 6.9,
       "owned": 32.7,
       "form": 2.7,
-      "net": -185690,
+      "net": -186857,
       "cost_change": -0.1
     },
     {
@@ -3222,7 +3222,7 @@
       "price": 11.9,
       "owned": 38.5,
       "form": 2.0,
-      "net": -154499,
+      "net": -155061,
       "cost_change": -0.1
     },
     {
@@ -3232,7 +3232,7 @@
       "price": 5.6,
       "owned": 9.9,
       "form": 1.3,
-      "net": -133396,
+      "net": -134028,
       "cost_change": -0.1
     },
     {
@@ -3242,7 +3242,7 @@
       "price": 4.5,
       "owned": 17.2,
       "form": 5.0,
-      "net": -95118,
+      "net": -95604,
       "cost_change": 0.0
     },
     {
@@ -3252,7 +3252,7 @@
       "price": 7.9,
       "owned": 20.5,
       "form": 4.0,
-      "net": -94393,
+      "net": -94799,
       "cost_change": 0.0
     },
     {
@@ -3262,7 +3262,7 @@
       "price": 6.0,
       "owned": 24.8,
       "form": 4.3,
-      "net": -76424,
+      "net": -76818,
       "cost_change": 0.0
     },
     {
@@ -3272,7 +3272,7 @@
       "price": 4.3,
       "owned": 7.7,
       "form": 2.0,
-      "net": -74353,
+      "net": -74713,
       "cost_change": -0.1
     },
     {
@@ -3282,7 +3282,7 @@
       "price": 4.8,
       "owned": 8.6,
       "form": 1.7,
-      "net": -71997,
+      "net": -72356,
       "cost_change": -0.1
     },
     {
@@ -3292,7 +3292,7 @@
       "price": 5.8,
       "owned": 6.7,
       "form": 3.0,
-      "net": -63120,
+      "net": -63497,
       "cost_change": -0.1
     },
     {
@@ -3302,7 +3302,7 @@
       "price": 6.2,
       "owned": 18.7,
       "form": 1.0,
-      "net": -52223,
+      "net": -52083,
       "cost_change": 0.0
     },
     {
@@ -3312,7 +3312,7 @@
       "price": 4.0,
       "owned": 12.7,
       "form": 2.7,
-      "net": -49813,
+      "net": -50161,
       "cost_change": 0.0
     },
     {
@@ -3322,7 +3322,7 @@
       "price": 4.9,
       "owned": 9.9,
       "form": 2.7,
-      "net": -43047,
+      "net": -43312,
       "cost_change": 0.0
     },
     {
@@ -3332,7 +3332,7 @@
       "price": 8.0,
       "owned": 22.7,
       "form": 4.0,
-      "net": -42572,
+      "net": -42755,
       "cost_change": 0.0
     },
     {
@@ -3342,7 +3342,7 @@
       "price": 7.3,
       "owned": 5.7,
       "form": 4.0,
-      "net": -38823,
+      "net": -38955,
       "cost_change": 0.0
     }
   ],
@@ -3361,10 +3361,10 @@
       "name": "Gro\u00df",
       "team": "BHA",
       "pos": "MID",
-      "price": 5.8,
-      "owned": 29.2,
+      "price": 5.9,
+      "owned": 29.3,
       "form": 10.7,
-      "val": 8.1,
+      "val": 8.0,
       "points": 47
     },
     {
@@ -3502,8 +3502,8 @@
       "name": "Gro\u00df",
       "team": "BHA",
       "pos": "MID",
-      "price": 5.8,
-      "owned": 29.2,
+      "price": 5.9,
+      "owned": 29.3,
       "form": 10.7,
       "val": 1.8
     },
