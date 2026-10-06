@@ -224,18 +224,6 @@
           "setpiece": false
         },
         {
-          "id": 115,
-          "name": "De Cuyper",
-          "team": "BHA",
-          "pos": "DEF",
-          "price": 5.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
-        },
-        {
           "id": 229,
           "name": "Tarkowski",
           "team": "EVE",
@@ -246,6 +234,18 @@
           "vice": false,
           "pens": false,
           "setpiece": false
+        },
+        {
+          "id": 115,
+          "name": "De Cuyper",
+          "team": "BHA",
+          "pos": "DEF",
+          "price": 5.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
         },
         {
           "id": 330,
