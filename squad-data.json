@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 92.5,
+      "budget_spent": 92.6,
       "captain_id": 100,
       "vice_id": 124,
       "players": [
@@ -324,7 +324,7 @@
           "name": "Saka",
           "team": "ARS",
           "pos": "MID",
-          "price": 9.5,
+          "price": 9.6,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -459,9 +459,9 @@
           "setpiece": true
         },
         {
-          "id": 308,
-          "name": "Furlong",
-          "team": "IPS",
+          "id": 539,
+          "name": "O'Nien",
+          "team": "SUN",
           "pos": "DEF",
           "price": 3.9,
           "starting": false,
