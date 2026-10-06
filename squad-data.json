@@ -8,16 +8,16 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 85.7,
+      "budget_spent": 86.3,
       "captain_id": 124,
       "vice_id": 647,
       "players": [
         {
-          "id": 350,
-          "name": "A.Becker",
-          "team": "LIV",
+          "id": 1,
+          "name": "Raya",
+          "team": "ARS",
           "pos": "GK",
-          "price": 5.5,
+          "price": 6.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -569,16 +569,16 @@
       ]
     }
   },
-  "budget_spent": 85.7,
+  "budget_spent": 86.3,
   "captain_id": 124,
   "vice_id": 647,
   "players": [
     {
-      "id": 350,
-      "name": "A.Becker",
-      "team": "LIV",
+      "id": 1,
+      "name": "Raya",
+      "team": "ARS",
       "pos": "GK",
-      "price": 5.5,
+      "price": 6.1,
       "starting": true,
       "captain": false,
       "vice": false,
