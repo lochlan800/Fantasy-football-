@@ -61,18 +61,6 @@
           "setpiece": false
         },
         {
-          "id": 115,
-          "name": "De Cuyper",
-          "team": "BHA",
-          "pos": "DEF",
-          "price": 5.0,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
-        },
-        {
           "id": 229,
           "name": "Tarkowski",
           "team": "EVE",
@@ -85,8 +73,20 @@
           "setpiece": false
         },
         {
-          "id": 308,
-          "name": "Furlong",
+          "id": 115,
+          "name": "De Cuyper",
+          "team": "BHA",
+          "pos": "DEF",
+          "price": 5.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
+        },
+        {
+          "id": 306,
+          "name": "Greaves",
           "team": "IPS",
           "pos": "DEF",
           "price": 3.9,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 79.5,
+      "budget_spent": 87.4,
       "captain_id": 124,
       "vice_id": 647,
       "players": [
@@ -423,6 +423,18 @@
           "setpiece": false
         },
         {
+          "id": 229,
+          "name": "Tarkowski",
+          "team": "EVE",
+          "pos": "DEF",
+          "price": 6.2,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
+        },
+        {
           "id": 115,
           "name": "De Cuyper",
           "team": "BHA",
@@ -440,18 +452,6 @@
           "team": "BHA",
           "pos": "DEF",
           "price": 4.5,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
-        },
-        {
-          "id": 229,
-          "name": "Tarkowski",
-          "team": "EVE",
-          "pos": "DEF",
-          "price": 6.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -531,15 +531,15 @@
           "setpiece": false
         },
         {
-          "id": 165,
-          "name": "Jo\u00e3o Pedro",
-          "team": "CHE",
+          "id": 411,
+          "name": "Haaland",
+          "team": "MCI",
           "pos": "FWD",
-          "price": 7.7,
+          "price": 15.6,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": false,
+          "pens": true,
           "setpiece": false
         },
         {
@@ -622,18 +622,6 @@
       "setpiece": false
     },
     {
-      "id": 115,
-      "name": "De Cuyper",
-      "team": "BHA",
-      "pos": "DEF",
-      "price": 5.0,
-      "starting": true,
-      "captain": false,
-      "vice": false,
-      "pens": false,
-      "setpiece": true
-    },
-    {
       "id": 229,
       "name": "Tarkowski",
       "team": "EVE",
@@ -646,8 +634,20 @@
       "setpiece": false
     },
     {
-      "id": 308,
-      "name": "Furlong",
+      "id": 115,
+      "name": "De Cuyper",
+      "team": "BHA",
+      "pos": "DEF",
+      "price": 5.0,
+      "starting": true,
+      "captain": false,
+      "vice": false,
+      "pens": false,
+      "setpiece": true
+    },
+    {
+      "id": 306,
+      "name": "Greaves",
       "team": "IPS",
       "pos": "DEF",
       "price": 3.9,
