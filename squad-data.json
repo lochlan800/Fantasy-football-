@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 95.8,
+      "budget_spent": 94.0,
       "captain_id": 100,
       "vice_id": 124,
       "players": [
@@ -308,6 +308,18 @@
           "setpiece": true
         },
         {
+          "id": 399,
+          "name": "Cherki",
+          "team": "MCI",
+          "pos": "MID",
+          "price": 7.8,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
+        },
+        {
           "id": 154,
           "name": "Palmer",
           "team": "CHE",
@@ -329,18 +341,6 @@
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
-        },
-        {
-          "id": 12,
-          "name": "Saka",
-          "team": "ARS",
-          "pos": "MID",
-          "price": 9.6,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": true,
           "setpiece": true
         },
         {
