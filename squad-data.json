@@ -8,16 +8,16 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 84.5,
+      "budget_spent": 84.8,
       "captain_id": 124,
       "vice_id": 647,
       "players": [
         {
-          "id": 572,
-          "name": "Tzolakis",
-          "team": "HUL",
+          "id": 385,
+          "name": "Trafford",
+          "team": "LEE",
           "pos": "GK",
-          "price": 4.7,
+          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -195,16 +195,16 @@
       ]
     },
     "attacking": {
-      "budget_spent": 94.1,
+      "budget_spent": 93.6,
       "captain_id": 100,
       "vice_id": 124,
       "players": [
         {
-          "id": 384,
-          "name": "Donnarumma",
-          "team": "MCI",
+          "id": 385,
+          "name": "Trafford",
+          "team": "LEE",
           "pos": "GK",
-          "price": 5.5,
+          "price": 5.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -569,16 +569,16 @@
       ]
     }
   },
-  "budget_spent": 84.5,
+  "budget_spent": 84.8,
   "captain_id": 124,
   "vice_id": 647,
   "players": [
     {
-      "id": 572,
-      "name": "Tzolakis",
-      "team": "HUL",
+      "id": 385,
+      "name": "Trafford",
+      "team": "LEE",
       "pos": "GK",
-      "price": 4.7,
+      "price": 5.0,
       "starting": true,
       "captain": false,
       "vice": false,
