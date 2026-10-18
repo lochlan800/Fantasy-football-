@@ -85,9 +85,9 @@
           "setpiece": false
         },
         {
-          "id": 175,
-          "name": "van Ewijk",
-          "team": "COV",
+          "id": 259,
+          "name": "Diop",
+          "team": "IPS",
           "pos": "DEF",
           "price": 3.9,
           "starting": false,
@@ -272,8 +272,8 @@
           "setpiece": false
         },
         {
-          "id": 306,
-          "name": "Greaves",
+          "id": 259,
+          "name": "Diop",
           "team": "IPS",
           "pos": "DEF",
           "price": 3.9,
@@ -646,9 +646,9 @@
       "setpiece": false
     },
     {
-      "id": 175,
-      "name": "van Ewijk",
-      "team": "COV",
+      "id": 259,
+      "name": "Diop",
+      "team": "IPS",
       "pos": "DEF",
       "price": 3.9,
       "starting": false,
