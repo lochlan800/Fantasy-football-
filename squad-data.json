@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 80.1,
+      "budget_spent": 77.7,
       "captain_id": 124,
       "vice_id": 647,
       "players": [
@@ -73,11 +73,11 @@
           "setpiece": true
         },
         {
-          "id": 229,
-          "name": "Tarkowski",
-          "team": "EVE",
+          "id": 173,
+          "name": "Thomas",
+          "team": "COV",
           "pos": "DEF",
-          "price": 6.2,
+          "price": 4.0,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -133,11 +133,11 @@
           "setpiece": false
         },
         {
-          "id": 40,
-          "name": "Rogers",
-          "team": "CHE",
+          "id": 13,
+          "name": "Rice",
+          "team": "ARS",
           "pos": "MID",
-          "price": 7.9,
+          "price": 7.3,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -145,11 +145,11 @@
           "setpiece": true
         },
         {
-          "id": 68,
-          "name": "Tavernier",
-          "team": "BOU",
+          "id": 236,
+          "name": "Dewsbury-Hall",
+          "team": "EVE",
           "pos": "MID",
-          "price": 6.2,
+          "price": 6.6,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 90.2,
+      "budget_spent": 90.9,
       "captain_id": 100,
       "vice_id": 124,
       "players": [
@@ -248,16 +248,16 @@
           "setpiece": false
         },
         {
-          "id": 449,
-          "name": "Hall",
-          "team": "NEW",
+          "id": 8,
+          "name": "Calafiori",
+          "team": "ARS",
           "pos": "DEF",
-          "price": 5.3,
+          "price": 6.0,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
           "id": 179,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 80.2,
+      "budget_spent": 78.3,
       "captain_id": 124,
       "vice_id": 647,
       "players": [
@@ -435,6 +435,18 @@
           "setpiece": false
         },
         {
+          "id": 173,
+          "name": "Thomas",
+          "team": "COV",
+          "pos": "DEF",
+          "price": 4.0,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
+        },
+        {
           "id": 229,
           "name": "Tarkowski",
           "team": "EVE",
@@ -445,18 +457,6 @@
           "vice": false,
           "pens": false,
           "setpiece": false
-        },
-        {
-          "id": 449,
-          "name": "Hall",
-          "team": "NEW",
-          "pos": "DEF",
-          "price": 5.3,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
         },
         {
           "id": 259,
@@ -519,11 +519,11 @@
           "setpiece": true
         },
         {
-          "id": 40,
-          "name": "Rogers",
-          "team": "CHE",
+          "id": 13,
+          "name": "Rice",
+          "team": "ARS",
           "pos": "MID",
-          "price": 7.9,
+          "price": 7.3,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 80.1,
+  "budget_spent": 77.7,
   "captain_id": 124,
   "vice_id": 647,
   "players": [
@@ -634,11 +634,11 @@
       "setpiece": true
     },
     {
-      "id": 229,
-      "name": "Tarkowski",
-      "team": "EVE",
+      "id": 173,
+      "name": "Thomas",
+      "team": "COV",
       "pos": "DEF",
-      "price": 6.2,
+      "price": 4.0,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -694,11 +694,11 @@
       "setpiece": false
     },
     {
-      "id": 40,
-      "name": "Rogers",
-      "team": "CHE",
+      "id": 13,
+      "name": "Rice",
+      "team": "ARS",
       "pos": "MID",
-      "price": 7.9,
+      "price": 7.3,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -706,11 +706,11 @@
       "setpiece": true
     },
     {
-      "id": 68,
-      "name": "Tavernier",
-      "team": "BOU",
+      "id": 236,
+      "name": "Dewsbury-Hall",
+      "team": "EVE",
       "pos": "MID",
-      "price": 6.2,
+      "price": 6.6,
       "starting": true,
       "captain": false,
       "vice": false,
