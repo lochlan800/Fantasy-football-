@@ -8,9 +8,9 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 89.6,
-      "captain_id": 411,
-      "vice_id": 124,
+      "budget_spent": 80.1,
+      "captain_id": 124,
+      "vice_id": 647,
       "players": [
         {
           "id": 1,
@@ -103,8 +103,8 @@
           "pos": "MID",
           "price": 6.1,
           "starting": true,
-          "captain": false,
-          "vice": true,
+          "captain": true,
+          "vice": false,
           "pens": true,
           "setpiece": true
         },
@@ -116,7 +116,7 @@
           "price": 5.4,
           "starting": true,
           "captain": false,
-          "vice": false,
+          "vice": true,
           "pens": false,
           "setpiece": false
         },
@@ -149,7 +149,7 @@
           "name": "Tavernier",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.1,
+          "price": 6.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -157,15 +157,27 @@
           "setpiece": true
         },
         {
-          "id": 411,
-          "name": "Haaland",
-          "team": "MCI",
+          "id": 79,
+          "name": "Evanilson",
+          "team": "BOU",
           "pos": "FWD",
-          "price": 15.7,
+          "price": 6.1,
           "starting": true,
-          "captain": true,
+          "captain": false,
           "vice": false,
-          "pens": true,
+          "pens": false,
+          "setpiece": false
+        },
+        {
+          "id": 321,
+          "name": "Walle Egeli",
+          "team": "IPS",
+          "pos": "FWD",
+          "price": 4.5,
+          "starting": false,
+          "captain": false,
+          "vice": false,
+          "pens": false,
           "setpiece": false
         },
         {
@@ -179,25 +191,13 @@
           "vice": false,
           "pens": false,
           "setpiece": false
-        },
-        {
-          "id": 382,
-          "name": "Danns",
-          "team": "LIV",
-          "pos": "FWD",
-          "price": 4.5,
-          "starting": false,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
         }
       ]
     },
     "attacking": {
-      "budget_spent": 99.7,
+      "budget_spent": 90.2,
       "captain_id": 100,
-      "vice_id": 411,
+      "vice_id": 124,
       "players": [
         {
           "id": 1,
@@ -303,7 +303,7 @@
           "price": 6.1,
           "starting": true,
           "captain": false,
-          "vice": false,
+          "vice": true,
           "pens": true,
           "setpiece": true
         },
@@ -344,23 +344,11 @@
           "setpiece": true
         },
         {
-          "id": 411,
-          "name": "Haaland",
-          "team": "MCI",
-          "pos": "FWD",
-          "price": 15.7,
-          "starting": true,
-          "captain": false,
-          "vice": true,
-          "pens": true,
-          "setpiece": false
-        },
-        {
           "id": 165,
           "name": "Jo\u00e3o Pedro",
           "team": "CHE",
           "pos": "FWD",
-          "price": 7.8,
+          "price": 7.9,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -368,9 +356,21 @@
           "setpiece": false
         },
         {
-          "id": 382,
-          "name": "Danns",
-          "team": "LIV",
+          "id": 79,
+          "name": "Evanilson",
+          "team": "BOU",
+          "pos": "FWD",
+          "price": 6.1,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
+        },
+        {
+          "id": 321,
+          "name": "Walle Egeli",
+          "team": "IPS",
           "pos": "FWD",
           "price": 4.5,
           "starting": false,
@@ -382,9 +382,9 @@
       ]
     },
     "value": {
-      "budget_spent": 89.7,
+      "budget_spent": 80.2,
       "captain_id": 124,
-      "vice_id": 411,
+      "vice_id": 647,
       "players": [
         {
           "id": 1,
@@ -490,7 +490,7 @@
           "price": 5.4,
           "starting": true,
           "captain": false,
-          "vice": false,
+          "vice": true,
           "pens": false,
           "setpiece": false
         },
@@ -511,7 +511,7 @@
           "name": "Tavernier",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.1,
+          "price": 6.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -531,15 +531,27 @@
           "setpiece": true
         },
         {
-          "id": 411,
-          "name": "Haaland",
-          "team": "MCI",
+          "id": 79,
+          "name": "Evanilson",
+          "team": "BOU",
           "pos": "FWD",
-          "price": 15.7,
+          "price": 6.1,
           "starting": true,
           "captain": false,
-          "vice": true,
-          "pens": true,
+          "vice": false,
+          "pens": false,
+          "setpiece": false
+        },
+        {
+          "id": 321,
+          "name": "Walle Egeli",
+          "team": "IPS",
+          "pos": "FWD",
+          "price": 4.5,
+          "starting": false,
+          "captain": false,
+          "vice": false,
+          "pens": false,
           "setpiece": false
         },
         {
@@ -553,25 +565,13 @@
           "vice": false,
           "pens": false,
           "setpiece": false
-        },
-        {
-          "id": 382,
-          "name": "Danns",
-          "team": "LIV",
-          "pos": "FWD",
-          "price": 4.5,
-          "starting": false,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
         }
       ]
     }
   },
-  "budget_spent": 89.6,
-  "captain_id": 411,
-  "vice_id": 124,
+  "budget_spent": 80.1,
+  "captain_id": 124,
+  "vice_id": 647,
   "players": [
     {
       "id": 1,
@@ -664,8 +664,8 @@
       "pos": "MID",
       "price": 6.1,
       "starting": true,
-      "captain": false,
-      "vice": true,
+      "captain": true,
+      "vice": false,
       "pens": true,
       "setpiece": true
     },
@@ -677,7 +677,7 @@
       "price": 5.4,
       "starting": true,
       "captain": false,
-      "vice": false,
+      "vice": true,
       "pens": false,
       "setpiece": false
     },
@@ -710,7 +710,7 @@
       "name": "Tavernier",
       "team": "BOU",
       "pos": "MID",
-      "price": 6.1,
+      "price": 6.2,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -718,21 +718,21 @@
       "setpiece": true
     },
     {
-      "id": 411,
-      "name": "Haaland",
-      "team": "MCI",
+      "id": 79,
+      "name": "Evanilson",
+      "team": "BOU",
       "pos": "FWD",
-      "price": 15.7,
+      "price": 6.1,
       "starting": true,
-      "captain": true,
+      "captain": false,
       "vice": false,
-      "pens": true,
+      "pens": false,
       "setpiece": false
     },
     {
-      "id": 169,
-      "name": "Mheuka",
-      "team": "CHE",
+      "id": 321,
+      "name": "Walle Egeli",
+      "team": "IPS",
       "pos": "FWD",
       "price": 4.5,
       "starting": false,
@@ -742,9 +742,9 @@
       "setpiece": false
     },
     {
-      "id": 382,
-      "name": "Danns",
-      "team": "LIV",
+      "id": 169,
+      "name": "Mheuka",
+      "team": "CHE",
       "pos": "FWD",
       "price": 4.5,
       "starting": false,
