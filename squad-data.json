@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 77.7,
+      "budget_spent": 77.9,
       "captain_id": 124,
       "vice_id": 647,
       "players": [
@@ -65,7 +65,7 @@
           "name": "De Cuyper",
           "team": "BHA",
           "pos": "DEF",
-          "price": 5.2,
+          "price": 5.3,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -101,7 +101,7 @@
           "name": "Gro\u00df",
           "team": "BHA",
           "pos": "MID",
-          "price": 6.1,
+          "price": 6.2,
           "starting": true,
           "captain": true,
           "vice": false,
@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 90.9,
+      "budget_spent": 91.1,
       "captain_id": 100,
       "vice_id": 124,
       "players": [
@@ -228,7 +228,7 @@
           "name": "De Cuyper",
           "team": "BHA",
           "pos": "DEF",
-          "price": 5.2,
+          "price": 5.3,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -300,7 +300,7 @@
           "name": "Gro\u00df",
           "team": "BHA",
           "pos": "MID",
-          "price": 6.1,
+          "price": 6.2,
           "starting": true,
           "captain": false,
           "vice": true,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 78.3,
+      "budget_spent": 78.4,
       "captain_id": 124,
       "vice_id": 647,
       "players": [
@@ -475,7 +475,7 @@
           "name": "Gro\u00df",
           "team": "BHA",
           "pos": "MID",
-          "price": 6.1,
+          "price": 6.2,
           "starting": true,
           "captain": true,
           "vice": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 77.7,
+  "budget_spent": 77.9,
   "captain_id": 124,
   "vice_id": 647,
   "players": [
@@ -626,7 +626,7 @@
       "name": "De Cuyper",
       "team": "BHA",
       "pos": "DEF",
-      "price": 5.2,
+      "price": 5.3,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -662,7 +662,7 @@
       "name": "Gro\u00df",
       "team": "BHA",
       "pos": "MID",
-      "price": 6.1,
+      "price": 6.2,
       "starting": true,
       "captain": true,
       "vice": false,
