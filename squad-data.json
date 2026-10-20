@@ -8,9 +8,9 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 77.9,
-      "captain_id": 124,
-      "vice_id": 647,
+      "budget_spent": 88.6,
+      "captain_id": 411,
+      "vice_id": 124,
       "players": [
         {
           "id": 1,
@@ -73,21 +73,21 @@
           "setpiece": true
         },
         {
-          "id": 173,
-          "name": "Thomas",
-          "team": "COV",
+          "id": 259,
+          "name": "Diop",
+          "team": "IPS",
           "pos": "DEF",
-          "price": 4.0,
-          "starting": true,
+          "price": 3.9,
+          "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
           "setpiece": false
         },
         {
-          "id": 259,
-          "name": "Diop",
-          "team": "IPS",
+          "id": 175,
+          "name": "van Ewijk",
+          "team": "COV",
           "pos": "DEF",
           "price": 3.9,
           "starting": false,
@@ -103,8 +103,8 @@
           "pos": "MID",
           "price": 6.2,
           "starting": true,
-          "captain": true,
-          "vice": false,
+          "captain": false,
+          "vice": true,
           "pens": true,
           "setpiece": true
         },
@@ -116,9 +116,21 @@
           "price": 5.4,
           "starting": true,
           "captain": false,
-          "vice": true,
+          "vice": false,
           "pens": false,
           "setpiece": false
+        },
+        {
+          "id": 68,
+          "name": "Tavernier",
+          "team": "BOU",
+          "pos": "MID",
+          "price": 6.2,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
         },
         {
           "id": 100,
@@ -145,16 +157,16 @@
           "setpiece": true
         },
         {
-          "id": 236,
-          "name": "Dewsbury-Hall",
-          "team": "EVE",
-          "pos": "MID",
-          "price": 6.6,
+          "id": 411,
+          "name": "Haaland",
+          "team": "MCI",
+          "pos": "FWD",
+          "price": 15.7,
           "starting": true,
-          "captain": false,
+          "captain": true,
           "vice": false,
-          "pens": false,
-          "setpiece": true
+          "pens": true,
+          "setpiece": false
         },
         {
           "id": 79,
@@ -179,25 +191,13 @@
           "vice": false,
           "pens": false,
           "setpiece": false
-        },
-        {
-          "id": 169,
-          "name": "Mheuka",
-          "team": "CHE",
-          "pos": "FWD",
-          "price": 4.5,
-          "starting": false,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
         }
       ]
     },
     "attacking": {
-      "budget_spent": 91.1,
+      "budget_spent": 98.9,
       "captain_id": 100,
-      "vice_id": 124,
+      "vice_id": 411,
       "players": [
         {
           "id": 1,
@@ -303,7 +303,7 @@
           "price": 6.2,
           "starting": true,
           "captain": false,
-          "vice": true,
+          "vice": false,
           "pens": true,
           "setpiece": true
         },
@@ -344,15 +344,15 @@
           "setpiece": true
         },
         {
-          "id": 165,
-          "name": "Jo\u00e3o Pedro",
-          "team": "CHE",
+          "id": 411,
+          "name": "Haaland",
+          "team": "MCI",
           "pos": "FWD",
-          "price": 7.9,
+          "price": 15.7,
           "starting": true,
           "captain": false,
-          "vice": false,
-          "pens": false,
+          "vice": true,
+          "pens": true,
           "setpiece": false
         },
         {
@@ -382,9 +382,9 @@
       ]
     },
     "value": {
-      "budget_spent": 78.4,
-      "captain_id": 124,
-      "vice_id": 647,
+      "budget_spent": 87.3,
+      "captain_id": 411,
+      "vice_id": 124,
       "players": [
         {
           "id": 1,
@@ -447,21 +447,21 @@
           "setpiece": false
         },
         {
-          "id": 229,
-          "name": "Tarkowski",
-          "team": "EVE",
+          "id": 259,
+          "name": "Diop",
+          "team": "IPS",
           "pos": "DEF",
-          "price": 6.2,
-          "starting": true,
+          "price": 3.9,
+          "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
           "setpiece": false
         },
         {
-          "id": 259,
-          "name": "Diop",
-          "team": "IPS",
+          "id": 175,
+          "name": "van Ewijk",
+          "team": "COV",
           "pos": "DEF",
           "price": 3.9,
           "starting": false,
@@ -477,8 +477,8 @@
           "pos": "MID",
           "price": 6.2,
           "starting": true,
-          "captain": true,
-          "vice": false,
+          "captain": false,
+          "vice": true,
           "pens": true,
           "setpiece": true
         },
@@ -490,7 +490,7 @@
           "price": 5.4,
           "starting": true,
           "captain": false,
-          "vice": true,
+          "vice": false,
           "pens": false,
           "setpiece": false
         },
@@ -531,6 +531,18 @@
           "setpiece": true
         },
         {
+          "id": 411,
+          "name": "Haaland",
+          "team": "MCI",
+          "pos": "FWD",
+          "price": 15.7,
+          "starting": true,
+          "captain": true,
+          "vice": false,
+          "pens": true,
+          "setpiece": false
+        },
+        {
           "id": 79,
           "name": "Evanilson",
           "team": "BOU",
@@ -553,25 +565,13 @@
           "vice": false,
           "pens": false,
           "setpiece": false
-        },
-        {
-          "id": 169,
-          "name": "Mheuka",
-          "team": "CHE",
-          "pos": "FWD",
-          "price": 4.5,
-          "starting": false,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": false
         }
       ]
     }
   },
-  "budget_spent": 77.9,
-  "captain_id": 124,
-  "vice_id": 647,
+  "budget_spent": 88.6,
+  "captain_id": 411,
+  "vice_id": 124,
   "players": [
     {
       "id": 1,
@@ -634,21 +634,21 @@
       "setpiece": true
     },
     {
-      "id": 173,
-      "name": "Thomas",
-      "team": "COV",
+      "id": 259,
+      "name": "Diop",
+      "team": "IPS",
       "pos": "DEF",
-      "price": 4.0,
-      "starting": true,
+      "price": 3.9,
+      "starting": false,
       "captain": false,
       "vice": false,
       "pens": false,
       "setpiece": false
     },
     {
-      "id": 259,
-      "name": "Diop",
-      "team": "IPS",
+      "id": 175,
+      "name": "van Ewijk",
+      "team": "COV",
       "pos": "DEF",
       "price": 3.9,
       "starting": false,
@@ -664,8 +664,8 @@
       "pos": "MID",
       "price": 6.2,
       "starting": true,
-      "captain": true,
-      "vice": false,
+      "captain": false,
+      "vice": true,
       "pens": true,
       "setpiece": true
     },
@@ -677,9 +677,21 @@
       "price": 5.4,
       "starting": true,
       "captain": false,
-      "vice": true,
+      "vice": false,
       "pens": false,
       "setpiece": false
+    },
+    {
+      "id": 68,
+      "name": "Tavernier",
+      "team": "BOU",
+      "pos": "MID",
+      "price": 6.2,
+      "starting": true,
+      "captain": false,
+      "vice": false,
+      "pens": false,
+      "setpiece": true
     },
     {
       "id": 100,
@@ -706,16 +718,16 @@
       "setpiece": true
     },
     {
-      "id": 236,
-      "name": "Dewsbury-Hall",
-      "team": "EVE",
-      "pos": "MID",
-      "price": 6.6,
+      "id": 411,
+      "name": "Haaland",
+      "team": "MCI",
+      "pos": "FWD",
+      "price": 15.7,
       "starting": true,
-      "captain": false,
+      "captain": true,
       "vice": false,
-      "pens": false,
-      "setpiece": true
+      "pens": true,
+      "setpiece": false
     },
     {
       "id": 79,
@@ -733,18 +745,6 @@
       "id": 321,
       "name": "Walle Egeli",
       "team": "IPS",
-      "pos": "FWD",
-      "price": 4.5,
-      "starting": false,
-      "captain": false,
-      "vice": false,
-      "pens": false,
-      "setpiece": false
-    },
-    {
-      "id": 169,
-      "name": "Mheuka",
-      "team": "CHE",
       "pos": "FWD",
       "price": 4.5,
       "starting": false,
