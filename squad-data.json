@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 98.9,
+      "budget_spent": 95.5,
       "captain_id": 100,
       "vice_id": 411,
       "players": [
@@ -332,15 +332,15 @@
           "setpiece": true
         },
         {
-          "id": 12,
-          "name": "Saka",
-          "team": "ARS",
+          "id": 68,
+          "name": "Tavernier",
+          "team": "BOU",
           "pos": "MID",
-          "price": 9.6,
+          "price": 6.2,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": true,
+          "pens": false,
           "setpiece": true
         },
         {
