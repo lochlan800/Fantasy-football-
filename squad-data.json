@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 89.3,
+      "budget_spent": 89.6,
       "captain_id": 411,
       "vice_id": 647,
       "players": [
@@ -17,7 +17,7 @@
           "name": "Raya",
           "team": "ARS",
           "pos": "GK",
-          "price": 6.1,
+          "price": 6.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -137,7 +137,7 @@
           "name": "Tavernier",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.2,
+          "price": 6.3,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -173,7 +173,7 @@
           "name": "Evanilson",
           "team": "BOU",
           "pos": "FWD",
-          "price": 6.1,
+          "price": 6.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 94.1,
+      "budget_spent": 93.3,
       "captain_id": 100,
       "vice_id": 411,
       "players": [
@@ -248,16 +248,16 @@
           "setpiece": false
         },
         {
-          "id": 469,
-          "name": "N.Williams",
-          "team": "NFO",
+          "id": 304,
+          "name": "O'Shea",
+          "team": "IPS",
           "pos": "DEF",
-          "price": 5.0,
+          "price": 4.0,
           "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
           "id": 179,
@@ -336,7 +336,7 @@
           "name": "Tavernier",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.2,
+          "price": 6.3,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -360,7 +360,7 @@
           "name": "Evanilson",
           "team": "BOU",
           "pos": "FWD",
-          "price": 6.1,
+          "price": 6.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 85.2,
+      "budget_spent": 85.4,
       "captain_id": 647,
       "vice_id": 124,
       "players": [
@@ -391,7 +391,7 @@
           "name": "Raya",
           "team": "ARS",
           "pos": "GK",
-          "price": 6.1,
+          "price": 6.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -499,7 +499,7 @@
           "name": "Tavernier",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.2,
+          "price": 6.3,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 89.3,
+  "budget_spent": 89.6,
   "captain_id": 411,
   "vice_id": 647,
   "players": [
@@ -578,7 +578,7 @@
       "name": "Raya",
       "team": "ARS",
       "pos": "GK",
-      "price": 6.1,
+      "price": 6.2,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -698,7 +698,7 @@
       "name": "Tavernier",
       "team": "BOU",
       "pos": "MID",
-      "price": 6.2,
+      "price": 6.3,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -734,7 +734,7 @@
       "name": "Evanilson",
       "team": "BOU",
       "pos": "FWD",
-      "price": 6.1,
+      "price": 6.2,
       "starting": true,
       "captain": false,
       "vice": false,
