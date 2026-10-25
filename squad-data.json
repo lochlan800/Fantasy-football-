@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 92.9,
+      "budget_spent": 90.3,
       "captain_id": 411,
       "vice_id": 647,
       "players": [
@@ -137,7 +137,7 @@
           "name": "Rice",
           "team": "ARS",
           "pos": "MID",
-          "price": 7.3,
+          "price": 7.4,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -145,11 +145,11 @@
           "setpiece": true
         },
         {
-          "id": 40,
-          "name": "Rogers",
-          "team": "CHE",
+          "id": 455,
+          "name": "Tonali",
+          "team": "TOT",
           "pos": "MID",
-          "price": 8.0,
+          "price": 5.3,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 91.6,
+      "budget_spent": 90.7,
       "captain_id": 411,
       "vice_id": 647,
       "players": [
@@ -495,11 +495,11 @@
           "setpiece": true
         },
         {
-          "id": 13,
-          "name": "Rice",
-          "team": "ARS",
+          "id": 455,
+          "name": "Tonali",
+          "team": "TOT",
           "pos": "MID",
-          "price": 7.3,
+          "price": 5.3,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -507,11 +507,11 @@
           "setpiece": true
         },
         {
-          "id": 68,
-          "name": "Tavernier",
-          "team": "BOU",
+          "id": 13,
+          "name": "Rice",
+          "team": "ARS",
           "pos": "MID",
-          "price": 6.3,
+          "price": 7.4,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 92.9,
+  "budget_spent": 90.3,
   "captain_id": 411,
   "vice_id": 647,
   "players": [
@@ -698,7 +698,7 @@
       "name": "Rice",
       "team": "ARS",
       "pos": "MID",
-      "price": 7.3,
+      "price": 7.4,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -706,11 +706,11 @@
       "setpiece": true
     },
     {
-      "id": 40,
-      "name": "Rogers",
-      "team": "CHE",
+      "id": 455,
+      "name": "Tonali",
+      "team": "TOT",
       "pos": "MID",
-      "price": 8.0,
+      "price": 5.3,
       "starting": true,
       "captain": false,
       "vice": false,
