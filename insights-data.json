@@ -38,7 +38,7 @@
       "team": "ARS",
       "pos": "MID",
       "price": 6.8,
-      "owned": 17.9,
+      "owned": 17.8,
       "form": 2.3,
       "xgi": 4.2,
       "actual": 2,
@@ -183,7 +183,7 @@
       "team": "CHE",
       "pos": "MID",
       "price": 9.8,
-      "owned": 27.6,
+      "owned": 27.5,
       "form": 3.0,
       "xgi": 2.6,
       "actual": 6,
@@ -194,7 +194,7 @@
       "team": "MCI",
       "pos": "DEF",
       "price": 5.8,
-      "owned": 27.1,
+      "owned": 27.0,
       "form": 1.7,
       "xgi": 1.7,
       "actual": 5,
@@ -216,7 +216,7 @@
       "team": "BOU",
       "pos": "FWD",
       "price": 6.2,
-      "owned": 7.0,
+      "owned": 7.3,
       "form": 8.3,
       "xgi": 4.1,
       "actual": 7,
@@ -260,7 +260,7 @@
       "team": "MCI",
       "pos": "MID",
       "price": 8.0,
-      "owned": 38.8,
+      "owned": 38.7,
       "form": 3.3,
       "xgi": 3.4,
       "actual": 6,
@@ -282,7 +282,7 @@
       "team": "MCI",
       "pos": "FWD",
       "price": 15.7,
-      "owned": 77.9,
+      "owned": 78.0,
       "form": 9.0,
       "xgi": 6.9,
       "actual": 9,
@@ -293,7 +293,7 @@
       "team": "BHA",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 42.5,
+      "owned": 42.6,
       "form": 7.3,
       "xgi": 2.9,
       "actual": 5,
@@ -337,7 +337,7 @@
       "team": "AVL",
       "pos": "FWD",
       "price": 6.7,
-      "owned": 8.0,
+      "owned": 8.5,
       "form": 8.0,
       "choice": "2nd",
       "duties": "Pens (2nd)"
@@ -367,7 +367,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 7.3,
-      "owned": 0.2,
+      "owned": 0.3,
       "form": 0.3,
       "choice": "1st",
       "duties": "Penalties"
@@ -407,7 +407,7 @@
       "team": "CHE",
       "pos": "MID",
       "price": 9.8,
-      "owned": 27.6,
+      "owned": 27.5,
       "form": 3.0,
       "choice": "1st",
       "duties": "Penalties"
@@ -547,7 +547,7 @@
       "team": "LIV",
       "pos": "FWD",
       "price": 9.0,
-      "owned": 15.1,
+      "owned": 15.4,
       "form": 6.0,
       "choice": "2nd",
       "duties": "Pens (2nd)"
@@ -595,7 +595,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 6.3,
-      "owned": 17.0,
+      "owned": 17.7,
       "form": 7.0,
       "duties": "Free-kicks, Corners"
     },
@@ -622,7 +622,7 @@
       "team": "CHE",
       "pos": "MID",
       "price": 4.9,
-      "owned": 1.5,
+      "owned": 1.6,
       "form": 7.7,
       "duties": "Corners"
     },
@@ -712,7 +712,7 @@
       "team": "MCI",
       "pos": "MID",
       "price": 8.0,
-      "owned": 38.8,
+      "owned": 38.7,
       "form": 3.3,
       "duties": "Free-kicks, Corners"
     },
@@ -721,7 +721,7 @@
       "team": "MUN",
       "pos": "MID",
       "price": 11.7,
-      "owned": 24.9,
+      "owned": 24.7,
       "form": 0.7,
       "duties": "Penalties, Free-kicks, Corners"
     },
@@ -730,7 +730,7 @@
       "team": "NEW",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 20.4,
+      "owned": 20.5,
       "form": 3.0,
       "duties": "Free-kicks, Corners"
     },
@@ -739,7 +739,7 @@
       "team": "NFO",
       "pos": "MID",
       "price": 7.9,
-      "owned": 12.1,
+      "owned": 12.0,
       "form": 1.3,
       "duties": "Penalties, Free-kicks"
     },
@@ -801,7 +801,7 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 7.9,
-      "owned": 22.1,
+      "owned": 22.3,
       "form": 9.0,
       "minutes": 720,
       "rating": "nailed",
@@ -846,7 +846,7 @@
       "team": "BOU",
       "pos": "DEF",
       "price": 5.5,
-      "owned": 1.1,
+      "owned": 1.2,
       "form": 6.7,
       "minutes": 720,
       "rating": "nailed",
@@ -906,7 +906,7 @@
       "team": "BHA",
       "pos": "GK",
       "price": 4.6,
-      "owned": 22.6,
+      "owned": 22.5,
       "form": 5.7,
       "minutes": 720,
       "rating": "nailed",
@@ -1026,7 +1026,7 @@
       "team": "IPS",
       "pos": "DEF",
       "price": 3.9,
-      "owned": 10.8,
+      "owned": 10.7,
       "form": 2.0,
       "minutes": 720,
       "rating": "nailed",
@@ -1071,7 +1071,7 @@
       "team": "LEE",
       "pos": "DEF",
       "price": 5.1,
-      "owned": 5.6,
+      "owned": 5.7,
       "form": 5.3,
       "minutes": 720,
       "rating": "nailed",
@@ -1206,7 +1206,7 @@
       "team": "MUN",
       "pos": "MID",
       "price": 7.9,
-      "owned": 21.7,
+      "owned": 21.6,
       "form": 6.0,
       "minutes": 720,
       "rating": "nailed",
@@ -1251,7 +1251,7 @@
       "team": "TOT",
       "pos": "DEF",
       "price": 4.9,
-      "owned": 7.2,
+      "owned": 7.4,
       "form": 4.7,
       "minutes": 720,
       "rating": "nailed",
@@ -1266,7 +1266,7 @@
       "team": "TOT",
       "pos": "GK",
       "price": 4.4,
-      "owned": 14.8,
+      "owned": 14.9,
       "form": 4.7,
       "minutes": 720,
       "rating": "nailed",
@@ -1311,7 +1311,7 @@
       "team": "NEW",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 20.4,
+      "owned": 20.5,
       "form": 3.0,
       "minutes": 719,
       "rating": "nailed",
@@ -1416,7 +1416,7 @@
       "team": "MCI",
       "pos": "FWD",
       "price": 15.7,
-      "owned": 77.9,
+      "owned": 78.0,
       "form": 9.0,
       "minutes": 709,
       "rating": "nailed",
@@ -1611,7 +1611,7 @@
       "team": "CHE",
       "pos": "MID",
       "price": 9.8,
-      "owned": 27.6,
+      "owned": 27.5,
       "form": 3.0,
       "minutes": 698,
       "rating": "nailed",
@@ -1641,7 +1641,7 @@
       "team": "TOT",
       "pos": "MID",
       "price": 5.3,
-      "owned": 1.8,
+      "owned": 1.9,
       "form": 5.3,
       "minutes": 697,
       "rating": "nailed",
@@ -1791,7 +1791,7 @@
       "team": "BOU",
       "pos": "FWD",
       "price": 6.2,
-      "owned": 7.0,
+      "owned": 7.3,
       "form": 8.3,
       "minutes": 678,
       "rating": "nailed",
@@ -1821,7 +1821,7 @@
       "team": "MCI",
       "pos": "DEF",
       "price": 6.0,
-      "owned": 17.2,
+      "owned": 17.1,
       "form": 2.3,
       "minutes": 675,
       "rating": "nailed",
@@ -1851,7 +1851,7 @@
       "team": "BHA",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 42.5,
+      "owned": 42.6,
       "form": 7.3,
       "minutes": 670,
       "rating": "nailed",
@@ -1881,7 +1881,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 6.3,
-      "owned": 17.0,
+      "owned": 17.7,
       "form": 7.0,
       "minutes": 660,
       "rating": "nailed",
@@ -1926,7 +1926,7 @@
       "team": "ARS",
       "pos": "MID",
       "price": 6.8,
-      "owned": 17.9,
+      "owned": 17.8,
       "form": 2.3,
       "minutes": 646,
       "rating": "nailed",
@@ -2166,7 +2166,7 @@
       "team": "AVL",
       "pos": "GK",
       "price": 5.0,
-      "owned": 2.5,
+      "owned": 2.6,
       "form": 4.7,
       "minutes": 630,
       "rating": "nailed",
@@ -2241,7 +2241,7 @@
       "team": "MUN",
       "pos": "MID",
       "price": 11.7,
-      "owned": 24.9,
+      "owned": 24.7,
       "form": 0.7,
       "minutes": 630,
       "rating": "nailed",
@@ -2271,7 +2271,7 @@
       "team": "NFO",
       "pos": "MID",
       "price": 7.9,
-      "owned": 12.1,
+      "owned": 12.0,
       "form": 1.3,
       "minutes": 630,
       "rating": "nailed",
@@ -2286,7 +2286,7 @@
       "team": "NEW",
       "pos": "FWD",
       "price": 6.1,
-      "owned": 11.8,
+      "owned": 11.6,
       "form": 1.3,
       "minutes": 621,
       "rating": "nailed",
@@ -2451,7 +2451,7 @@
       "team": "CHE",
       "pos": "MID",
       "price": 6.6,
-      "owned": 4.0,
+      "owned": 4.1,
       "form": 7.7,
       "minutes": 591,
       "rating": "nailed",
@@ -2496,7 +2496,7 @@
       "team": "ARS",
       "pos": "FWD",
       "price": 7.5,
-      "owned": 5.8,
+      "owned": 5.7,
       "form": 1.7,
       "minutes": 586,
       "rating": "nailed",
@@ -2541,7 +2541,7 @@
       "team": "LIV",
       "pos": "FWD",
       "price": 9.0,
-      "owned": 15.1,
+      "owned": 15.4,
       "form": 6.0,
       "minutes": 567,
       "rating": "nailed",
@@ -2642,7 +2642,7 @@
       "team": "BOU",
       "pos": "DEF",
       "price": 5.5,
-      "owned": 1.1,
+      "owned": 1.2,
       "form": 6.7,
       "dc90": 11.5
     },
@@ -2687,7 +2687,7 @@
       "team": "LEE",
       "pos": "DEF",
       "price": 5.1,
-      "owned": 5.6,
+      "owned": 5.7,
       "form": 5.3,
       "dc90": 10.8
     },
@@ -2844,7 +2844,7 @@
       "team": "MCI",
       "pos": "FWD",
       "price": 15.7,
-      "owned": 77.9,
+      "owned": 78.0,
       "form": 9.0
     },
     {
@@ -2876,7 +2876,7 @@
       "team": "BHA",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 42.5,
+      "owned": 42.6,
       "form": 7.3
     },
     {
@@ -2884,7 +2884,7 @@
       "team": "MCI",
       "pos": "MID",
       "price": 8.0,
-      "owned": 38.8,
+      "owned": 38.7,
       "form": 3.3
     },
     {
@@ -2892,7 +2892,7 @@
       "team": "CHE",
       "pos": "MID",
       "price": 9.8,
-      "owned": 27.6,
+      "owned": 27.5,
       "form": 3.0
     },
     {
@@ -2900,7 +2900,7 @@
       "team": "MCI",
       "pos": "DEF",
       "price": 5.8,
-      "owned": 27.1,
+      "owned": 27.0,
       "form": 1.7
     },
     {
@@ -2908,7 +2908,7 @@
       "team": "MUN",
       "pos": "MID",
       "price": 11.7,
-      "owned": 24.9,
+      "owned": 24.7,
       "form": 0.7
     },
     {
@@ -2916,7 +2916,7 @@
       "team": "BHA",
       "pos": "GK",
       "price": 4.6,
-      "owned": 22.6,
+      "owned": 22.5,
       "form": 5.7
     },
     {
@@ -2924,7 +2924,7 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 7.9,
-      "owned": 22.1,
+      "owned": 22.3,
       "form": 9.0
     },
     {
@@ -2932,7 +2932,7 @@
       "team": "MUN",
       "pos": "MID",
       "price": 7.9,
-      "owned": 21.7,
+      "owned": 21.6,
       "form": 6.0
     },
     {
@@ -2948,7 +2948,7 @@
       "team": "NEW",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 20.4,
+      "owned": 20.5,
       "form": 3.0
     }
   ],
@@ -2958,7 +2958,7 @@
       "team": "BOU",
       "pos": "FWD",
       "price": 6.2,
-      "owned": 7.0,
+      "owned": 7.3,
       "form": 8.3,
       "xgi90": 0.54
     },
@@ -2967,7 +2967,7 @@
       "team": "AVL",
       "pos": "FWD",
       "price": 6.7,
-      "owned": 8.0,
+      "owned": 8.5,
       "form": 8.0,
       "xgi90": 0.44
     },
@@ -2976,7 +2976,7 @@
       "team": "CHE",
       "pos": "MID",
       "price": 6.6,
-      "owned": 4.0,
+      "owned": 4.1,
       "form": 7.7,
       "xgi90": 0.35
     },
@@ -2985,7 +2985,7 @@
       "team": "CHE",
       "pos": "MID",
       "price": 4.9,
-      "owned": 1.5,
+      "owned": 1.6,
       "form": 7.7,
       "xgi90": 0.25
     },
@@ -3003,7 +3003,7 @@
       "team": "MCI",
       "pos": "MID",
       "price": 7.5,
-      "owned": 3.9,
+      "owned": 4.0,
       "form": 6.7,
       "xgi90": 0.74
     },
@@ -3021,7 +3021,7 @@
       "team": "BOU",
       "pos": "DEF",
       "price": 5.5,
-      "owned": 1.1,
+      "owned": 1.2,
       "form": 6.7,
       "xgi90": 0.12
     },
@@ -3057,7 +3057,7 @@
       "team": "AVL",
       "pos": "MID",
       "price": 6.0,
-      "owned": 3.9,
+      "owned": 4.1,
       "form": 5.7,
       "xgi90": 0.58
     },
@@ -3082,23 +3082,23 @@
   ],
   "risers": [
     {
-      "name": "N.Jackson",
-      "team": "AVL",
-      "pos": "FWD",
-      "price": 6.7,
-      "owned": 8.0,
-      "form": 8.0,
-      "net": 393418,
-      "cost_change": 0.1
-    },
-    {
       "name": "Tavernier",
       "team": "BOU",
       "pos": "MID",
       "price": 6.3,
-      "owned": 17.0,
+      "owned": 17.7,
       "form": 7.0,
-      "net": 378278,
+      "net": 447717,
+      "cost_change": 0.1
+    },
+    {
+      "name": "N.Jackson",
+      "team": "AVL",
+      "pos": "FWD",
+      "price": 6.7,
+      "owned": 8.5,
+      "form": 8.0,
+      "net": 437646,
       "cost_change": 0.1
     },
     {
@@ -3106,9 +3106,9 @@
       "team": "LIV",
       "pos": "FWD",
       "price": 9.0,
-      "owned": 15.1,
+      "owned": 15.4,
       "form": 6.0,
-      "net": 130612,
+      "net": 154040,
       "cost_change": 0.0
     },
     {
@@ -3116,9 +3116,9 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 4.7,
-      "owned": 19.8,
+      "owned": 20.0,
       "form": 9.0,
-      "net": 129576,
+      "net": 144332,
       "cost_change": 0.1
     },
     {
@@ -3126,9 +3126,9 @@
       "team": "BOU",
       "pos": "FWD",
       "price": 6.2,
-      "owned": 7.0,
+      "owned": 7.3,
       "form": 8.3,
-      "net": 109877,
+      "net": 130061,
       "cost_change": 0.1
     },
     {
@@ -3136,9 +3136,9 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 7.9,
-      "owned": 22.1,
+      "owned": 22.3,
       "form": 9.0,
-      "net": 97322,
+      "net": 113511,
       "cost_change": 0.0
     },
     {
@@ -3146,9 +3146,9 @@
       "team": "AVL",
       "pos": "MID",
       "price": 6.0,
-      "owned": 3.9,
+      "owned": 4.1,
       "form": 5.7,
-      "net": 91498,
+      "net": 104795,
       "cost_change": 0.0
     },
     {
@@ -3156,9 +3156,9 @@
       "team": "BHA",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 42.5,
+      "owned": 42.6,
       "form": 7.3,
-      "net": 58843,
+      "net": 64942,
       "cost_change": 0.0
     },
     {
@@ -3166,9 +3166,19 @@
       "team": "MCI",
       "pos": "FWD",
       "price": 15.7,
-      "owned": 77.9,
+      "owned": 78.0,
       "form": 9.0,
-      "net": 50429,
+      "net": 57460,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Van Hecke",
+      "team": "TOT",
+      "pos": "DEF",
+      "price": 4.9,
+      "owned": 7.4,
+      "form": 4.7,
+      "net": 50824,
       "cost_change": 0.0
     },
     {
@@ -3178,7 +3188,7 @@
       "price": 8.0,
       "owned": 50.0,
       "form": 4.0,
-      "net": 45460,
+      "net": 50515,
       "cost_change": 0.0
     },
     {
@@ -3188,38 +3198,28 @@
       "price": 7.4,
       "owned": 12.5,
       "form": 6.3,
-      "net": 42119,
+      "net": 46286,
       "cost_change": 0.1
-    },
-    {
-      "name": "Van Hecke",
-      "team": "TOT",
-      "pos": "DEF",
-      "price": 4.9,
-      "owned": 7.2,
-      "form": 4.7,
-      "net": 42050,
-      "cost_change": 0.0
-    },
-    {
-      "name": "Doku",
-      "team": "MCI",
-      "pos": "MID",
-      "price": 7.5,
-      "owned": 3.9,
-      "form": 6.7,
-      "net": 41359,
-      "cost_change": 0.0
     },
     {
       "name": "Neto",
       "team": "CHE",
       "pos": "MID",
       "price": 6.6,
-      "owned": 4.0,
+      "owned": 4.1,
       "form": 7.7,
-      "net": 40413,
+      "net": 46271,
       "cost_change": 0.1
+    },
+    {
+      "name": "Doku",
+      "team": "MCI",
+      "pos": "MID",
+      "price": 7.5,
+      "owned": 4.0,
+      "form": 6.7,
+      "net": 46013,
+      "cost_change": 0.0
     }
   ],
   "fallers": [
@@ -3228,9 +3228,9 @@
       "team": "MUN",
       "pos": "MID",
       "price": 11.7,
-      "owned": 24.9,
+      "owned": 24.7,
       "form": 0.7,
-      "net": -140818,
+      "net": -162817,
       "cost_change": -0.1
     },
     {
@@ -3240,7 +3240,7 @@
       "price": 6.1,
       "owned": 21.5,
       "form": 4.3,
-      "net": -131654,
+      "net": -139761,
       "cost_change": 0.0
     },
     {
@@ -3248,9 +3248,9 @@
       "team": "NEW",
       "pos": "FWD",
       "price": 6.1,
-      "owned": 11.8,
+      "owned": 11.6,
       "form": 1.3,
-      "net": -87508,
+      "net": -101419,
       "cost_change": 0.0
     },
     {
@@ -3258,9 +3258,9 @@
       "team": "CHE",
       "pos": "MID",
       "price": 9.8,
-      "owned": 27.6,
+      "owned": 27.5,
       "form": 3.0,
-      "net": -86582,
+      "net": -96391,
       "cost_change": 0.0
     },
     {
@@ -3270,27 +3270,17 @@
       "price": 6.0,
       "owned": 5.8,
       "form": 2.0,
-      "net": -71318,
+      "net": -77449,
       "cost_change": -0.1
-    },
-    {
-      "name": "Gu\u00e9hi",
-      "team": "MCI",
-      "pos": "DEF",
-      "price": 6.0,
-      "owned": 17.2,
-      "form": 2.3,
-      "net": -47365,
-      "cost_change": 0.0
     },
     {
       "name": "\u00d8degaard",
       "team": "ARS",
       "pos": "MID",
       "price": 6.8,
-      "owned": 17.9,
+      "owned": 17.8,
       "form": 2.3,
-      "net": -46594,
+      "net": -55946,
       "cost_change": 0.0
     },
     {
@@ -3298,9 +3288,19 @@
       "team": "MCI",
       "pos": "DEF",
       "price": 5.8,
-      "owned": 27.1,
+      "owned": 27.0,
       "form": 1.7,
-      "net": -45907,
+      "net": -53702,
+      "cost_change": 0.0
+    },
+    {
+      "name": "Gu\u00e9hi",
+      "team": "MCI",
+      "pos": "DEF",
+      "price": 6.0,
+      "owned": 17.1,
+      "form": 2.3,
+      "net": -53358,
       "cost_change": 0.0
     },
     {
@@ -3308,9 +3308,9 @@
       "team": "MCI",
       "pos": "MID",
       "price": 8.0,
-      "owned": 38.8,
+      "owned": 38.7,
       "form": 3.3,
-      "net": -43494,
+      "net": -52454,
       "cost_change": 0.0
     },
     {
@@ -3320,7 +3320,7 @@
       "price": 5.6,
       "owned": 7.4,
       "form": 3.3,
-      "net": -34382,
+      "net": -37960,
       "cost_change": -0.1
     },
     {
@@ -3328,9 +3328,9 @@
       "team": "NFO",
       "pos": "MID",
       "price": 7.9,
-      "owned": 12.1,
+      "owned": 12.0,
       "form": 1.3,
-      "net": -29525,
+      "net": -34053,
       "cost_change": 0.0
     },
     {
@@ -3338,9 +3338,9 @@
       "team": "ARS",
       "pos": "FWD",
       "price": 7.5,
-      "owned": 5.8,
+      "owned": 5.7,
       "form": 1.7,
-      "net": -27735,
+      "net": -31271,
       "cost_change": 0.0
     },
     {
@@ -3350,7 +3350,7 @@
       "price": 7.9,
       "owned": 6.1,
       "form": 4.0,
-      "net": -24292,
+      "net": -28741,
       "cost_change": 0.0
     },
     {
@@ -3360,7 +3360,7 @@
       "price": 4.9,
       "owned": 8.1,
       "form": 2.0,
-      "net": -23894,
+      "net": -27923,
       "cost_change": 0.0
     }
   ],
@@ -3370,7 +3370,7 @@
       "team": "BHA",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 42.5,
+      "owned": 42.6,
       "form": 7.3,
       "val": 11.3,
       "points": 60
@@ -3430,7 +3430,7 @@
       "team": "BHA",
       "pos": "GK",
       "price": 4.6,
-      "owned": 22.6,
+      "owned": 22.5,
       "form": 5.7,
       "val": 8.7,
       "points": 40
@@ -3450,7 +3450,7 @@
       "team": "LEE",
       "pos": "DEF",
       "price": 5.1,
-      "owned": 5.6,
+      "owned": 5.7,
       "form": 5.3,
       "val": 8.4,
       "points": 43
@@ -3470,7 +3470,7 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 4.7,
-      "owned": 19.8,
+      "owned": 20.0,
       "form": 9.0,
       "val": 8.3,
       "points": 39
@@ -3480,7 +3480,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 6.3,
-      "owned": 17.0,
+      "owned": 17.7,
       "form": 7.0,
       "val": 8.3,
       "points": 52
@@ -3512,7 +3512,7 @@
       "team": "ARS",
       "pos": "DEF",
       "price": 4.7,
-      "owned": 19.8,
+      "owned": 20.0,
       "form": 9.0,
       "val": 1.9
     },
@@ -3521,7 +3521,7 @@
       "team": "CHE",
       "pos": "MID",
       "price": 4.9,
-      "owned": 1.5,
+      "owned": 1.6,
       "form": 7.7,
       "val": 1.6
     },
@@ -3530,7 +3530,7 @@
       "team": "BHA",
       "pos": "DEF",
       "price": 5.3,
-      "owned": 42.5,
+      "owned": 42.6,
       "form": 7.3,
       "val": 1.4
     },
@@ -3548,7 +3548,7 @@
       "team": "BOU",
       "pos": "FWD",
       "price": 6.2,
-      "owned": 7.0,
+      "owned": 7.3,
       "form": 8.3,
       "val": 1.3
     },
@@ -3593,7 +3593,7 @@
       "team": "AVL",
       "pos": "FWD",
       "price": 6.7,
-      "owned": 8.0,
+      "owned": 8.5,
       "form": 8.0,
       "val": 1.2
     },
@@ -3602,7 +3602,7 @@
       "team": "BOU",
       "pos": "DEF",
       "price": 5.5,
-      "owned": 1.1,
+      "owned": 1.2,
       "form": 6.7,
       "val": 1.2
     },
@@ -3611,7 +3611,7 @@
       "team": "BHA",
       "pos": "GK",
       "price": 4.6,
-      "owned": 22.6,
+      "owned": 22.5,
       "form": 5.7,
       "val": 1.2
     },
@@ -3620,7 +3620,7 @@
       "team": "CHE",
       "pos": "MID",
       "price": 6.6,
-      "owned": 4.0,
+      "owned": 4.1,
       "form": 7.7,
       "val": 1.2
     },
