@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 93.2,
+      "budget_spent": 93.3,
       "captain_id": 411,
       "vice_id": 68,
       "players": [
@@ -101,7 +101,7 @@
           "name": "Tavernier",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.3,
+          "price": 6.4,
           "starting": true,
           "captain": false,
           "vice": true,
@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 94.1,
+      "budget_spent": 94.2,
       "captain_id": 100,
       "vice_id": 411,
       "players": [
@@ -300,7 +300,7 @@
           "name": "Tavernier",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.3,
+          "price": 6.4,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -382,9 +382,9 @@
       ]
     },
     "value": {
-      "budget_spent": 89.7,
-      "captain_id": 68,
-      "vice_id": 411,
+      "budget_spent": 89.8,
+      "captain_id": 411,
+      "vice_id": 68,
       "players": [
         {
           "id": 1,
@@ -475,10 +475,10 @@
           "name": "Tavernier",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.3,
+          "price": 6.4,
           "starting": true,
-          "captain": true,
-          "vice": false,
+          "captain": false,
+          "vice": true,
           "pens": false,
           "setpiece": true
         },
@@ -537,8 +537,8 @@
           "pos": "FWD",
           "price": 15.7,
           "starting": true,
-          "captain": false,
-          "vice": true,
+          "captain": true,
+          "vice": false,
           "pens": true,
           "setpiece": false
         },
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 93.2,
+  "budget_spent": 93.3,
   "captain_id": 411,
   "vice_id": 68,
   "players": [
@@ -662,7 +662,7 @@
       "name": "Tavernier",
       "team": "BOU",
       "pos": "MID",
-      "price": 6.3,
+      "price": 6.4,
       "starting": true,
       "captain": false,
       "vice": true,
