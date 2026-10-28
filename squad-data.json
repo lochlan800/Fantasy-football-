@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 93.3,
+      "budget_spent": 89.7,
       "captain_id": 411,
       "vice_id": 68,
       "players": [
@@ -65,7 +65,7 @@
           "name": "Vuskovic",
           "team": "BHA",
           "pos": "DEF",
-          "price": 5.1,
+          "price": 5.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -85,16 +85,16 @@
           "setpiece": false
         },
         {
-          "id": 115,
-          "name": "De Cuyper",
-          "team": "BHA",
+          "id": 259,
+          "name": "Diop",
+          "team": "IPS",
           "pos": "DEF",
-          "price": 5.3,
-          "starting": true,
+          "price": 3.9,
+          "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
           "id": 68,
@@ -133,12 +133,12 @@
           "setpiece": false
         },
         {
-          "id": 13,
-          "name": "Rice",
-          "team": "ARS",
+          "id": 127,
+          "name": "Gomez",
+          "team": "BHA",
           "pos": "MID",
-          "price": 7.4,
-          "starting": false,
+          "price": 5.0,
+          "starting": true,
           "captain": false,
           "vice": false,
           "pens": false,
@@ -161,7 +161,7 @@
           "name": "Haaland",
           "team": "MCI",
           "pos": "FWD",
-          "price": 15.7,
+          "price": 15.8,
           "starting": true,
           "captain": true,
           "vice": false,
@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 94.2,
+      "budget_spent": 94.4,
       "captain_id": 100,
       "vice_id": 411,
       "players": [
@@ -252,7 +252,7 @@
           "name": "Vuskovic",
           "team": "BHA",
           "pos": "DEF",
-          "price": 5.1,
+          "price": 5.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -348,7 +348,7 @@
           "name": "Haaland",
           "team": "MCI",
           "pos": "FWD",
-          "price": 15.7,
+          "price": 15.8,
           "starting": true,
           "captain": false,
           "vice": true,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 89.8,
+      "budget_spent": 90.0,
       "captain_id": 411,
       "vice_id": 68,
       "players": [
@@ -423,11 +423,11 @@
           "setpiece": false
         },
         {
-          "id": 504,
-          "name": "Vuskovic",
-          "team": "BHA",
+          "id": 4,
+          "name": "Gabriel",
+          "team": "ARS",
           "pos": "DEF",
-          "price": 5.1,
+          "price": 7.9,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -435,11 +435,11 @@
           "setpiece": false
         },
         {
-          "id": 4,
-          "name": "Gabriel",
-          "team": "ARS",
+          "id": 504,
+          "name": "Vuskovic",
+          "team": "BHA",
           "pos": "DEF",
-          "price": 7.9,
+          "price": 5.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -535,7 +535,7 @@
           "name": "Haaland",
           "team": "MCI",
           "pos": "FWD",
-          "price": 15.7,
+          "price": 15.8,
           "starting": true,
           "captain": true,
           "vice": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 93.3,
+  "budget_spent": 89.7,
   "captain_id": 411,
   "vice_id": 68,
   "players": [
@@ -626,7 +626,7 @@
       "name": "Vuskovic",
       "team": "BHA",
       "pos": "DEF",
-      "price": 5.1,
+      "price": 5.2,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -646,16 +646,16 @@
       "setpiece": false
     },
     {
-      "id": 115,
-      "name": "De Cuyper",
-      "team": "BHA",
+      "id": 259,
+      "name": "Diop",
+      "team": "IPS",
       "pos": "DEF",
-      "price": 5.3,
-      "starting": true,
+      "price": 3.9,
+      "starting": false,
       "captain": false,
       "vice": false,
       "pens": false,
-      "setpiece": true
+      "setpiece": false
     },
     {
       "id": 68,
@@ -694,12 +694,12 @@
       "setpiece": false
     },
     {
-      "id": 13,
-      "name": "Rice",
-      "team": "ARS",
+      "id": 127,
+      "name": "Gomez",
+      "team": "BHA",
       "pos": "MID",
-      "price": 7.4,
-      "starting": false,
+      "price": 5.0,
+      "starting": true,
       "captain": false,
       "vice": false,
       "pens": false,
@@ -722,7 +722,7 @@
       "name": "Haaland",
       "team": "MCI",
       "pos": "FWD",
-      "price": 15.7,
+      "price": 15.8,
       "starting": true,
       "captain": true,
       "vice": false,
