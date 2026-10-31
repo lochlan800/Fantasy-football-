@@ -1,17 +1,44 @@
 {
-  "gw": 8,
+  "gw": 9,
   "horizon": 5,
   "ranked": [
+    {
+      "short": "TOT",
+      "name": "Spurs",
+      "avg": 2.4,
+      "games": [
+        {
+          "opp": "CRY",
+          "venue": "H",
+          "diff": 2
+        },
+        {
+          "opp": "LEE",
+          "venue": "A",
+          "diff": 3
+        },
+        {
+          "opp": "IPS",
+          "venue": "H",
+          "diff": 2
+        },
+        {
+          "opp": "SUN",
+          "venue": "A",
+          "diff": 3
+        },
+        {
+          "opp": "FUL",
+          "venue": "H",
+          "diff": 2
+        }
+      ]
+    },
     {
       "short": "COV",
       "name": "Coventry City",
       "avg": 2.6,
       "games": [
-        {
-          "opp": "FUL",
-          "venue": "H",
-          "diff": 2
-        },
         {
           "opp": "SUN",
           "venue": "H",
@@ -31,36 +58,9 @@
           "opp": "LEE",
           "venue": "A",
           "diff": 3
-        }
-      ]
-    },
-    {
-      "short": "CRY",
-      "name": "Crystal Palace",
-      "avg": 2.8,
-      "games": [
-        {
-          "opp": "NEW",
-          "venue": "H",
-          "diff": 3
         },
         {
-          "opp": "TOT",
-          "venue": "A",
-          "diff": 3
-        },
-        {
-          "opp": "LIV",
-          "venue": "H",
-          "diff": 4
-        },
-        {
-          "opp": "COV",
-          "venue": "A",
-          "diff": 2
-        },
-        {
-          "opp": "HUL",
+          "opp": "IPS",
           "venue": "H",
           "diff": 2
         }
@@ -69,13 +69,8 @@
     {
       "short": "IPS",
       "name": "Ipswich Town",
-      "avg": 2.8,
+      "avg": 2.6,
       "games": [
-        {
-          "opp": "NFO",
-          "venue": "H",
-          "diff": 3
-        },
         {
           "opp": "HUL",
           "venue": "A",
@@ -95,101 +90,10 @@
           "opp": "AVL",
           "venue": "H",
           "diff": 3
-        }
-      ]
-    },
-    {
-      "short": "LEE",
-      "name": "Leeds",
-      "avg": 2.8,
-      "games": [
-        {
-          "opp": "SUN",
-          "venue": "A",
-          "diff": 3
-        },
-        {
-          "opp": "BOU",
-          "venue": "A",
-          "diff": 3
-        },
-        {
-          "opp": "TOT",
-          "venue": "H",
-          "diff": 2
-        },
-        {
-          "opp": "CHE",
-          "venue": "A",
-          "diff": 4
-        },
-        {
-          "opp": "COV",
-          "venue": "H",
-          "diff": 2
-        }
-      ]
-    },
-    {
-      "short": "TOT",
-      "name": "Spurs",
-      "avg": 2.8,
-      "games": [
-        {
-          "opp": "CHE",
-          "venue": "A",
-          "diff": 4
-        },
-        {
-          "opp": "CRY",
-          "venue": "H",
-          "diff": 2
-        },
-        {
-          "opp": "LEE",
-          "venue": "A",
-          "diff": 3
-        },
-        {
-          "opp": "IPS",
-          "venue": "H",
-          "diff": 2
-        },
-        {
-          "opp": "SUN",
-          "venue": "A",
-          "diff": 3
-        }
-      ]
-    },
-    {
-      "short": "SUN",
-      "name": "Sunderland",
-      "avg": 2.8,
-      "games": [
-        {
-          "opp": "LEE",
-          "venue": "H",
-          "diff": 3
         },
         {
           "opp": "COV",
           "venue": "A",
-          "diff": 2
-        },
-        {
-          "opp": "CHE",
-          "venue": "H",
-          "diff": 4
-        },
-        {
-          "opp": "AVL",
-          "venue": "A",
-          "diff": 3
-        },
-        {
-          "opp": "TOT",
-          "venue": "H",
           "diff": 2
         }
       ]
@@ -197,13 +101,8 @@
     {
       "short": "AVL",
       "name": "Aston Villa",
-      "avg": 3.0,
+      "avg": 2.8,
       "games": [
-        {
-          "opp": "MCI",
-          "venue": "H",
-          "diff": 4
-        },
         {
           "opp": "FUL",
           "venue": "H",
@@ -223,19 +122,19 @@
           "opp": "IPS",
           "venue": "A",
           "diff": 2
+        },
+        {
+          "opp": "EVE",
+          "venue": "H",
+          "diff": 3
         }
       ]
     },
     {
       "short": "BOU",
       "name": "Bournemouth",
-      "avg": 3.0,
+      "avg": 2.8,
       "games": [
-        {
-          "opp": "MUN",
-          "venue": "A",
-          "diff": 4
-        },
         {
           "opp": "LEE",
           "venue": "H",
@@ -254,6 +153,11 @@
         {
           "opp": "FUL",
           "venue": "A",
+          "diff": 3
+        },
+        {
+          "opp": "BHA",
+          "venue": "H",
           "diff": 3
         }
       ]
@@ -264,11 +168,6 @@
       "avg": 3.0,
       "games": [
         {
-          "opp": "TOT",
-          "venue": "H",
-          "diff": 2
-        },
-        {
           "opp": "MUN",
           "venue": "H",
           "diff": 4
@@ -287,6 +186,107 @@
           "opp": "NFO",
           "venue": "A",
           "diff": 3
+        },
+        {
+          "opp": "CRY",
+          "venue": "H",
+          "diff": 2
+        }
+      ]
+    },
+    {
+      "short": "CRY",
+      "name": "Crystal Palace",
+      "avg": 3.0,
+      "games": [
+        {
+          "opp": "TOT",
+          "venue": "A",
+          "diff": 3
+        },
+        {
+          "opp": "LIV",
+          "venue": "H",
+          "diff": 4
+        },
+        {
+          "opp": "COV",
+          "venue": "A",
+          "diff": 2
+        },
+        {
+          "opp": "HUL",
+          "venue": "H",
+          "diff": 2
+        },
+        {
+          "opp": "CHE",
+          "venue": "A",
+          "diff": 4
+        }
+      ]
+    },
+    {
+      "short": "EVE",
+      "name": "Everton",
+      "avg": 3.0,
+      "games": [
+        {
+          "opp": "NEW",
+          "venue": "A",
+          "diff": 3
+        },
+        {
+          "opp": "COV",
+          "venue": "H",
+          "diff": 2
+        },
+        {
+          "opp": "BRE",
+          "venue": "A",
+          "diff": 3
+        },
+        {
+          "opp": "LIV",
+          "venue": "H",
+          "diff": 4
+        },
+        {
+          "opp": "AVL",
+          "venue": "A",
+          "diff": 3
+        }
+      ]
+    },
+    {
+      "short": "SUN",
+      "name": "Sunderland",
+      "avg": 3.0,
+      "games": [
+        {
+          "opp": "COV",
+          "venue": "A",
+          "diff": 2
+        },
+        {
+          "opp": "CHE",
+          "venue": "H",
+          "diff": 4
+        },
+        {
+          "opp": "AVL",
+          "venue": "A",
+          "diff": 3
+        },
+        {
+          "opp": "TOT",
+          "venue": "H",
+          "diff": 2
+        },
+        {
+          "opp": "LIV",
+          "venue": "A",
+          "diff": 4
         }
       ]
     },
@@ -295,11 +295,6 @@
       "name": "Arsenal",
       "avg": 3.2,
       "games": [
-        {
-          "opp": "EVE",
-          "venue": "H",
-          "diff": 3
-        },
         {
           "opp": "LIV",
           "venue": "A",
@@ -319,55 +314,33 @@
           "opp": "MCI",
           "venue": "H",
           "diff": 4
+        },
+        {
+          "opp": "BRE",
+          "venue": "A",
+          "diff": 3
         }
       ]
     },
     {
-      "short": "BRE",
-      "name": "Brentford",
+      "short": "BHA",
+      "name": "Brighton",
       "avg": 3.2,
       "games": [
+        {
+          "opp": "MCI",
+          "venue": "A",
+          "diff": 5
+        },
+        {
+          "opp": "BRE",
+          "venue": "H",
+          "diff": 3
+        },
         {
           "opp": "HUL",
           "venue": "A",
           "diff": 2
-        },
-        {
-          "opp": "NFO",
-          "venue": "H",
-          "diff": 3
-        },
-        {
-          "opp": "BHA",
-          "venue": "A",
-          "diff": 4
-        },
-        {
-          "opp": "EVE",
-          "venue": "H",
-          "diff": 3
-        },
-        {
-          "opp": "MUN",
-          "venue": "A",
-          "diff": 4
-        }
-      ]
-    },
-    {
-      "short": "FUL",
-      "name": "Fulham",
-      "avg": 3.2,
-      "games": [
-        {
-          "opp": "COV",
-          "venue": "A",
-          "diff": 2
-        },
-        {
-          "opp": "AVL",
-          "venue": "A",
-          "diff": 3
         },
         {
           "opp": "NEW",
@@ -375,13 +348,8 @@
           "diff": 3
         },
         {
-          "opp": "MCI",
-          "venue": "A",
-          "diff": 5
-        },
-        {
           "opp": "BOU",
-          "venue": "H",
+          "venue": "A",
           "diff": 3
         }
       ]
@@ -392,11 +360,6 @@
       "avg": 3.2,
       "games": [
         {
-          "opp": "BRE",
-          "venue": "H",
-          "diff": 3
-        },
-        {
           "opp": "IPS",
           "venue": "H",
           "diff": 2
@@ -415,6 +378,43 @@
           "opp": "CRY",
           "venue": "A",
           "diff": 3
+        },
+        {
+          "opp": "NFO",
+          "venue": "H",
+          "diff": 3
+        }
+      ]
+    },
+    {
+      "short": "LEE",
+      "name": "Leeds",
+      "avg": 3.2,
+      "games": [
+        {
+          "opp": "BOU",
+          "venue": "A",
+          "diff": 3
+        },
+        {
+          "opp": "TOT",
+          "venue": "H",
+          "diff": 2
+        },
+        {
+          "opp": "CHE",
+          "venue": "A",
+          "diff": 4
+        },
+        {
+          "opp": "COV",
+          "venue": "H",
+          "diff": 2
+        },
+        {
+          "opp": "MCI",
+          "venue": "A",
+          "diff": 5
         }
       ]
     },
@@ -423,11 +423,6 @@
       "name": "Man City",
       "avg": 3.2,
       "games": [
-        {
-          "opp": "AVL",
-          "venue": "A",
-          "diff": 3
-        },
         {
           "opp": "BHA",
           "venue": "H",
@@ -447,6 +442,11 @@
           "opp": "ARS",
           "venue": "A",
           "diff": 5
+        },
+        {
+          "opp": "LEE",
+          "venue": "H",
+          "diff": 3
         }
       ]
     },
@@ -455,11 +455,6 @@
       "name": "Nott'm Forest",
       "avg": 3.2,
       "games": [
-        {
-          "opp": "IPS",
-          "venue": "A",
-          "diff": 2
-        },
         {
           "opp": "BRE",
           "venue": "A",
@@ -479,18 +474,28 @@
           "opp": "CHE",
           "venue": "H",
           "diff": 4
+        },
+        {
+          "opp": "HUL",
+          "venue": "A",
+          "diff": 2
         }
       ]
     },
     {
-      "short": "BHA",
-      "name": "Brighton",
+      "short": "FUL",
+      "name": "Fulham",
       "avg": 3.4,
       "games": [
         {
-          "opp": "LIV",
+          "opp": "AVL",
           "venue": "A",
-          "diff": 4
+          "diff": 3
+        },
+        {
+          "opp": "NEW",
+          "venue": "H",
+          "diff": 3
         },
         {
           "opp": "MCI",
@@ -498,51 +503,14 @@
           "diff": 5
         },
         {
-          "opp": "BRE",
+          "opp": "BOU",
           "venue": "H",
           "diff": 3
         },
         {
-          "opp": "HUL",
-          "venue": "A",
-          "diff": 2
-        },
-        {
-          "opp": "NEW",
-          "venue": "H",
-          "diff": 3
-        }
-      ]
-    },
-    {
-      "short": "EVE",
-      "name": "Everton",
-      "avg": 3.4,
-      "games": [
-        {
-          "opp": "ARS",
-          "venue": "A",
-          "diff": 5
-        },
-        {
-          "opp": "NEW",
+          "opp": "TOT",
           "venue": "A",
           "diff": 3
-        },
-        {
-          "opp": "COV",
-          "venue": "H",
-          "diff": 2
-        },
-        {
-          "opp": "BRE",
-          "venue": "A",
-          "diff": 3
-        },
-        {
-          "opp": "LIV",
-          "venue": "H",
-          "diff": 4
         }
       ]
     },
@@ -551,11 +519,6 @@
       "name": "Liverpool",
       "avg": 3.4,
       "games": [
-        {
-          "opp": "BHA",
-          "venue": "H",
-          "diff": 3
-        },
         {
           "opp": "ARS",
           "venue": "H",
@@ -575,6 +538,11 @@
           "opp": "EVE",
           "venue": "A",
           "diff": 3
+        },
+        {
+          "opp": "SUN",
+          "venue": "H",
+          "diff": 3
         }
       ]
     },
@@ -583,11 +551,6 @@
       "name": "Man Utd",
       "avg": 3.4,
       "games": [
-        {
-          "opp": "BOU",
-          "venue": "H",
-          "diff": 3
-        },
         {
           "opp": "CHE",
           "venue": "A",
@@ -607,19 +570,51 @@
           "opp": "BRE",
           "venue": "H",
           "diff": 3
+        },
+        {
+          "opp": "NEW",
+          "venue": "A",
+          "diff": 3
+        }
+      ]
+    },
+    {
+      "short": "BRE",
+      "name": "Brentford",
+      "avg": 3.6,
+      "games": [
+        {
+          "opp": "NFO",
+          "venue": "H",
+          "diff": 3
+        },
+        {
+          "opp": "BHA",
+          "venue": "A",
+          "diff": 4
+        },
+        {
+          "opp": "EVE",
+          "venue": "H",
+          "diff": 3
+        },
+        {
+          "opp": "MUN",
+          "venue": "A",
+          "diff": 4
+        },
+        {
+          "opp": "ARS",
+          "venue": "H",
+          "diff": 4
         }
       ]
     },
     {
       "short": "NEW",
       "name": "Newcastle",
-      "avg": 3.4,
+      "avg": 3.6,
       "games": [
-        {
-          "opp": "CRY",
-          "venue": "A",
-          "diff": 3
-        },
         {
           "opp": "EVE",
           "venue": "H",
@@ -638,6 +633,11 @@
         {
           "opp": "BHA",
           "venue": "A",
+          "diff": 4
+        },
+        {
+          "opp": "MUN",
+          "venue": "H",
           "diff": 4
         }
       ]
