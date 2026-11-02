@@ -8,16 +8,16 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 94.0,
+      "budget_spent": 95.6,
       "captain_id": 411,
       "vice_id": 68,
       "players": [
         {
-          "id": 109,
-          "name": "Verbruggen",
-          "team": "BHA",
+          "id": 1,
+          "name": "Raya",
+          "team": "ARS",
           "pos": "GK",
-          "price": 4.6,
+          "price": 6.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -85,9 +85,9 @@
           "setpiece": false
         },
         {
-          "id": 259,
-          "name": "Diop",
-          "team": "IPS",
+          "id": 175,
+          "name": "van Ewijk",
+          "team": "COV",
           "pos": "DEF",
           "price": 3.9,
           "starting": false,
@@ -145,9 +145,9 @@
           "setpiece": true
         },
         {
-          "id": 601,
-          "name": "Williams-Barnett",
-          "team": "TOT",
+          "id": 134,
+          "name": "Oriola",
+          "team": "BHA",
           "pos": "MID",
           "price": 4.4,
           "starting": false,
@@ -272,9 +272,9 @@
           "setpiece": false
         },
         {
-          "id": 259,
-          "name": "Diop",
-          "team": "IPS",
+          "id": 638,
+          "name": "Norton-Cuffy",
+          "team": "HUL",
           "pos": "DEF",
           "price": 3.9,
           "starting": false,
@@ -569,16 +569,16 @@
       ]
     }
   },
-  "budget_spent": 94.0,
+  "budget_spent": 95.6,
   "captain_id": 411,
   "vice_id": 68,
   "players": [
     {
-      "id": 109,
-      "name": "Verbruggen",
-      "team": "BHA",
+      "id": 1,
+      "name": "Raya",
+      "team": "ARS",
       "pos": "GK",
-      "price": 4.6,
+      "price": 6.2,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -646,9 +646,9 @@
       "setpiece": false
     },
     {
-      "id": 259,
-      "name": "Diop",
-      "team": "IPS",
+      "id": 175,
+      "name": "van Ewijk",
+      "team": "COV",
       "pos": "DEF",
       "price": 3.9,
       "starting": false,
@@ -706,9 +706,9 @@
       "setpiece": true
     },
     {
-      "id": 601,
-      "name": "Williams-Barnett",
-      "team": "TOT",
+      "id": 134,
+      "name": "Oriola",
+      "team": "BHA",
       "pos": "MID",
       "price": 4.4,
       "starting": false,
