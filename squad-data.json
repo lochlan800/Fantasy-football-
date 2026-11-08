@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 91.8,
+      "budget_spent": 91.9,
       "captain_id": 411,
       "vice_id": 249,
       "players": [
@@ -113,7 +113,7 @@
           "name": "Tavernier",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.6,
+          "price": 6.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 93.3,
+      "budget_spent": 93.4,
       "captain_id": 411,
       "vice_id": 249,
       "players": [
@@ -272,8 +272,8 @@
           "setpiece": false
         },
         {
-          "id": 638,
-          "name": "Norton-Cuffy",
+          "id": 585,
+          "name": "Herrington",
           "team": "HUL",
           "pos": "DEF",
           "price": 3.9,
@@ -312,7 +312,7 @@
           "name": "Tavernier",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.6,
+          "price": 6.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 91.7,
+      "budget_spent": 91.8,
       "captain_id": 249,
       "vice_id": 236,
       "players": [
@@ -499,7 +499,7 @@
           "name": "Tavernier",
           "team": "BOU",
           "pos": "MID",
-          "price": 6.6,
+          "price": 6.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 91.8,
+  "budget_spent": 91.9,
   "captain_id": 411,
   "vice_id": 249,
   "players": [
@@ -674,7 +674,7 @@
       "name": "Tavernier",
       "team": "BOU",
       "pos": "MID",
-      "price": 6.6,
+      "price": 6.7,
       "starting": true,
       "captain": false,
       "vice": false,
