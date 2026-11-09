@@ -8,16 +8,16 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 90.0,
+      "budget_spent": 91.7,
       "captain_id": 79,
       "vice_id": 124,
       "players": [
         {
-          "id": 109,
-          "name": "Verbruggen",
-          "team": "BHA",
+          "id": 1,
+          "name": "Raya",
+          "team": "ARS",
           "pos": "GK",
-          "price": 4.6,
+          "price": 6.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -49,18 +49,6 @@
           "setpiece": false
         },
         {
-          "id": 504,
-          "name": "Vuskovic",
-          "team": "BHA",
-          "pos": "DEF",
-          "price": 5.2,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
-        },
-        {
           "id": 4,
           "name": "Gabriel",
           "team": "ARS",
@@ -71,6 +59,18 @@
           "vice": false,
           "pens": false,
           "setpiece": false
+        },
+        {
+          "id": 504,
+          "name": "Vuskovic",
+          "team": "BHA",
+          "pos": "DEF",
+          "price": 5.3,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
         },
         {
           "id": 334,
@@ -89,7 +89,7 @@
           "name": "Van Hecke",
           "team": "TOT",
           "pos": "DEF",
-          "price": 5.0,
+          "price": 5.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -133,11 +133,11 @@
           "setpiece": true
         },
         {
-          "id": 51,
-          "name": "George Hemmings",
-          "team": "AVL",
+          "id": 323,
+          "name": "McAteer",
+          "team": "IPS",
           "pos": "MID",
-          "price": 4.4,
+          "price": 4.3,
           "starting": false,
           "captain": false,
           "vice": false,
@@ -195,9 +195,9 @@
       ]
     },
     "attacking": {
-      "budget_spent": 96.8,
+      "budget_spent": 99.6,
       "captain_id": 411,
-      "vice_id": 124,
+      "vice_id": 249,
       "players": [
         {
           "id": 1,
@@ -224,30 +224,6 @@
           "setpiece": false
         },
         {
-          "id": 115,
-          "name": "De Cuyper",
-          "team": "BHA",
-          "pos": "DEF",
-          "price": 5.4,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
-        },
-        {
-          "id": 504,
-          "name": "Vuskovic",
-          "team": "BHA",
-          "pos": "DEF",
-          "price": 5.2,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
-          "setpiece": true
-        },
-        {
           "id": 4,
           "name": "Gabriel",
           "team": "ARS",
@@ -258,6 +234,30 @@
           "vice": false,
           "pens": false,
           "setpiece": false
+        },
+        {
+          "id": 504,
+          "name": "Vuskovic",
+          "team": "BHA",
+          "pos": "DEF",
+          "price": 5.3,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
+        },
+        {
+          "id": 115,
+          "name": "De Cuyper",
+          "team": "BHA",
+          "pos": "DEF",
+          "price": 5.5,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": false,
+          "setpiece": true
         },
         {
           "id": 179,
@@ -291,7 +291,7 @@
           "price": 6.3,
           "starting": true,
           "captain": false,
-          "vice": true,
+          "vice": false,
           "pens": true,
           "setpiece": true
         },
@@ -308,11 +308,11 @@
           "setpiece": true
         },
         {
-          "id": 154,
-          "name": "Palmer",
-          "team": "CHE",
+          "id": 426,
+          "name": "B.Fernandes",
+          "team": "MUN",
           "pos": "MID",
-          "price": 9.8,
+          "price": 11.6,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -320,20 +320,20 @@
           "setpiece": true
         },
         {
-          "id": 183,
-          "name": "Rudoni",
-          "team": "COV",
+          "id": 542,
+          "name": "E.Le F\u00e9e",
+          "team": "SUN",
           "pos": "MID",
-          "price": 4.9,
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": true,
+          "pens": false,
           "setpiece": true
         },
         {
-          "id": 51,
-          "name": "George Hemmings",
+          "id": 50,
+          "name": "Burrowes",
           "team": "AVL",
           "pos": "MID",
           "price": 4.4,
@@ -363,7 +363,7 @@
           "price": 5.7,
           "starting": true,
           "captain": false,
-          "vice": false,
+          "vice": true,
           "pens": true,
           "setpiece": false
         },
@@ -382,9 +382,9 @@
       ]
     },
     "value": {
-      "budget_spent": 80.9,
-      "captain_id": 124,
-      "vice_id": 79,
+      "budget_spent": 81.1,
+      "captain_id": 79,
+      "vice_id": 124,
       "players": [
         {
           "id": 1,
@@ -427,7 +427,7 @@
           "name": "Vuskovic",
           "team": "BHA",
           "pos": "DEF",
-          "price": 5.2,
+          "price": 5.3,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -463,7 +463,7 @@
           "name": "Van Hecke",
           "team": "TOT",
           "pos": "DEF",
-          "price": 5.0,
+          "price": 5.1,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -477,8 +477,8 @@
           "pos": "MID",
           "price": 6.3,
           "starting": true,
-          "captain": true,
-          "vice": false,
+          "captain": false,
+          "vice": true,
           "pens": true,
           "setpiece": true
         },
@@ -519,8 +519,8 @@
           "setpiece": true
         },
         {
-          "id": 51,
-          "name": "George Hemmings",
+          "id": 50,
+          "name": "Burrowes",
           "team": "AVL",
           "pos": "MID",
           "price": 4.4,
@@ -537,8 +537,8 @@
           "pos": "FWD",
           "price": 6.5,
           "starting": true,
-          "captain": false,
-          "vice": true,
+          "captain": true,
+          "vice": false,
           "pens": false,
           "setpiece": true
         },
@@ -569,16 +569,16 @@
       ]
     }
   },
-  "budget_spent": 90.0,
+  "budget_spent": 91.7,
   "captain_id": 79,
   "vice_id": 124,
   "players": [
     {
-      "id": 109,
-      "name": "Verbruggen",
-      "team": "BHA",
+      "id": 1,
+      "name": "Raya",
+      "team": "ARS",
       "pos": "GK",
-      "price": 4.6,
+      "price": 6.2,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -610,18 +610,6 @@
       "setpiece": false
     },
     {
-      "id": 504,
-      "name": "Vuskovic",
-      "team": "BHA",
-      "pos": "DEF",
-      "price": 5.2,
-      "starting": true,
-      "captain": false,
-      "vice": false,
-      "pens": false,
-      "setpiece": true
-    },
-    {
       "id": 4,
       "name": "Gabriel",
       "team": "ARS",
@@ -632,6 +620,18 @@
       "vice": false,
       "pens": false,
       "setpiece": false
+    },
+    {
+      "id": 504,
+      "name": "Vuskovic",
+      "team": "BHA",
+      "pos": "DEF",
+      "price": 5.3,
+      "starting": true,
+      "captain": false,
+      "vice": false,
+      "pens": false,
+      "setpiece": true
     },
     {
       "id": 334,
@@ -650,7 +650,7 @@
       "name": "Van Hecke",
       "team": "TOT",
       "pos": "DEF",
-      "price": 5.0,
+      "price": 5.1,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -694,11 +694,11 @@
       "setpiece": true
     },
     {
-      "id": 51,
-      "name": "George Hemmings",
-      "team": "AVL",
+      "id": 323,
+      "name": "McAteer",
+      "team": "IPS",
       "pos": "MID",
-      "price": 4.4,
+      "price": 4.3,
       "starting": false,
       "captain": false,
       "vice": false,
