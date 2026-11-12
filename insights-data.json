@@ -194,7 +194,7 @@
       "team": "BOU",
       "pos": "FWD",
       "price": 6.5,
-      "owned": 23.7,
+      "owned": 23.8,
       "form": 9.0,
       "xgi": 5.5,
       "actual": 9,
@@ -377,7 +377,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 5.9,
-      "owned": 0.9,
+      "owned": 1.0,
       "form": 4.0,
       "choice": "2nd",
       "duties": "Pens (2nd)"
@@ -527,7 +527,7 @@
       "team": "LIV",
       "pos": "FWD",
       "price": 9.3,
-      "owned": 25.0,
+      "owned": 25.1,
       "form": 7.0,
       "choice": "2nd",
       "duties": "Pens (2nd)"
@@ -595,7 +595,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 6.7,
-      "owned": 31.3,
+      "owned": 31.4,
       "form": 6.5,
       "duties": "Free-kicks, Corners"
     },
@@ -1074,7 +1074,7 @@
       "team": "LEE",
       "pos": "GK",
       "price": 5.0,
-      "owned": 6.4,
+      "owned": 6.5,
       "form": 6.0,
       "minutes": 900,
       "rating": "nailed",
@@ -1179,7 +1179,7 @@
       "team": "TOT",
       "pos": "DEF",
       "price": 5.1,
-      "owned": 14.6,
+      "owned": 14.7,
       "form": 7.5,
       "minutes": 900,
       "rating": "nailed",
@@ -1704,7 +1704,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 6.7,
-      "owned": 31.3,
+      "owned": 31.4,
       "form": 6.5,
       "minutes": 840,
       "rating": "nailed",
@@ -1719,7 +1719,7 @@
       "team": "BOU",
       "pos": "FWD",
       "price": 6.5,
-      "owned": 23.7,
+      "owned": 23.8,
       "form": 9.0,
       "minutes": 837,
       "rating": "nailed",
@@ -2229,7 +2229,7 @@
       "team": "LIV",
       "pos": "FWD",
       "price": 9.3,
-      "owned": 25.0,
+      "owned": 25.1,
       "form": 7.0,
       "minutes": 747,
       "rating": "nailed",
@@ -2274,7 +2274,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.5,
-      "owned": 2.3,
+      "owned": 2.4,
       "form": 7.0,
       "minutes": 741,
       "rating": "nailed",
@@ -2873,7 +2873,7 @@
       "team": "BOU",
       "pos": "MID",
       "price": 6.7,
-      "owned": 31.3,
+      "owned": 31.4,
       "form": 6.5
     },
     {
@@ -2905,7 +2905,7 @@
       "team": "LIV",
       "pos": "FWD",
       "price": 9.3,
-      "owned": 25.0,
+      "owned": 25.1,
       "form": 7.0
     },
     {
@@ -2940,7 +2940,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.5,
-      "owned": 2.3,
+      "owned": 2.4,
       "form": 7.0,
       "xgi90": 0.31
     },
@@ -3021,7 +3021,7 @@
       "team": "LEE",
       "pos": "GK",
       "price": 5.0,
-      "owned": 6.4,
+      "owned": 6.5,
       "form": 6.0,
       "xgi90": 0.0
     },
@@ -3061,7 +3061,7 @@
       "price": 7.1,
       "owned": 31.1,
       "form": 8.8,
-      "net": 290511,
+      "net": 296835,
       "cost_change": 0.1
     },
     {
@@ -3071,7 +3071,7 @@
       "price": 5.7,
       "owned": 10.7,
       "form": 7.2,
-      "net": 195237,
+      "net": 197234,
       "cost_change": 0.1
     },
     {
@@ -3079,9 +3079,9 @@
       "team": "BOU",
       "pos": "FWD",
       "price": 6.5,
-      "owned": 23.7,
+      "owned": 23.8,
       "form": 9.0,
-      "net": 190985,
+      "net": 195180,
       "cost_change": 0.1
     },
     {
@@ -3089,9 +3089,9 @@
       "team": "TOT",
       "pos": "DEF",
       "price": 5.1,
-      "owned": 14.6,
+      "owned": 14.7,
       "form": 7.5,
-      "net": 166174,
+      "net": 168981,
       "cost_change": 0.1
     },
     {
@@ -3101,7 +3101,7 @@
       "price": 5.3,
       "owned": 9.3,
       "form": 7.5,
-      "net": 145593,
+      "net": 149098,
       "cost_change": 0.1
     },
     {
@@ -3111,7 +3111,7 @@
       "price": 5.5,
       "owned": 47.8,
       "form": 5.5,
-      "net": 139667,
+      "net": 142664,
       "cost_change": 0.1
     },
     {
@@ -3121,7 +3121,7 @@
       "price": 4.8,
       "owned": 24.6,
       "form": 10.2,
-      "net": 122910,
+      "net": 125265,
       "cost_change": 0.0
     },
     {
@@ -3129,9 +3129,9 @@
       "team": "BOU",
       "pos": "MID",
       "price": 6.7,
-      "owned": 31.3,
+      "owned": 31.4,
       "form": 6.5,
-      "net": 97987,
+      "net": 100467,
       "cost_change": 0.1
     },
     {
@@ -3139,9 +3139,9 @@
       "team": "LIV",
       "pos": "FWD",
       "price": 9.3,
-      "owned": 25.0,
+      "owned": 25.1,
       "form": 7.0,
-      "net": 97883,
+      "net": 99977,
       "cost_change": 0.1
     },
     {
@@ -3151,7 +3151,7 @@
       "price": 6.3,
       "owned": 48.1,
       "form": 4.2,
-      "net": 91747,
+      "net": 94003,
       "cost_change": 0.1
     },
     {
@@ -3161,7 +3161,7 @@
       "price": 8.1,
       "owned": 26.1,
       "form": 9.8,
-      "net": 71964,
+      "net": 73477,
       "cost_change": 0.1
     },
     {
@@ -3171,7 +3171,7 @@
       "price": 6.7,
       "owned": 7.2,
       "form": 4.2,
-      "net": 47940,
+      "net": 48319,
       "cost_change": 0.1
     },
     {
@@ -3181,7 +3181,7 @@
       "price": 7.2,
       "owned": 5.6,
       "form": 6.5,
-      "net": 44841,
+      "net": 46387,
       "cost_change": 0.0
     },
     {
@@ -3191,7 +3191,7 @@
       "price": 8.2,
       "owned": 54.0,
       "form": 3.5,
-      "net": 34327,
+      "net": 35305,
       "cost_change": 0.0
     }
   ],
@@ -3203,7 +3203,7 @@
       "price": 6.0,
       "owned": 17.6,
       "form": 3.8,
-      "net": -103816,
+      "net": -105371,
       "cost_change": -0.1
     },
     {
@@ -3213,7 +3213,7 @@
       "price": 7.9,
       "owned": 19.1,
       "form": 3.2,
-      "net": -71192,
+      "net": -72624,
       "cost_change": 0.0
     },
     {
@@ -3223,7 +3223,7 @@
       "price": 5.2,
       "owned": 18.2,
       "form": 3.8,
-      "net": -61400,
+      "net": -62289,
       "cost_change": -0.1
     },
     {
@@ -3233,7 +3233,7 @@
       "price": 5.9,
       "owned": 8.3,
       "form": 1.2,
-      "net": -57693,
+      "net": -58744,
       "cost_change": -0.1
     },
     {
@@ -3243,7 +3243,7 @@
       "price": 6.1,
       "owned": 12.9,
       "form": 1.5,
-      "net": -52202,
+      "net": -53024,
       "cost_change": -0.1
     },
     {
@@ -3253,7 +3253,7 @@
       "price": 5.8,
       "owned": 9.8,
       "form": 4.5,
-      "net": -48281,
+      "net": -49048,
       "cost_change": 0.0
     },
     {
@@ -3263,7 +3263,7 @@
       "price": 6.1,
       "owned": 6.6,
       "form": 3.5,
-      "net": -38359,
+      "net": -38961,
       "cost_change": 0.0
     },
     {
@@ -3273,7 +3273,7 @@
       "price": 11.6,
       "owned": 20.4,
       "form": 3.2,
-      "net": -33338,
+      "net": -33930,
       "cost_change": -0.1
     },
     {
@@ -3283,7 +3283,7 @@
       "price": 5.4,
       "owned": 4.2,
       "form": 4.0,
-      "net": -31423,
+      "net": -31833,
       "cost_change": 0.0
     },
     {
@@ -3293,7 +3293,7 @@
       "price": 15.8,
       "owned": 78.9,
       "form": 6.2,
-      "net": -25757,
+      "net": -26071,
       "cost_change": 0.0
     },
     {
@@ -3303,7 +3303,7 @@
       "price": 6.2,
       "owned": 19.3,
       "form": 2.5,
-      "net": -22829,
+      "net": -23346,
       "cost_change": 0.0
     },
     {
@@ -3313,7 +3313,7 @@
       "price": 5.9,
       "owned": 3.6,
       "form": 2.0,
-      "net": -22719,
+      "net": -23079,
       "cost_change": 0.0
     },
     {
@@ -3323,7 +3323,7 @@
       "price": 5.5,
       "owned": 3.3,
       "form": 3.2,
-      "net": -20327,
+      "net": -20509,
       "cost_change": 0.0
     },
     {
@@ -3333,7 +3333,7 @@
       "price": 5.4,
       "owned": 7.1,
       "form": 1.2,
-      "net": -19768,
+      "net": -20020,
       "cost_change": -0.1
     }
   ],
@@ -3403,7 +3403,7 @@
       "team": "TOT",
       "pos": "DEF",
       "price": 5.1,
-      "owned": 14.6,
+      "owned": 14.7,
       "form": 7.5,
       "val": 11.2,
       "points": 57
@@ -3433,7 +3433,7 @@
       "team": "LEE",
       "pos": "GK",
       "price": 5.0,
-      "owned": 6.4,
+      "owned": 6.5,
       "form": 6.0,
       "val": 10.8,
       "points": 54
@@ -3494,7 +3494,7 @@
       "team": "TOT",
       "pos": "DEF",
       "price": 5.1,
-      "owned": 14.6,
+      "owned": 14.7,
       "form": 7.5,
       "val": 1.5
     },
@@ -3503,7 +3503,7 @@
       "team": "BOU",
       "pos": "FWD",
       "price": 6.5,
-      "owned": 23.7,
+      "owned": 23.8,
       "form": 9.0,
       "val": 1.4
     },
@@ -3548,7 +3548,7 @@
       "team": "BHA",
       "pos": "MID",
       "price": 5.5,
-      "owned": 2.3,
+      "owned": 2.4,
       "form": 7.0,
       "val": 1.3
     },
