@@ -272,9 +272,9 @@
           "setpiece": false
         },
         {
-          "id": 175,
-          "name": "van Ewijk",
-          "team": "COV",
+          "id": 585,
+          "name": "Herrington",
+          "team": "HUL",
           "pos": "DEF",
           "price": 3.9,
           "starting": false,
@@ -289,6 +289,18 @@
           "team": "BHA",
           "pos": "MID",
           "price": 6.3,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": true,
+          "setpiece": true
+        },
+        {
+          "id": 542,
+          "name": "E.Le F\u00e9e",
+          "team": "SUN",
+          "pos": "MID",
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -317,18 +329,6 @@
           "captain": false,
           "vice": false,
           "pens": true,
-          "setpiece": true
-        },
-        {
-          "id": 542,
-          "name": "E.Le F\u00e9e",
-          "team": "SUN",
-          "pos": "MID",
-          "price": 5.7,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": false,
           "setpiece": true
         },
         {
