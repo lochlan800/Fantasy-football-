@@ -327,7 +327,7 @@
       "team": "AVL",
       "pos": "MID",
       "price": 5.4,
-      "owned": 3.6,
+      "owned": 3.7,
       "form": 4.2,
       "choice": "1st",
       "duties": "Penalties, Corners"
@@ -577,7 +577,7 @@
       "team": "AVL",
       "pos": "MID",
       "price": 5.4,
-      "owned": 3.6,
+      "owned": 3.7,
       "form": 4.2,
       "duties": "Penalties, Corners"
     },
@@ -721,7 +721,7 @@
       "team": "NFO",
       "pos": "MID",
       "price": 7.8,
-      "owned": 9.3,
+      "owned": 9.2,
       "form": 2.2,
       "duties": "Penalties, Free-kicks"
     },
@@ -984,7 +984,7 @@
       "team": "HUL",
       "pos": "GK",
       "price": 4.7,
-      "owned": 13.5,
+      "owned": 13.4,
       "form": 3.2,
       "minutes": 900,
       "rating": "nailed",
@@ -1974,7 +1974,7 @@
       "team": "AVL",
       "pos": "GK",
       "price": 5.0,
-      "owned": 3.1,
+      "owned": 3.2,
       "form": 3.2,
       "minutes": 810,
       "rating": "nailed",
@@ -2034,7 +2034,7 @@
       "team": "NFO",
       "pos": "MID",
       "price": 7.8,
-      "owned": 9.3,
+      "owned": 9.2,
       "form": 2.2,
       "minutes": 810,
       "rating": "nailed",
@@ -2094,7 +2094,7 @@
       "team": "AVL",
       "pos": "MID",
       "price": 5.4,
-      "owned": 3.6,
+      "owned": 3.7,
       "form": 4.2,
       "minutes": 790,
       "rating": "nailed",
@@ -2190,21 +2190,6 @@
       "rating": "nailed",
       "verdict": "\ud83d\udfe2 Nailed \u2014 plays 90",
       "mps": 85.0,
-      "starts": 9,
-      "chance": 100,
-      "news": ""
-    },
-    {
-      "name": "Schlager",
-      "team": "NFO",
-      "pos": "MID",
-      "price": 5.0,
-      "owned": 0.1,
-      "form": 4.0,
-      "minutes": 756,
-      "rating": "nailed",
-      "verdict": "\ud83d\udfe2 Nailed \u2014 plays 90",
-      "mps": 84.0,
       "starts": 9,
       "chance": 100,
       "news": ""
@@ -2553,6 +2538,21 @@
       "starts": 8,
       "chance": 100,
       "news": ""
+    },
+    {
+      "name": "Thiaw",
+      "team": "NEW",
+      "pos": "DEF",
+      "price": 4.9,
+      "owned": 1.4,
+      "form": 1.0,
+      "minutes": 715,
+      "rating": "nailed",
+      "verdict": "\ud83d\udfe2 Nailed \u2014 plays 90",
+      "mps": 89.0,
+      "starts": 8,
+      "chance": 100,
+      "news": ""
     }
   ],
   "defcon_def": [
@@ -2784,15 +2784,6 @@
       "dc90": 12.4
     },
     {
-      "name": "Schlager",
-      "team": "NFO",
-      "pos": "MID",
-      "price": 5.0,
-      "owned": 0.1,
-      "form": 4.0,
-      "dc90": 12.4
-    },
-    {
       "name": "Janelt",
       "team": "BRE",
       "pos": "MID",
@@ -2809,6 +2800,15 @@
       "owned": 2.1,
       "form": 0.0,
       "dc90": 12.1
+    },
+    {
+      "name": "L.Miley",
+      "team": "NEW",
+      "pos": "MID",
+      "price": 5.5,
+      "owned": 0.1,
+      "form": 0.8,
+      "dc90": 11.9
     }
   ],
   "template": [
@@ -3061,7 +3061,7 @@
       "price": 7.1,
       "owned": 31.4,
       "form": 8.8,
-      "net": 325649,
+      "net": 329932,
       "cost_change": 0.1
     },
     {
@@ -3071,7 +3071,7 @@
       "price": 6.5,
       "owned": 24.0,
       "form": 9.0,
-      "net": 214168,
+      "net": 217005,
       "cost_change": 0.1
     },
     {
@@ -3081,7 +3081,7 @@
       "price": 5.7,
       "owned": 10.8,
       "form": 7.2,
-      "net": 205190,
+      "net": 206307,
       "cost_change": 0.1
     },
     {
@@ -3091,7 +3091,7 @@
       "price": 5.1,
       "owned": 14.8,
       "form": 7.5,
-      "net": 182525,
+      "net": 184518,
       "cost_change": 0.1
     },
     {
@@ -3101,7 +3101,7 @@
       "price": 5.3,
       "owned": 9.5,
       "form": 7.5,
-      "net": 163938,
+      "net": 166382,
       "cost_change": 0.1
     },
     {
@@ -3111,7 +3111,7 @@
       "price": 5.5,
       "owned": 47.9,
       "form": 5.5,
-      "net": 155271,
+      "net": 157535,
       "cost_change": 0.1
     },
     {
@@ -3121,7 +3121,7 @@
       "price": 4.9,
       "owned": 24.7,
       "form": 10.2,
-      "net": 136202,
+      "net": 137928,
       "cost_change": 0.1
     },
     {
@@ -3131,7 +3131,7 @@
       "price": 6.7,
       "owned": 31.5,
       "form": 6.5,
-      "net": 111500,
+      "net": 113088,
       "cost_change": 0.1
     },
     {
@@ -3141,7 +3141,7 @@
       "price": 9.3,
       "owned": 25.2,
       "form": 7.0,
-      "net": 108818,
+      "net": 110209,
       "cost_change": 0.1
     },
     {
@@ -3151,7 +3151,7 @@
       "price": 6.3,
       "owned": 48.2,
       "form": 4.2,
-      "net": 103683,
+      "net": 105222,
       "cost_change": 0.1
     },
     {
@@ -3161,7 +3161,7 @@
       "price": 8.1,
       "owned": 26.2,
       "form": 9.8,
-      "net": 79611,
+      "net": 80547,
       "cost_change": 0.1
     },
     {
@@ -3171,7 +3171,7 @@
       "price": 7.2,
       "owned": 5.7,
       "form": 6.5,
-      "net": 53075,
+      "net": 54277,
       "cost_change": 0.0
     },
     {
@@ -3181,7 +3181,7 @@
       "price": 6.7,
       "owned": 7.2,
       "form": 4.2,
-      "net": 49721,
+      "net": 49900,
       "cost_change": 0.1
     },
     {
@@ -3189,9 +3189,9 @@
       "team": "AVL",
       "pos": "MID",
       "price": 5.4,
-      "owned": 3.6,
+      "owned": 3.7,
       "form": 4.2,
-      "net": 40619,
+      "net": 41746,
       "cost_change": 0.0
     }
   ],
@@ -3203,7 +3203,7 @@
       "price": 6.0,
       "owned": 17.5,
       "form": 3.8,
-      "net": -112639,
+      "net": -113564,
       "cost_change": -0.1
     },
     {
@@ -3213,7 +3213,7 @@
       "price": 7.9,
       "owned": 19.0,
       "form": 3.2,
-      "net": -78998,
+      "net": -79868,
       "cost_change": 0.0
     },
     {
@@ -3223,7 +3223,7 @@
       "price": 5.2,
       "owned": 18.2,
       "form": 3.8,
-      "net": -66833,
+      "net": -67362,
       "cost_change": -0.1
     },
     {
@@ -3233,7 +3233,7 @@
       "price": 5.9,
       "owned": 8.3,
       "form": 1.2,
-      "net": -63402,
+      "net": -64084,
       "cost_change": -0.1
     },
     {
@@ -3243,7 +3243,7 @@
       "price": 6.1,
       "owned": 12.8,
       "form": 1.5,
-      "net": -56799,
+      "net": -57400,
       "cost_change": -0.1
     },
     {
@@ -3253,7 +3253,7 @@
       "price": 5.8,
       "owned": 9.8,
       "form": 4.5,
-      "net": -52487,
+      "net": -53004,
       "cost_change": 0.0
     },
     {
@@ -3263,7 +3263,7 @@
       "price": 6.1,
       "owned": 6.6,
       "form": 3.5,
-      "net": -42162,
+      "net": -42671,
       "cost_change": 0.0
     },
     {
@@ -3273,7 +3273,7 @@
       "price": 11.6,
       "owned": 20.3,
       "form": 3.2,
-      "net": -36762,
+      "net": -37287,
       "cost_change": -0.1
     },
     {
@@ -3283,7 +3283,7 @@
       "price": 5.4,
       "owned": 4.2,
       "form": 4.0,
-      "net": -33557,
+      "net": -33764,
       "cost_change": 0.0
     },
     {
@@ -3293,7 +3293,7 @@
       "price": 15.8,
       "owned": 78.8,
       "form": 6.2,
-      "net": -27207,
+      "net": -27292,
       "cost_change": 0.0
     },
     {
@@ -3303,7 +3303,7 @@
       "price": 6.2,
       "owned": 19.3,
       "form": 2.5,
-      "net": -25444,
+      "net": -25865,
       "cost_change": 0.0
     },
     {
@@ -3313,7 +3313,7 @@
       "price": 5.9,
       "owned": 3.6,
       "form": 2.0,
-      "net": -25010,
+      "net": -25297,
       "cost_change": 0.0
     },
     {
@@ -3323,7 +3323,7 @@
       "price": 5.5,
       "owned": 3.3,
       "form": 3.2,
-      "net": -21752,
+      "net": -21964,
       "cost_change": 0.0
     },
     {
@@ -3333,7 +3333,7 @@
       "price": 5.4,
       "owned": 7.1,
       "form": 1.2,
-      "net": -21200,
+      "net": -21381,
       "cost_change": -0.1
     }
   ],
@@ -3443,7 +3443,7 @@
       "team": "HUL",
       "pos": "GK",
       "price": 4.7,
-      "owned": 13.5,
+      "owned": 13.4,
       "form": 3.2,
       "val": 10.4,
       "points": 49
