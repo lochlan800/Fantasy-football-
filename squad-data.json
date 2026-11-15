@@ -25,9 +25,9 @@
           "setpiece": false
         },
         {
-          "id": 58,
-          "name": "Forster",
-          "team": "BOU",
+          "id": 667,
+          "name": "Wright",
+          "team": "AVL",
           "pos": "GK",
           "price": 4.0,
           "starting": false,
@@ -212,9 +212,9 @@
           "setpiece": false
         },
         {
-          "id": 58,
-          "name": "Forster",
-          "team": "BOU",
+          "id": 667,
+          "name": "Wright",
+          "team": "AVL",
           "pos": "GK",
           "price": 4.0,
           "starting": false,
@@ -382,16 +382,16 @@
       ]
     },
     "value": {
-      "budget_spent": 81.1,
+      "budget_spent": 80.3,
       "captain_id": 79,
       "vice_id": 124,
       "players": [
         {
-          "id": 1,
-          "name": "Raya",
-          "team": "ARS",
+          "id": 109,
+          "name": "Verbruggen",
+          "team": "BHA",
           "pos": "GK",
-          "price": 6.2,
+          "price": 4.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -399,9 +399,9 @@
           "setpiece": false
         },
         {
-          "id": 58,
-          "name": "Forster",
-          "team": "BOU",
+          "id": 667,
+          "name": "Wright",
+          "team": "AVL",
           "pos": "GK",
           "price": 4.0,
           "starting": false,
@@ -495,28 +495,28 @@
           "setpiece": true
         },
         {
-          "id": 127,
-          "name": "Gomez",
-          "team": "BHA",
+          "id": 542,
+          "name": "E.Le F\u00e9e",
+          "team": "SUN",
           "pos": "MID",
-          "price": 5.0,
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
-          "pens": false,
+          "pens": true,
           "setpiece": true
         },
         {
-          "id": 212,
-          "name": "Hughes",
-          "team": "CRY",
+          "id": 323,
+          "name": "McAteer",
+          "team": "IPS",
           "pos": "MID",
           "price": 4.3,
           "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
           "id": 50,
@@ -586,9 +586,9 @@
       "setpiece": false
     },
     {
-      "id": 58,
-      "name": "Forster",
-      "team": "BOU",
+      "id": 667,
+      "name": "Wright",
+      "team": "AVL",
       "pos": "GK",
       "price": 4.0,
       "starting": false,
