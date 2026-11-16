@@ -169,18 +169,6 @@
           "setpiece": true
         },
         {
-          "id": 411,
-          "name": "Haaland",
-          "team": "MCI",
-          "pos": "FWD",
-          "price": 15.8,
-          "starting": true,
-          "captain": false,
-          "vice": false,
-          "pens": true,
-          "setpiece": false
-        },
-        {
           "id": 249,
           "name": "Barry",
           "team": "EVE",
@@ -191,13 +179,25 @@
           "vice": false,
           "pens": true,
           "setpiece": false
+        },
+        {
+          "id": 411,
+          "name": "Haaland",
+          "team": "MCI",
+          "pos": "FWD",
+          "price": 15.8,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": true,
+          "setpiece": false
         }
       ]
     },
     "attacking": {
       "budget_spent": 99.6,
-      "captain_id": 411,
-      "vice_id": 249,
+      "captain_id": 249,
+      "vice_id": 79,
       "players": [
         {
           "id": 1,
@@ -344,26 +344,14 @@
           "setpiece": false
         },
         {
-          "id": 411,
-          "name": "Haaland",
-          "team": "MCI",
-          "pos": "FWD",
-          "price": 15.8,
-          "starting": true,
-          "captain": true,
-          "vice": false,
-          "pens": true,
-          "setpiece": false
-        },
-        {
           "id": 249,
           "name": "Barry",
           "team": "EVE",
           "pos": "FWD",
           "price": 5.7,
           "starting": true,
-          "captain": false,
-          "vice": true,
+          "captain": true,
+          "vice": false,
           "pens": true,
           "setpiece": false
         },
@@ -375,9 +363,21 @@
           "price": 6.5,
           "starting": true,
           "captain": false,
-          "vice": false,
+          "vice": true,
           "pens": false,
           "setpiece": true
+        },
+        {
+          "id": 411,
+          "name": "Haaland",
+          "team": "MCI",
+          "pos": "FWD",
+          "price": 15.8,
+          "starting": true,
+          "captain": false,
+          "vice": false,
+          "pens": true,
+          "setpiece": false
         }
       ]
     },
@@ -730,11 +730,11 @@
       "setpiece": true
     },
     {
-      "id": 411,
-      "name": "Haaland",
-      "team": "MCI",
+      "id": 249,
+      "name": "Barry",
+      "team": "EVE",
       "pos": "FWD",
-      "price": 15.8,
+      "price": 5.7,
       "starting": true,
       "captain": false,
       "vice": false,
@@ -742,11 +742,11 @@
       "setpiece": false
     },
     {
-      "id": 249,
-      "name": "Barry",
-      "team": "EVE",
+      "id": 411,
+      "name": "Haaland",
+      "team": "MCI",
       "pos": "FWD",
-      "price": 5.7,
+      "price": 15.8,
       "starting": true,
       "captain": false,
       "vice": false,
