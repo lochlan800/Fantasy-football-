@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 99.6,
+      "budget_spent": 93.4,
       "captain_id": 249,
       "vice_id": 79,
       "players": [
@@ -320,11 +320,11 @@
           "setpiece": true
         },
         {
-          "id": 426,
-          "name": "B.Fernandes",
-          "team": "MUN",
+          "id": 45,
+          "name": "McGinn",
+          "team": "AVL",
           "pos": "MID",
-          "price": 11.6,
+          "price": 5.4,
           "starting": true,
           "captain": false,
           "vice": false,
