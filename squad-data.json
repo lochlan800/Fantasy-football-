@@ -181,9 +181,9 @@
           "setpiece": false
         },
         {
-          "id": 321,
-          "name": "Walle Egeli",
-          "team": "IPS",
+          "id": 169,
+          "name": "Mheuka",
+          "team": "CHE",
           "pos": "FWD",
           "price": 4.5,
           "starting": false,
@@ -555,9 +555,9 @@
           "setpiece": false
         },
         {
-          "id": 321,
-          "name": "Walle Egeli",
-          "team": "IPS",
+          "id": 169,
+          "name": "Mheuka",
+          "team": "CHE",
           "pos": "FWD",
           "price": 4.5,
           "starting": false,
@@ -742,9 +742,9 @@
       "setpiece": false
     },
     {
-      "id": 321,
-      "name": "Walle Egeli",
-      "team": "IPS",
+      "id": 169,
+      "name": "Mheuka",
+      "team": "CHE",
       "pos": "FWD",
       "price": 4.5,
       "starting": false,
