@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 80.2,
+      "budget_spent": 80.1,
       "captain_id": 79,
       "vice_id": 124,
       "players": [
@@ -25,11 +25,11 @@
           "setpiece": false
         },
         {
-          "id": 667,
-          "name": "Wright",
-          "team": "AVL",
+          "id": 497,
+          "name": "Dubravka",
+          "team": "TOT",
           "pos": "GK",
-          "price": 4.0,
+          "price": 3.9,
           "starting": false,
           "captain": false,
           "vice": false,
@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 96.7,
+      "budget_spent": 96.6,
       "captain_id": 249,
       "vice_id": 124,
       "players": [
@@ -212,11 +212,11 @@
           "setpiece": false
         },
         {
-          "id": 667,
-          "name": "Wright",
-          "team": "AVL",
+          "id": 497,
+          "name": "Dubravka",
+          "team": "TOT",
           "pos": "GK",
-          "price": 4.0,
+          "price": 3.9,
           "starting": false,
           "captain": false,
           "vice": false,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 80.2,
+      "budget_spent": 80.1,
       "captain_id": 124,
       "vice_id": 79,
       "players": [
@@ -399,11 +399,11 @@
           "setpiece": false
         },
         {
-          "id": 667,
-          "name": "Wright",
-          "team": "AVL",
+          "id": 497,
+          "name": "Dubravka",
+          "team": "TOT",
           "pos": "GK",
-          "price": 4.0,
+          "price": 3.9,
           "starting": false,
           "captain": false,
           "vice": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 80.2,
+  "budget_spent": 80.1,
   "captain_id": 79,
   "vice_id": 124,
   "players": [
@@ -586,11 +586,11 @@
       "setpiece": false
     },
     {
-      "id": 667,
-      "name": "Wright",
-      "team": "AVL",
+      "id": 497,
+      "name": "Dubravka",
+      "team": "TOT",
       "pos": "GK",
-      "price": 4.0,
+      "price": 3.9,
       "starting": false,
       "captain": false,
       "vice": false,
