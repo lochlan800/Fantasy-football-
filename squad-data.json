@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 79.8,
+      "budget_spent": 79.9,
       "captain_id": 124,
       "vice_id": 366,
       "players": [
@@ -53,7 +53,7 @@
           "name": "Hill",
           "team": "BOU",
           "pos": "DEF",
-          "price": 5.6,
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 79.2,
+      "budget_spent": 79.3,
       "captain_id": 249,
       "vice_id": 124,
       "players": [
@@ -252,7 +252,7 @@
           "name": "Hill",
           "team": "BOU",
           "pos": "DEF",
-          "price": 5.6,
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 79.7,
+      "budget_spent": 79.8,
       "captain_id": 124,
       "vice_id": 79,
       "players": [
@@ -451,7 +451,7 @@
           "name": "Hill",
           "team": "BOU",
           "pos": "DEF",
-          "price": 5.6,
+          "price": 5.7,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 79.8,
+  "budget_spent": 79.9,
   "captain_id": 124,
   "vice_id": 366,
   "players": [
@@ -614,7 +614,7 @@
       "name": "Hill",
       "team": "BOU",
       "pos": "DEF",
-      "price": 5.6,
+      "price": 5.7,
       "starting": true,
       "captain": false,
       "vice": false,
