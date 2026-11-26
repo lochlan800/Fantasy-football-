@@ -25,9 +25,9 @@
           "setpiece": false
         },
         {
-          "id": 301,
-          "name": "Palmer",
-          "team": "IPS",
+          "id": 273,
+          "name": "Phillips",
+          "team": "HUL",
           "pos": "GK",
           "price": 3.9,
           "starting": false,
@@ -212,9 +212,9 @@
           "setpiece": false
         },
         {
-          "id": 301,
-          "name": "Palmer",
-          "team": "IPS",
+          "id": 273,
+          "name": "Phillips",
+          "team": "HUL",
           "pos": "GK",
           "price": 3.9,
           "starting": false,
@@ -332,16 +332,16 @@
           "setpiece": false
         },
         {
-          "id": 288,
-          "name": "Dowell",
-          "team": "HUL",
+          "id": 212,
+          "name": "Hughes",
+          "team": "CRY",
           "pos": "MID",
           "price": 4.3,
           "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": false
+          "setpiece": true
         },
         {
           "id": 249,
@@ -399,9 +399,9 @@
           "setpiece": false
         },
         {
-          "id": 301,
-          "name": "Palmer",
-          "team": "IPS",
+          "id": 273,
+          "name": "Phillips",
+          "team": "HUL",
           "pos": "GK",
           "price": 3.9,
           "starting": false,
@@ -586,9 +586,9 @@
       "setpiece": false
     },
     {
-      "id": 301,
-      "name": "Palmer",
-      "team": "IPS",
+      "id": 273,
+      "name": "Phillips",
+      "team": "HUL",
       "pos": "GK",
       "price": 3.9,
       "starting": false,
