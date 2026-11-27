@@ -8,7 +8,7 @@
   },
   "variants": {
     "balanced": {
-      "budget_spent": 79.9,
+      "budget_spent": 80.0,
       "captain_id": 124,
       "vice_id": 366,
       "players": [
@@ -113,7 +113,7 @@
           "name": "Wirtz",
           "team": "LIV",
           "pos": "MID",
-          "price": 7.4,
+          "price": 7.5,
           "starting": true,
           "captain": false,
           "vice": true,
@@ -145,9 +145,9 @@
           "setpiece": true
         },
         {
-          "id": 288,
-          "name": "Dowell",
-          "team": "HUL",
+          "id": 270,
+          "name": "Reed",
+          "team": "FUL",
           "pos": "MID",
           "price": 4.3,
           "starting": false,
@@ -195,7 +195,7 @@
       ]
     },
     "attacking": {
-      "budget_spent": 79.3,
+      "budget_spent": 79.5,
       "captain_id": 249,
       "vice_id": 124,
       "players": [
@@ -240,7 +240,7 @@
           "name": "De Cuyper",
           "team": "BHA",
           "pos": "DEF",
-          "price": 5.5,
+          "price": 5.6,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -312,7 +312,7 @@
           "name": "Wirtz",
           "team": "LIV",
           "pos": "MID",
-          "price": 7.4,
+          "price": 7.5,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -332,16 +332,16 @@
           "setpiece": false
         },
         {
-          "id": 212,
-          "name": "Hughes",
-          "team": "CRY",
+          "id": 270,
+          "name": "Reed",
+          "team": "FUL",
           "pos": "MID",
           "price": 4.3,
           "starting": false,
           "captain": false,
           "vice": false,
           "pens": false,
-          "setpiece": true
+          "setpiece": false
         },
         {
           "id": 249,
@@ -382,7 +382,7 @@
       ]
     },
     "value": {
-      "budget_spent": 79.8,
+      "budget_spent": 80.0,
       "captain_id": 124,
       "vice_id": 79,
       "players": [
@@ -463,7 +463,7 @@
           "name": "Muharemovi\u0107",
           "team": "LEE",
           "pos": "DEF",
-          "price": 5.1,
+          "price": 5.2,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -487,7 +487,7 @@
           "name": "Wirtz",
           "team": "LIV",
           "pos": "MID",
-          "price": 7.4,
+          "price": 7.5,
           "starting": true,
           "captain": false,
           "vice": false,
@@ -519,9 +519,9 @@
           "setpiece": true
         },
         {
-          "id": 288,
-          "name": "Dowell",
-          "team": "HUL",
+          "id": 270,
+          "name": "Reed",
+          "team": "FUL",
           "pos": "MID",
           "price": 4.3,
           "starting": false,
@@ -569,7 +569,7 @@
       ]
     }
   },
-  "budget_spent": 79.9,
+  "budget_spent": 80.0,
   "captain_id": 124,
   "vice_id": 366,
   "players": [
@@ -674,7 +674,7 @@
       "name": "Wirtz",
       "team": "LIV",
       "pos": "MID",
-      "price": 7.4,
+      "price": 7.5,
       "starting": true,
       "captain": false,
       "vice": true,
@@ -706,9 +706,9 @@
       "setpiece": true
     },
     {
-      "id": 288,
-      "name": "Dowell",
-      "team": "HUL",
+      "id": 270,
+      "name": "Reed",
+      "team": "FUL",
       "pos": "MID",
       "price": 4.3,
       "starting": false,
